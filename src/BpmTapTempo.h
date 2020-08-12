@@ -12,7 +12,7 @@ public:
 	~BpmTapTempo() {};
 
 public:
-	ofParameterGroup params{ "Tap Tempo engine" };
+	ofParameterGroup params{ "Tap Tempo Engine" };
 	ofParameter<float> bpm;
 
 private:

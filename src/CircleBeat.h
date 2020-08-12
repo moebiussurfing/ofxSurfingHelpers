@@ -15,6 +15,14 @@ public:
 	{
 		color.set(_color);
 	}
+	void setAlpha(float _alpha)
+	{
+		int a = ofMap(_alpha, 0.0f, 1.0f, 0, 255);
+		alphaMax = a;
+
+		ofColor c = ofColor(colorBg);
+		colorBg = ofColor(c.r, c.g, c.b, alphaMax);
+	}
 	void setSpeed(float _speed)
 	{
 		ofClamp(_speed, 0.01f, 1.0f);
