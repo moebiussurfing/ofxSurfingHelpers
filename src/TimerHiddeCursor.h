@@ -10,7 +10,13 @@ class TimerHiddeCursor
 {
 public:
 
-	TimerHiddeCursor() {};
+	TimerHiddeCursor() {
+	//hidden mouse
+	lastmove = ofGetElapsedTimeMillis();
+	ofShowCursor();
+	bMouseHidden = false;
+	};
+
 ~TimerHiddeCursor() {};
 	
 	//auto hide mouse

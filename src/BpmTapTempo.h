@@ -32,6 +32,7 @@ public:
 	void setup() {
 		ENABLE_SoundTapTempo.set("Enable Sound Tick", true);
 		BangTapTempo.set("Bang TapTempo", false);
+		BangTapTempo.setSerializable(false);
 		bpm.set("BPM TapTempo", 120, 10, 400);
 		params.add(ENABLE_SoundTapTempo);
 		params.add(BangTapTempo);
