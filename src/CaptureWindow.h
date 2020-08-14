@@ -310,7 +310,7 @@ public:
 			{
 				ofDrawBitmapStringHighlight("RECORD MOUNTED. READY...", x, y);
 				y += 20;
-				ofDrawBitmapStringHighlight("KEY U: START", x, y);
+				ofDrawBitmapStringHighlight("KEY U: START  u: UNMOUNT", x, y);
 				y += 20;
 			}
 
