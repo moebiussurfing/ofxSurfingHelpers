@@ -328,7 +328,32 @@ public:
 	//--------------------------------------------------------------
 	void keyPressed(ofKeyEventArgs &eventArgs) {///to received short keys control commands
 		const int key = eventArgs.key;
+		const int keycode = eventArgs.keycode;
+		const int scancode = eventArgs.scancode;
+		const uint32_t codepoint = eventArgs.codepoint;
 		//bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+
+		//cout << endl << __FUNCTION__ << " key: " << key << endl;
+		//cout << __FUNCTION__ << " keycode: " << keycode << endl;
+		//cout << __FUNCTION__ << " scancode:" << scancode << endl;
+		//cout << __FUNCTION__ << " codepoint:" << codepoint << endl;
+
+		if (key == 0 && keycode == 283 && scancode == 311 && codepoint == 0) {
+			cout << __FUNCTION__ << "[pressed print screen]" << endl;
+
+			//take screenshot
+			{
+				ofImage img;
+				img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+				//string _pathFolder = "captures/";
+				string _fileName = "snapshot_" + ofGetTimestampString() + ".png";
+				//string _fileName = "snapshot_"+ofToString(snapCounter++, 5, '0')+".png";
+				string _pathFilename = ofToDataPath(_pathFolder + _fileName, true);//bin/data
+				bool b = img.save(_pathFilename);
+				if (b) cout << __FUNCTION__ << " Saved screenshot successfully: " << _pathFilename << endl;
+				else cout << __FUNCTION__ << " Error saving screenshot: " << _pathFilename << endl;
+			}
+		}
 
 		//-
 
