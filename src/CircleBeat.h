@@ -15,6 +15,10 @@ public:
 	{
 		color.set(_color);
 	}
+	void setColorBackground(ofColor _color)
+	{
+		colorBg.set(_color);
+	}
 	void setAlpha(float _alpha)
 	{
 		int a = ofMap(_alpha, 0.0f, 1.0f, 0, 255);
@@ -28,7 +32,7 @@ public:
 		ofClamp(_speed, 0.01f, 1.0f);
 		animSpeed = _speed;
 	}
-	void setSize(float _size)
+	void setRadius(float _size)
 	{
 		radiusMax = _size;
 		radiusMin = radiusMax*0.2;
@@ -80,7 +84,7 @@ public:
 		//float res = ofGetCircleResolution();
 		//cout << "res:" << res<<endl;
 		//ofSetCircleResolution()
-		ofSetCircleResolution(50);
+		ofSetCircleResolution(100);
 
 		color.set(255, 255, 255);
 		colorBg.set(0, 0, 0, 200);

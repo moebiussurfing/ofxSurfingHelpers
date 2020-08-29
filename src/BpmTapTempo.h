@@ -14,6 +14,22 @@ public:
 public:
 	ofParameterGroup params{ "Tap Tempo Engine" };
 	ofParameter<float> bpm;
+	bool isRunning() {
+		return bTapRunning;
+	}
+	int getCountTap() {
+		return tapCount;
+	}
+	float getBpm() {
+		return bpm.get();
+	}
+	bool isUpdatedBpm() {
+		if (bUpdatedBpm) {
+			bUpdatedBpm = false;
+			return true;
+		}
+		else return false;
+	}
 
 private:
 	ofParameter<bool> BangTapTempo;
@@ -26,6 +42,13 @@ private:
 	ofSoundPlayer tapTic;
 	ofSoundPlayer tapTac;
 	ofSoundPlayer tapBell;
+	string pathSounds = "assets/sounds/";
+	bool bUpdatedBpm = false;
+
+public:
+	void setPathSounds(string path) {
+		pathSounds = path;
+	}
 
 public:
 	//--------------------------------------------------------------
@@ -42,13 +65,13 @@ public:
 		tapCount = 0;
 		tapIntervals.clear();
 
-		tapTic.load("assets/sounds/click1.wav");
+		tapTic.load(pathSounds + "click1.wav");
 		tapTic.setVolume(1.0f);
 		tapTic.setMultiPlay(false);
-		tapTac.load("assets/sounds/click2.wav");
+		tapTac.load(pathSounds + "click2.wav");
 		tapTac.setVolume(0.25f);
 		tapTac.setMultiPlay(false);
-		tapBell.load("assets/sounds/tapBell.wav");
+		tapBell.load(pathSounds + "tapBell.wav");
 		tapBell.setVolume(1.0f);
 		tapBell.setMultiPlay(false);
 
@@ -120,6 +143,7 @@ public:
 
 			//set obtained bpm
 			bpm = bpmMeasured;
+			bUpdatedBpm = true;
 		}
 		else if (tapCount > 1)
 		{
@@ -136,6 +160,7 @@ public:
 
 			//set obtained bpm
 			bpm = bpmMeasured;
+			bUpdatedBpm = true;
 		}
 	}
 private:
