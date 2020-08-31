@@ -61,10 +61,12 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path)
 	{
-		ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
 		ofXml settings;
 		bool b = settings.load(path);
+		if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
+		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path; 
 		ofDeserialize(settings, g);
 		return b;
 	}
@@ -72,11 +74,13 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool saveGroup(ofParameterGroup &g, string path)
 	{
-		ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
 		ofXml settings;
 		ofSerialize(settings, g);
 		bool b = settings.save(path);
+		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
+		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 		return b;
 	}
 
