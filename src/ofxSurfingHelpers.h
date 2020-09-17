@@ -2,13 +2,13 @@
 
 #include "ofMain.h"
 
+#define USE_JSON		//uncomment to use default xml instead json for ofParameterGroup de/serializers
+
 #include "ofxGui.h"
 #define USE_IM_GUI
 #ifdef USE_IM_GUI
 #include "ofxImGui.h"
 #endif
-
-//#define USE_JSON		//uncomment to use default xml instead json for ofParameterGroup de/serializers
 
 namespace ofxSurfingHelpers {
 	//using namespace ofxSurfingHelpers;
@@ -71,17 +71,22 @@ namespace ofxSurfingHelpers {
 
 	//-
 
+	//xml
 #ifndef USE_JSON
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path)
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+
 		ofXml settings;
 		bool b = settings.load(path);
-		if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
+
+		if (b) ofLogVerbose(__FUNCTION__) << "Loading: " << g.getName() << " at " << path;
 		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
+
 		ofDeserialize(settings, g);
+
 		return b;
 	}
 
@@ -90,69 +95,71 @@ namespace ofxSurfingHelpers {
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+
 		ofXml settings;
 		ofSerialize(settings, g);
 		bool b = settings.save(path);
+
 		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
 		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 		return b;
 	}
 #endif
 
-	//	//TODO:
-	//#ifdef USE_JSON
-	//	//--------------------------------------------------------------
-	//	inline bool loadGroup(ofParameterGroup &g, string path)
-	//	{
-	//		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-	//		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
-	//		ofJson settings;
-	//		bool b = settings.load(path);
-	//		if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
-	//		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
-	//		ofDeserialize(settings, g);
-	//		return b;
-	//	}
-	//
-	//	//--------------------------------------------------------------
-	//	inline bool saveGroup(ofParameterGroup &g, string path)
-	//	{
-	//		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-	//		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
-	//		ofXml settings;
-	//		ofSerialize(settings, g);
-	//		bool b = settings.save(path);
-	//		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
-	//		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
-	//		return b;
-	//	}
-	//#endif
+	//--
 
-		////--------------------------------------------------------------
-		//inline void loadGroup(ofParameterGroup &g, string path)
-		//{
-		//	ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-		//	ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
-		//	ofXml settings;
-		//	settings.load(path);
-		//	ofDeserialize(settings, g);
-		//}
+#ifdef USE_JSON
+	//--------------------------------------------------------------
+	inline bool loadGroup(ofParameterGroup &g, string path)
+	{
+		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		
+		//ofJson settings;
+		//ofSerialize(g, settings);
+		//ofSaveJson(path, settings);
 
-		////--------------------------------------------------------------
-		//inline void saveGroup(ofParameterGroup &g, string path)
-		//{
-		//	ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-		//	ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
-		//	ofXml settings;
-		//	ofSerialize(settings, g);
-		//	settings.save(path);
-		//}
+		ofJson settings;
+		settings = ofLoadJson(path);
+		ofDeserialize(settings, g);
+		bool b = !settings.is_null();//TODO:
+		//bool b = true;//TODO:
 
-		//--
+		//bool b = settings.is_null;
+		//if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
+		//else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
 
-		//--------------------------------------------------------------
-		//ofxGui theme
-		//--------------------------------------------------------------
+		return b;
+	}
+
+	//--------------------------------------------------------------
+	inline bool saveGroup(ofParameterGroup &g, string path)
+	{
+		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		
+		ofJson settings;
+		ofSerialize(settings, g);
+		bool b = ofSavePrettyJson(path, settings);
+
+		//ofXml settings;
+		//ofSerialize(settings, g);
+		//bool b = settings.save(path);
+
+		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
+		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
+
+		return b;
+	}
+#endif
+
+
+	//----
+
+
+	//--------------------------------------------------------------
+	//ofxGui theme
+	//--------------------------------------------------------------
 	inline void setTheme_ofxGui(string pathFont = "assets/fonts/overpass-mono-bold.otf")
 	{
 		ofFile file(pathFont);
@@ -266,7 +273,8 @@ namespace ofxSurfingHelpers {
 	//}
 
 
-	//---
+	//----
+
 
 #ifdef USE_IM_GUI
 	//--------------------------------------------------------------
@@ -802,7 +810,10 @@ namespace ofxSurfingHelpers {
 		//   style->ScrollbarSize = 12.0f;
 		//   style->ScrollbarRounding = 0.0f;
 	}
+
+
 	//----
+
 
 	//--------------------------------------------------------------
 	//draws a box with text
@@ -841,6 +852,6 @@ namespace ofxSurfingHelpers {
 	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth();
 	}
-	#endif
+#endif
 
 };//ofxSurfingHelpers

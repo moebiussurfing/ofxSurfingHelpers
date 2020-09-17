@@ -18,6 +18,11 @@
 ## Dependencies
 - 
 
+## Other MISC Util Addons
+https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp  
+https://github.com/chimanaco/ofxUtils/tree/master/src  
+
+
 ## Tested systems
 - **Windows10** / **VS2017** / **OF 0.11**
 

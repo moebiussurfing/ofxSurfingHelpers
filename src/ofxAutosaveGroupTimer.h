@@ -7,6 +7,7 @@ class ofxAutosaveGroupTimer
 {
 
 public:
+	string fileExtension = ".xml";
 
 	string path_Params = "settings";
 	string path_GLOBAL = "ofxAutosaveGroupTimer";

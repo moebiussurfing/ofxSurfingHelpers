@@ -31,7 +31,7 @@ void ofxAutosaveGroupTimer::saveAllGroups()
 {
 	for (int i = 0; i< params.size(); i++)
 	{
-		string path = path_GLOBAL + "/" + path_Params + "_" + params[i].getName() +".xml";
+		string path = path_GLOBAL + "/" + path_Params + "_" + params[i].getName() +fileExtension;
 		saveParams(params[i], path);
 	}
 }
