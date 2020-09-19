@@ -2,10 +2,20 @@
 
 #include "ofMain.h"
 
-#define USE_JSON		//uncomment to use default xml instead json for ofParameterGroup de/serializers
+//---------
+//
+// OPTIONAL -> moved to ofxSurfingConstants
+#include "ofxSurfingConstants.h"
+//
+//#define USE_IM_GUI
+//#define USE_ofxGui
+//#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
+//
+//---------
 
+#ifdef USE_ofxGui
 #include "ofxGui.h"
-#define USE_IM_GUI
+#endif
 #ifdef USE_IM_GUI
 #include "ofxImGui.h"
 #endif
@@ -15,11 +25,10 @@ namespace ofxSurfingHelpers {
 
 	//-
 
-
 	//--------------------------------------------------------------
-	//circular progress bar
+	// circular progress bar
 	//
-	//example:
+	// example:
 	//float val = ofMap(ofGetFrameNum() % 200, 0, 200, 0.f, 1.f, true);
 	//ofxSurfingHelpers::drawCircleProg(val);
 	//--------------------------------------------------------------
@@ -69,9 +78,9 @@ namespace ofxSurfingHelpers {
 		ofPopMatrix();
 	}
 
-	//-
+	//---
 
-	//xml
+	// xml
 #ifndef USE_JSON
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path)
@@ -106,7 +115,7 @@ namespace ofxSurfingHelpers {
 	}
 #endif
 
-	//--
+	//----
 
 #ifdef USE_JSON
 	//--------------------------------------------------------------
@@ -115,10 +124,6 @@ namespace ofxSurfingHelpers {
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
 		
-		//ofJson settings;
-		//ofSerialize(g, settings);
-		//ofSaveJson(path, settings);
-
 		ofJson settings;
 		settings = ofLoadJson(path);
 		ofDeserialize(settings, g);
@@ -142,10 +147,6 @@ namespace ofxSurfingHelpers {
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
 
-		//ofXml settings;
-		//ofSerialize(settings, g);
-		//bool b = settings.save(path);
-
 		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
 		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 
@@ -156,11 +157,12 @@ namespace ofxSurfingHelpers {
 
 	//----
 
+#ifdef USE_ofxGui
 
 	//--------------------------------------------------------------
-	//ofxGui theme
+	// ofxGui theme
 	//--------------------------------------------------------------
-	inline void setTheme_ofxGui(string pathFont = "assets/fonts/overpass-mono-bold.otf")
+	inline void setThemeDark_ofxGui(string pathFont = "assets/fonts/overpass-mono-bold.otf")
 	{
 		ofFile file(pathFont);
 		if (file.exists())
@@ -177,16 +179,17 @@ namespace ofxSurfingHelpers {
 		ofxGuiSetHeaderColor(ofColor(12));
 		ofxGuiSetBackgroundColor(ofColor::black);
 	}
+#endif
 
 	//--------------------------------------------------------------
-	//check if a folder path exist and creates one if not
-	//why? many times when you try to save a file, this is not possible and do not happens bc the container folder do not exist
+	// check if a folder path exist and creates one if not
+	// why? many times when you try to save a file, this is not possible and do not happens bc the container folder do not exist
 	//--------------------------------------------------------------
 	inline void CheckFolder(string _path)
 	{
 		ofLogNotice(__FUNCTION__) << _path;
 
-		////workaround to avoid error when folders are folder/subfolder
+		//// workaround to avoid error when folders are folder/subfolder
 		//auto _fullPath = ofSplitString(_path, "/");
 		//for (int i = 0; i < _fullPath.size(); i++) {
 		//	ofLogNotice(__FUNCTION__) << ofToString(i) << " " << _fullPath[i];
@@ -194,23 +197,23 @@ namespace ofxSurfingHelpers {
 
 		ofDirectory dataDirectory(ofToDataPath(_path, true));// /bin/data/
 
-		//check if folder path exist
+		// check if folder path exist
 		if (!dataDirectory.isDirectory())
 		{
 			ofLogError(__FUNCTION__) << "FOLDER NOT FOUND! TRYING TO CREATE...";
 
-			//try to create folder
+			// try to create folder
 			//bool b = dataDirectory.createDirectory(ofToDataPath(_path, true));
 			bool b = dataDirectory.createDirectory(ofToDataPath(_path, true), false, true);
-			//added enable recursive to allow create nested subfolders if required
+			// added enable recursive to allow create nested subfolders if required
 
-			//debug if creation has been succeded
+			// debug if creation has been succeded
 			if (b) ofLogNotice(__FUNCTION__) << "CREATED '" << _path << "' SUCCESSFULLY!";
 			else ofLogError(__FUNCTION__) << "UNABLE TO CREATE '" << _path << "' FOLDER!";
 		}
 		else
 		{
-			ofLogNotice(__FUNCTION__) << "OK! LOCATED FOLDER: '" << _path << "'";//nothing to do
+			ofLogNotice(__FUNCTION__) << "OK! LOCATED FOLDER: '" << _path << "'";// nothing to do
 		}
 	}
 
@@ -278,12 +281,12 @@ namespace ofxSurfingHelpers {
 
 #ifdef USE_IM_GUI
 	//--------------------------------------------------------------
-	//ImGui Tools
-	//why? my custom ImGui helpers
+	// ImGui Tools
+	// why? my custom ImGui helpers
 	//--------------------------------------------------------------
 	////https://github.com/ocornut/imgui/issues/1537
 	//--------------------------------------------------------------
-	inline bool AddBigButton(ofParameter<bool>& parameter, float h)//button but using a bool not void param
+	inline bool AddBigButton(ofParameter<bool>& parameter, float h)// button but using a bool not void param
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
@@ -293,10 +296,10 @@ namespace ofxSurfingHelpers {
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
-		const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
+		const ImVec4 colorButton = style->Colors[ImGuiCol_Button];// better for my theme
 		const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 		const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
-		//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
+		//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];// better for default theme
 		//const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
 		//const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 
@@ -320,7 +323,7 @@ namespace ofxSurfingHelpers {
 	}
 
 	//--------------------------------------------------------------
-	//TODO: seems not working well linked to the param.. requires better unique name?
+	// TODO: seems not working well linked to the param.. requires better unique name?
 	inline bool AddBigToggle(ofParameter<bool>& parameter, float h)
 	{
 		auto tmpRef = parameter.get();
@@ -328,7 +331,7 @@ namespace ofxSurfingHelpers {
 
 		//--
 
-		//how to set colors
+		// how to set colors
 		//static float b = 1.0f;
 		//static float c = 0.5f;
 		//static int i = 3;// hue colors are from 0 to 7
@@ -337,7 +340,7 @@ namespace ofxSurfingHelpers {
 
 		//--
 
-		//button toggle
+		// button toggle
 
 		float w;
 		//float h;
@@ -346,7 +349,7 @@ namespace ofxSurfingHelpers {
 		w = ImGui::GetWindowWidth()*0.9f;
 
 		static bool _boolToggle = tmpRef;  // default value, the button is disabled 
-		if (_boolToggle == true)//enabled
+		if (_boolToggle == true)// enabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -368,7 +371,7 @@ namespace ofxSurfingHelpers {
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
-		else//disabled
+		else// disabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -388,7 +391,7 @@ namespace ofxSurfingHelpers {
 
 		//--
 
-		//checkbox
+		// checkbox
 		//ImGui::PushID(name);
 		//ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
 		//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
@@ -405,7 +408,7 @@ namespace ofxSurfingHelpers {
 		//ImGui::PopID();
 		//return false;
 
-		return true;//not used
+		return true;// not used
 	}
 
 	//--------------------------------------------------------------
@@ -421,7 +424,7 @@ namespace ofxSurfingHelpers {
 		io.Fonts->AddFontFromFileTTF(&ofToDataPath(_path)[0], _size);
 	}
 
-	////TODO:
+	//// TODO:
 	////--------------------------------------------------------------
 	//inline int ImGui_ButtonsMatrix(int amountButtons, ofParameter<int> selectorTarget, string name)
 	//{
@@ -545,8 +548,8 @@ namespace ofxSurfingHelpers {
 
 	//--
 
-	////https://github.com/erickjung/SwiftGUI
-	////ImGui theme
+	//// https://github.com/erickjung/SwiftGUI
+	//// ImGui theme
 	//inline void ImGui_ThemeDarcula()
 	//{
 	//	//		//
@@ -702,7 +705,7 @@ namespace ofxSurfingHelpers {
 
 	//--
 
-	////slider enum
+	//// slider enum
 	//// Using the format string to display a name instead of an integer.
 	//// Here we completely omit '%d' from the format string, so it'll only display a name.
 	//// This technique can also be used with DragInt().
@@ -715,7 +718,7 @@ namespace ofxSurfingHelpers {
 	////ImGui::SameLine(); 
 	////HelpMarker("Using the format string parameter to display a name instead of the underlying integer.");
 
-	////drop list
+	//// drop list
 	//// Using the _simplified_ one-liner Combo() api here
 	//// See "Combo" section for examples of how to use the more complete BeginCombo()/EndCombo() api.
 	//const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK" };
@@ -727,7 +730,7 @@ namespace ofxSurfingHelpers {
 	{
 		ofLogNotice(__FUNCTION__);
 
-		//must be done after setup the gui
+		// must be done after setup the gui
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
@@ -747,7 +750,7 @@ namespace ofxSurfingHelpers {
 		style->ScrollbarSize = 12.0f;
 		style->ScrollbarRounding = 0.0f;
 
-		//my dark theme
+		// my dark theme
 
 		//ImVec4* colors = ImGui::GetStyle().Colors;
 		style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
@@ -816,42 +819,55 @@ namespace ofxSurfingHelpers {
 
 
 	//--------------------------------------------------------------
-	//draws a box with text
+	// draws a box with text
 	//--------------------------------------------------------------
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x, int y, int alpha = 255)
+	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x, int y, ofColor colorText = 255, ofColor colorBackground = 0, bool useShadow = false, ofColor colorShadow = 128)
 	{
+		int _pad = 50;
+		float _round = 5;
+
 		ofPushStyle();
 		//float fontSize = font.getSize();
-		int pad = 20;
 
 		if (!font.isLoaded()) {
 			ofDrawBitmapStringHighlight(text, x, y);
 		}
 		else {
-			//bbox
-			ofSetColor(0, alpha);
+			// bbox
+			ofSetColor(colorBackground);
 			ofFill();
-			ofRectangle _r(font.getStringBoundingBox(text, x, y));
-			_r.setWidth(_r.getWidth() + pad);
-			_r.setHeight(_r.getHeight() + pad);
-			_r.setX(_r.getPosition().x - pad / 2.);
-			_r.setY(_r.getPosition().y - pad / 2.);
-			ofDrawRectangle(_r);
 
-			//text
-			ofSetColor(255, 255);
-			ofNoFill();
+			ofRectangle _r(font.getStringBoundingBox(text, x, y));
+			_r.setWidth(_r.getWidth() + _pad);
+			_r.setHeight(_r.getHeight() + _pad);
+			_r.setX(_r.getPosition().x - _pad / 2.);
+			_r.setY(_r.getPosition().y - _pad / 2.);
+
+			ofDrawRectRounded(_r, _round);
+			//ofDrawRectangle(_r);
+
+			// text shadow
+			if (useShadow) {
+				ofSetColor(colorShadow);
+				font.drawString(text, x+1, y+1);
+			}
+
+			// text
+			ofSetColor(colorText);
 			font.drawString(text, x, y);
 		}
 
 		ofPopStyle();
 	}
 	//--------------------------------------------------------------
-	//get box width
+	// get box width
 	//--------------------------------------------------------------
 	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth();
 	}
+	inline float getHeightBBtextBoxed(ofTrueTypeFont &font, string text) {
+		return (font.getStringBoundingBox(text, 0, 0)).getHeight();
+	}
 #endif
 
-};//ofxSurfingHelpers
+};// ofxSurfingHelpers
