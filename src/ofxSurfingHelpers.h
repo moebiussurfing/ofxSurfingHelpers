@@ -5,8 +5,14 @@
 //---------
 //
 #include "ofxSurfingConstants.h"
+
+#ifdef USE_IM_GUI
 #include "ofxSurfing_ImGui.h"
+#endif
+
+#ifdef USE_ofxGui
 #include "ofxSurfing_ofxGui.h"
+#endif
 //
 //#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
 //#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers

@@ -488,7 +488,7 @@ namespace ofxSurfingHelpers {
 		style->ItemSpacing = ImVec2(6, 4);
 		style->ItemInnerSpacing = ImVec2(6, 4);
 		//style->Alpha = 1.0f;
-		style->Alpha = 0.8f;
+		style->Alpha = 0.95f;
 		style->WindowRounding = 0.0f;
 		style->FrameRounding = 0.0f;
 		style->IndentSpacing = 6.0f;
