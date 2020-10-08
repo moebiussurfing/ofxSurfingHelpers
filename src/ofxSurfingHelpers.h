@@ -103,6 +103,8 @@ namespace ofxSurfingHelpers {
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		
+		//CheckFolder(path);
 
 		ofXml settings;
 		ofSerialize(settings, g);
@@ -118,11 +120,18 @@ namespace ofxSurfingHelpers {
 
 #ifdef USE_JSON
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup &g, string path)
+	inline bool loadGroup(ofParameterGroup &g, string path, bool debug = true)
 	{
-		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
-		
+		if (debug) {
+			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogNotice(__FUNCTION__) << "parameters: \n" << g.toString();
+		}
+		else
+		{
+			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		}
+
 		ofJson settings;
 		settings = ofLoadJson(path);
 		ofDeserialize(settings, g);
@@ -137,11 +146,20 @@ namespace ofxSurfingHelpers {
 	}
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup &g, string path)
+	inline bool saveGroup(ofParameterGroup &g, string path, bool debug = true)
 	{
-		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		if (debug) {
+			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogNotice(__FUNCTION__) << "parameters: \n" << g.toString();
+		}
+		else
+		{
+			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogVerbose(__FUNCTION__) << "parameters: \n" << g.toString();
+		}
 		
+		//ofxSurfingHelpers::CheckFolder(path);
+
 		ofJson settings;
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
@@ -253,7 +271,7 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	// draws a box with text
 	//--------------------------------------------------------------
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x, int y, ofColor colorText = 255, ofColor colorBackground = 0, bool useShadow = false, ofColor colorShadow = 128)
+	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x, int y, ofColor font0_Color = 255, ofColor colorBackground = 0, bool useShadow = false, ofColor colorShadow = 128)
 	{
 		int _pad = 50;
 		float _round = 5;
@@ -285,7 +303,7 @@ namespace ofxSurfingHelpers {
 			}
 
 			// text
-			ofSetColor(colorText);
+			ofSetColor(font0_Color);
 			font.drawString(text, x, y);
 		}
 

@@ -65,6 +65,8 @@ public:
 	//ofTexture cap_Tex;
 	ofFbo blitFbo;
 
+	std::string textInfo;
+
 public:
 	//--------------------------------------------------------------
 	void init() {///must be called after bitrate, framerate and size w/h are setted
@@ -83,6 +85,16 @@ public:
 		//cap_Recorder.addAdditionalOutputArgument("-f rawvideo");
 		//cap_Recorder.setVideoCodec("libx264");
 		//cap_Reader.setAsync(true);
+
+		//-
+
+		//build help info
+		textInfo = "";
+		textInfo += "HELP KEYS"; textInfo += "\n";
+		textInfo += "u: mount recorder"; textInfo += "\n";
+		textInfo += "U: start recording"; textInfo += "\n";
+		textInfo += "I: get a frame from located video file"; textInfo += "\n";
+		textInfo += "i: set optimal Instagram size"; //textInfo += "\n";
 	}
 
 	//--------------------------------------------------------------
@@ -299,6 +311,10 @@ public:
 			ofDrawBitmapStringHighlight(str, x, y);
 			y += 20;
 
+			//refresh window size
+			ofDrawBitmapStringHighlight("KEY F8: REFRESH WINDOW SIZE", x, y);
+			y += 20;
+
 			if (cap_Recorder.isRecording())
 			{
 				ofDrawBitmapStringHighlight("RECORD DURATION: " + ofToString(cap_Recorder.getRecordedDuration(), 1), x, y);
@@ -323,6 +339,12 @@ public:
 			//}
 		}
 #endif
+	}
+
+	//--------------------------------------------------------------
+	void drawHelp() {
+		// help info
+		ofDrawBitmapStringHighlight(textInfo, 20, 50);
 	}
 
 	//--------------------------------------------------------------
@@ -447,6 +469,11 @@ public:
 		}
 		break;
 #endif
+		
+		case OF_KEY_F8:// refresh window size to update fbo settings
+			windowResized(ofGetWidth(), ofGetHeight());
+			break;
+
 		//-
 
 		//macOS screen recorder
