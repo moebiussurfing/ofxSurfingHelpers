@@ -33,7 +33,7 @@ private:
 
 	bool bRecPrepared = false;
 	bool bRecording;
-	bool bShowInfo = false;
+	bool bShowInfo = true;
 
 public:
 	//--------------------------------------------------------------
@@ -55,26 +55,33 @@ private:
 	uint32_t timeStart;
 	std::string textInfo;
 
+	ofImageFormat stillFormat;
+	//enum stillsImageFormat {
+	//	OF_IMAGE_FORMAT_BMP = 0,
+	//	OF_IMAGE_FORMAT_JPEG = 2,
+	//	OF_IMAGE_FORMAT_PNG = 13,
+	//	OF_IMAGE_FORMAT_TIFF = 18,
+	//	OF_IMAGE_FORMAT_RAW = 34
+	//};
+
 public:
 	//--------------------------------------------------------------
-	void setup(std::string path = "captures/") {///call with the path folder if you want to customize
+	void setup(std::string path = "captures/", ofImageFormat format = OF_IMAGE_FORMAT_PNG) {///call with the path folder if you want to customize
+		ofLogWarning(__FUNCTION__) << "path: " << path << " ofImageFormat: " << format;
+
 		_pathFolderStills = path + "Stills/";
 		_pathFolderSnapshots = path + "Snapshots/";
 
 		ofxSurfingHelpers::CheckFolder(_pathFolderStills);
 		ofxSurfingHelpers::CheckFolder(_pathFolderSnapshots);
 
-		cap_Fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
-		ofxTextureRecorder::Settings settings(cap_Fbo.getTexture());
-		settings.imageFormat = OF_IMAGE_FORMAT_JPEG;
-		settings.numThreads = 12;
-		settings.maxMemoryUsage = 9000000000;
-
-		recorder.setPath(_pathFolderStills);
-		recorder.setup(settings);
-
 		cap_w = ofGetWidth();
 		cap_h = ofGetHeight();
+		cap_Fbo.allocate(cap_w, cap_h, GL_RGB);
+
+		stillFormat = format;
+
+		buildRecorder();
 
 		buildAllocateFbo();
 
@@ -84,11 +91,38 @@ public:
 public:
 	//--------------------------------------------------------------
 	void buildAllocateFbo() {//cap_w and cap_h must be updated
+		ofLogWarning(__FUNCTION__) << cap_w << ", " << cap_h;
 
 		cap_Fbo_Settings.internalformat = GL_RGB;
 		cap_Fbo_Settings.width = cap_w;
 		cap_Fbo_Settings.height = cap_h;
 		cap_Fbo.allocate(cap_Fbo_Settings);
+	}
+	//--------------------------------------------------------------
+	void buildRecorder() {
+		ofLogWarning(__FUNCTION__);
+
+		ofxTextureRecorder::Settings settings(cap_Fbo.getTexture());
+		settings.imageFormat = stillFormat;
+
+		//settings.imageFormat = OF_IMAGE_FORMAT_TIFF;
+		//settings.imageFormat = OF_IMAGE_FORMAT_PNG;
+		//settings.imageFormat = OF_IMAGE_FORMAT_JPEG;
+		//settings.imageFormat = OF_IMAGE_FORMAT_RAW;
+
+		settings.numThreads = 12;
+		settings.maxMemoryUsage = 9000000000;
+		
+
+		recorder.setPath(_pathFolderStills);
+		recorder.setup(settings);
+	}
+	//--------------------------------------------------------------
+	void updateRecorder() {// TODO: window resize ??
+		//recorder = ofxTextureRecorder();
+		//recorder.settings
+		//ofxTextureRecorder::Settings
+		//recorder.
 	}
 
 public:
@@ -216,9 +250,6 @@ public:
 	//--------------------------------------------------------------
 	void keyPressed(ofKeyEventArgs &eventArgs) {///to received short keys control commands
 		const int key = eventArgs.key;
-		const int keycode = eventArgs.keycode;
-		const int scancode = eventArgs.scancode;
-		const uint32_t codepoint = eventArgs.codepoint;
 
 		//-
 
@@ -285,8 +316,11 @@ public:
 		break;
 
 		// refresh window size to update fbo settings
-		case OF_KEY_F8:
+		case OF_KEY_F7:
 			windowResized(ofGetWidth(), ofGetHeight());
+			break;
+		case OF_KEY_F8:
+			windowResized(1920, 1080);
 			break;
 		}
 	}
@@ -296,6 +330,7 @@ public:
 		cap_w = w;
 		cap_h = h;
 		buildAllocateFbo();
+		//buildRecorder();
 	}
 
 private:

@@ -3,7 +3,9 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofSetCircleResolution(300);
-	capturer.setup();
+
+	//capturer.setup();// default: captures, PNG
+	capturer.setup("captures/", OF_IMAGE_FORMAT_TIFF);// customize
 }
 
 //--------------------------------------------------------------
