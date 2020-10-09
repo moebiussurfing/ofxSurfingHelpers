@@ -112,7 +112,7 @@ public:
 
 		settings.numThreads = 12;
 		settings.maxMemoryUsage = 9000000000;
-		
+
 
 		recorder.setPath(_pathFolderStills);
 		recorder.setup(settings);
@@ -166,8 +166,16 @@ public:
 				int x = 20;
 
 				//cap info
-				string str;
-				str = "SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h);
+				string str = "";
+				
+				str += "FPS " + ofToString(ofGetFrameRate(), 0); str += +"\n";
+				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight());
+				str += +"\n";
+				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h);
+				str += +"\n";
+				str += "RECORDER " + ofToString(recorder.getWidth()) + "x" + ofToString(recorder.getHeight()) + " frame " + ofToString(recorder.getFrame());
+				str += +"\n";
+				str += +"\n";
 
 				//draw red circle and info when recording
 				ofPushStyle();
@@ -197,33 +205,37 @@ public:
 					ofDrawCircle(ofPoint(x + 8, y), 8);
 					y += 28;
 				}
-
-				//fps
-				ofDrawBitmapStringHighlight("FPS " + ofToString(ofGetFrameRate(), 0), x, y);
-				y += 20;
-
-				//cap info
-				ofDrawBitmapStringHighlight(str, x, y);
-				y += 20;
-
 				//refresh window size
-				ofDrawBitmapStringHighlight("KEY F8: REFRESH WINDOW SIZE", x, y);
-				y += 20;
-
+				str += "KEY F7: REFRESH WINDOW SIZE"; str += +"\n";
+				str += "KEY F8: SET FULL HD SIZE"; str += +"\n";
 				if (bRecording)
 				{
-					ofDrawBitmapStringHighlight("RECORD DURATION: " + ofToString(getRecordedDuration(), 1), x, y);
-					y += 20;
-					ofDrawBitmapStringHighlight("KEY U: STOP", x, y);
-					y += 20;
+					str += "KEY U : STOP"; str += +"\n";
+					str += +"\n";
+					str += "RECORD DURATION: " + ofToString(getRecordedDuration(), 1); str += +"\n";
 				}
 				else if (bRecPrepared)
 				{
-					ofDrawBitmapStringHighlight("RECORD MOUNTED. READY...", x, y);
-					y += 20;
-					ofDrawBitmapStringHighlight("KEY U: START  u: UNMOUNT", x, y);
-					y += 20;
+					str += "KEY U : START"; str += +"\n";
+					str += "KEY u : UNMOUNT"; str += +"\n";
+
+					//animated points..
+					const int p = 30;//period in frames
+					int fn = ofGetFrameNum() % (p*4);
+					bool b0, b1, b2;
+					b0 = (fn > p * 3);
+					b1 = (fn > p * 2);
+					b2 = (fn > p * 1);
+					std:string sp = "";
+					if (b0) sp += ".";
+					if (b1) sp += ".";
+					if (b2) sp += ".";
+					str += "MOUNTED > READY" + sp; str += "\n";
 				}
+
+				//info
+				ofDrawBitmapStringHighlight(str, x, y);
+				y += 20;
 
 				ofPopStyle();
 			}
@@ -319,6 +331,7 @@ public:
 		case OF_KEY_F7:
 			windowResized(ofGetWidth(), ofGetHeight());
 			break;
+			// set full hd
 		case OF_KEY_F8:
 			windowResized(1920, 1080);
 			break;
@@ -342,9 +355,9 @@ private:
 		textInfo += "HELP KEYS"; textInfo += "\n";
 		textInfo += "h  : Show Help info"; textInfo += "\n";
 		textInfo += "u  : Mount recorder"; textInfo += "\n";
-		textInfo += "i  : Set optimal Instagram size"; textInfo += "\n";
-		textInfo += "F8 : Refresh window size"; textInfo += "\n";
 		textInfo += "U  : Start recording"; textInfo += "\n";
+		//textInfo += "i  : Set optimal Instagram size"; textInfo += "\n";
+		textInfo += "F8 : Refresh window size"; textInfo += "\n";
 		textInfo += "F11: Capture screenshot"; textInfo += "\n";
 	}
 };
