@@ -71,9 +71,10 @@ public:
 
 		_pathFolderStills = path + "Stills/";
 		_pathFolderSnapshots = path + "Snapshots/";
-
 		ofxSurfingHelpers::CheckFolder(_pathFolderStills);
 		ofxSurfingHelpers::CheckFolder(_pathFolderSnapshots);
+
+		buildInfo();
 
 		cap_w = ofGetWidth();
 		cap_h = ofGetHeight();
@@ -84,8 +85,6 @@ public:
 		buildRecorder();
 
 		buildAllocateFbo();
-
-		buildInfo();
 	}
 
 public:
@@ -112,7 +111,6 @@ public:
 
 		settings.numThreads = 12;
 		settings.maxMemoryUsage = 9000000000;
-
 
 		recorder.setPath(_pathFolderStills);
 		recorder.setup(settings);
@@ -158,27 +156,66 @@ public:
 	void drawInfo() {///draw the gui info if desired
 		if (bShowInfo) {
 
-			drawHelp();
+			int x = 40;
+			int y = ofGetHeight() - 340;
+
+			//--
 
 			if (bRecPrepared || bRecording)
 			{
-				int y = ofGetHeight() - 200;
-				int x = 20;
-
 				//cap info
 				string str = "";
-				
+
 				str += "FPS " + ofToString(ofGetFrameRate(), 0); str += +"\n";
-				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight());
-				str += +"\n";
-				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h);
-				str += +"\n";
+				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight()); str += +"\n";
+				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h); str += +"\n";
 				str += "RECORDER " + ofToString(recorder.getWidth()) + "x" + ofToString(recorder.getHeight()) + " frame " + ofToString(recorder.getFrame());
-				str += +"\n";
-				str += +"\n";
+				str += +"\n"; str += +"\n";
 
 				//draw red circle and info when recording
 				ofPushStyle();
+
+				//refresh window size
+				str += "KEY F7: REFRESH WINDOW SIZE  "; str += +"\n";
+				str += "KEY F8: SET FULL HD SIZE"; str += +"\n";
+				if (bRecording)
+				{
+					str += "KEY U : STOP"; str += +"\n"; str += +"\n";
+					str += "RECORD DURATION: " + ofToString(getRecordedDuration(), 1); str += +"\n";
+					//error
+					if (bRecording) {
+						if (recorder.getAvgTimeSave() == 0) {
+							std::string ss;
+							const int p = 30;//period in frames
+							int fn = ofGetFrameNum() % p;
+							if (fn < p / 2.f)
+								ss = "ERROR RECORDING!";
+							else ss = "                ";
+							str += ss + "\n";
+							//y += 20;
+						}
+					}
+				}
+				else if (bRecPrepared)
+				{
+					str += "KEY U : START"; str += +"\n";
+					str += "KEY u : UNMOUNT"; str += +"\n";
+
+					//animated points..
+					const int p = 30;//period in frames
+					int fn = ofGetFrameNum() % (p * 4);
+					bool b0, b1, b2;
+					b0 = (fn > p * 3);
+					b1 = (fn > p * 2);
+					b2 = (fn > p * 1);
+				std:string sp = "";
+					if (b0) sp += ".";
+					if (b1) sp += ".";
+					if (b2) sp += ".";
+					str += "MOUNTED > READY" + sp; str += "\n";
+				}
+
+				//-
 
 				//red rec circle
 				if (bRecording)
@@ -205,33 +242,6 @@ public:
 					ofDrawCircle(ofPoint(x + 8, y), 8);
 					y += 28;
 				}
-				//refresh window size
-				str += "KEY F7: REFRESH WINDOW SIZE"; str += +"\n";
-				str += "KEY F8: SET FULL HD SIZE"; str += +"\n";
-				if (bRecording)
-				{
-					str += "KEY U : STOP"; str += +"\n";
-					str += +"\n";
-					str += "RECORD DURATION: " + ofToString(getRecordedDuration(), 1); str += +"\n";
-				}
-				else if (bRecPrepared)
-				{
-					str += "KEY U : START"; str += +"\n";
-					str += "KEY u : UNMOUNT"; str += +"\n";
-
-					//animated points..
-					const int p = 30;//period in frames
-					int fn = ofGetFrameNum() % (p*4);
-					bool b0, b1, b2;
-					b0 = (fn > p * 3);
-					b1 = (fn > p * 2);
-					b2 = (fn > p * 1);
-					std:string sp = "";
-					if (b0) sp += ".";
-					if (b1) sp += ".";
-					if (b2) sp += ".";
-					str += "MOUNTED > READY" + sp; str += "\n";
-				}
 
 				//info
 				ofDrawBitmapStringHighlight(str, x, y);
@@ -239,13 +249,21 @@ public:
 
 				ofPopStyle();
 			}
+
+			//-
+
+			//help
+			//y += 200;
+			y = y + 135;
+			//y = ofGetHeight() - 300;
+			drawHelp(x, y);
 		}
 	}
 
 	//--------------------------------------------------------------
-	void drawHelp() {
+	void drawHelp(int x = 50, int y = 50) {
 		// help info
-		ofDrawBitmapStringHighlight(textInfo, 20, 50);
+		ofDrawBitmapStringHighlight(textInfo, x, y);
 
 		if (bRecording)
 		{
@@ -254,7 +272,7 @@ public:
 				ofLogWarning(__FUNCTION__) << "texture copy: " << recorder.getAvgTimeTextureCopy();
 				ofLogWarning(__FUNCTION__) << "gpu download: " << recorder.getAvgTimeGpuDownload();
 				ofLogWarning(__FUNCTION__) << "image encoding: " << recorder.getAvgTimeEncode();
-				ofLogWarning(__FUNCTION__) << "file save: " << recorder.getAvgTimeSave();
+				ofLogWarning(__FUNCTION__) << "file save: " << recorder.getAvgTimeSave() << endl;
 			}
 		}
 	}
@@ -262,6 +280,12 @@ public:
 	//--------------------------------------------------------------
 	void keyPressed(ofKeyEventArgs &eventArgs) {///to received short keys control commands
 		const int key = eventArgs.key;
+
+		// modifiers
+		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+		bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+		bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+		bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
 
 		//-
 
@@ -285,7 +309,7 @@ public:
 			{
 				ofLogWarning(__FUNCTION__) << "Stop Recording";
 
-				bRecPrepared = false;
+				//bRecPrepared = false;
 				bRecording = false;
 			}
 			else//do start
@@ -327,13 +351,27 @@ public:
 		}
 		break;
 
-		// refresh window size to update fbo settings
+		//refresh window size to update fbo settings
 		case OF_KEY_F7:
 			windowResized(ofGetWidth(), ofGetHeight());
 			break;
-			// set full hd
+
+			//set full hd
 		case OF_KEY_F8:
 			windowResized(1920, 1080);
+			break;
+
+			//remove all captures stills
+		case OF_KEY_BACKSPACE: // ctrl + alt + backspace
+			if (!mod_COMMAND && !mod_SHIFT && mod_ALT && mod_CONTROL)
+			{
+				std::string _path = _pathFolderStills;
+				ofDirectory dataDirectory(ofToDataPath(_path, true));
+				dataDirectory.remove(true);
+				ofxSurfingHelpers::CheckFolder(_path);
+
+				CaptureWindow.get
+			}
 			break;
 		}
 	}
@@ -354,10 +392,11 @@ private:
 		textInfo = "";
 		textInfo += "HELP KEYS"; textInfo += "\n";
 		textInfo += "h  : Show Help info"; textInfo += "\n";
-		textInfo += "u  : Mount recorder"; textInfo += "\n";
-		textInfo += "U  : Start recording"; textInfo += "\n";
+		textInfo += "u  : Mount Recorder"; textInfo += "\n";
+		textInfo += "U  : Start Recording"; textInfo += "\n";
 		//textInfo += "i  : Set optimal Instagram size"; textInfo += "\n";
-		textInfo += "F8 : Refresh window size"; textInfo += "\n";
-		textInfo += "F11: Capture screenshot"; textInfo += "\n";
+		textInfo += "F8 : Refresh Window size"; textInfo += "\n";
+		textInfo += "F11: Capture Screenshot"; textInfo += "\n";
+		textInfo += "Ctrl + Alt + BackSpace: Clear"; //textInfo += "\n";
 	}
 };
