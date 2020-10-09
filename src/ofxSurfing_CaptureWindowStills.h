@@ -2,6 +2,9 @@
 
 #include "ofMain.h"
 
+// TODO: 
+// + allow change window capture size without breaking the capturer
+
 ///----
 ///
 #define INCLUDE_RECORDER
@@ -31,9 +34,22 @@ private:
 	string _pathFolderStills;
 	string _pathFolderSnapshots;
 
+private:
 	bool bRecPrepared = false;
 	bool bRecording;
 	bool bShowInfo = true;
+
+public:
+	ofParameter<bool> bActive{ "Window Capturer", false };
+	//--------------------------------------------------------------
+	void setActive(bool b) {
+		bActive = b;
+	}
+
+	//--------------------------------------------------------------
+	void setToggleActive() {
+		bActive = !bActive;
+	}
 
 public:
 	//--------------------------------------------------------------
@@ -66,7 +82,8 @@ private:
 
 public:
 	//--------------------------------------------------------------
-	void setup(std::string path = "captures/", ofImageFormat format = OF_IMAGE_FORMAT_PNG) {///call with the path folder if you want to customize
+	//call with the path folder if you want to customize
+	void setup(std::string path = "captures/", ofImageFormat format = OF_IMAGE_FORMAT_TIFF) {
 		ofLogWarning(__FUNCTION__) << "path: " << path << " ofImageFormat: " << format;
 
 		_pathFolderStills = path + "Stills/";
@@ -115,34 +132,40 @@ public:
 		recorder.setPath(_pathFolderStills);
 		recorder.setup(settings);
 	}
-	//--------------------------------------------------------------
-	void updateRecorder() {// TODO: window resize ??
-		//recorder = ofxTextureRecorder();
-		//recorder.settings
-		//ofxTextureRecorder::Settings
-		//recorder.
-	}
+
+	// TODO: window resize ??
+	////--------------------------------------------------------------
+	//void refreshRecorder() {
+	//	//recorder = ofxTextureRecorder();
+	//	//recorder.settings
+	//	//ofxTextureRecorder::Settings
+	//	//recorder.
+	//}
 
 public:
 	//--------------------------------------------------------------
 	void begin() {///call before draw the scene to record
-
-		cap_Fbo.begin();
-		ofClear(0, 255);
+		//if (bActive) 
+		{
+			cap_Fbo.begin();
+			ofClear(0, 255);
+		}
 	}
 
 	//--------------------------------------------------------------
 	void end() {///call after draw the scene to record
-
-		cap_Fbo.end();
-
-		//-
-
-		if (bRecPrepared)
+		//if (bActive) 
 		{
-			if (bRecording && ofGetFrameNum() > 0)
+			cap_Fbo.end();
+
+			//-
+
+			if (bRecPrepared)
 			{
-				recorder.save(cap_Fbo.getTexture());
+				if (bRecording && ofGetFrameNum() > 0)
+				{
+					recorder.save(cap_Fbo.getTexture());
+				}
 			}
 		}
 	}
@@ -154,10 +177,11 @@ public:
 
 	//--------------------------------------------------------------
 	void drawInfo() {///draw the gui info if desired
-		if (bShowInfo) {
+
+		if (bShowInfo && bActive) {
 
 			int x = 40;
-			int y = ofGetHeight() - 340;
+			int y = ofGetHeight() - 310;
 
 			//--
 
@@ -178,10 +202,12 @@ public:
 				//refresh window size
 				str += "KEY F7: REFRESH WINDOW SIZE  "; str += +"\n";
 				str += "KEY F8: SET FULL HD SIZE"; str += +"\n";
+
 				if (bRecording)
 				{
 					str += "KEY U : STOP"; str += +"\n"; str += +"\n";
 					str += "RECORD DURATION: " + ofToString(getRecordedDuration(), 1); str += +"\n";
+
 					//error
 					if (bRecording) {
 						if (recorder.getAvgTimeSave() == 0) {
@@ -194,6 +220,10 @@ public:
 							str += ss + "\n";
 							//y += 20;
 						}
+
+						//info
+						ofDrawBitmapStringHighlight(str, x, y);
+						y += 20;
 					}
 				}
 				else if (bRecPrepared)
@@ -208,44 +238,45 @@ public:
 					b0 = (fn > p * 3);
 					b1 = (fn > p * 2);
 					b2 = (fn > p * 1);
-				std:string sp = "";
+					std:string sp = "";
 					if (b0) sp += ".";
 					if (b1) sp += ".";
 					if (b2) sp += ".";
 					str += "MOUNTED > READY" + sp; str += "\n";
+
+					//info
+					ofDrawBitmapStringHighlight(str, x, y);
+					y += 20;
 				}
 
 				//-
 
-				//red rec circle
+				//red circle
+				int yy = y + 114;
 				if (bRecording)
 				{
 					ofFill();
 					ofSetColor(ofColor::red);
-					ofDrawCircle(ofPoint(x + 8, y), 8);
+					ofDrawCircle(ofPoint(x + 8, yy), 8);
 					ofNoFill();
 					ofSetLineWidth(2.f);
 					ofSetColor(ofColor::black);
-					ofDrawCircle(ofPoint(x + 8, y), 8);
-					y += 28;
+					ofDrawCircle(ofPoint(x + 8, yy), 8);
+					yy += 28;
 				}
 				else if (bRecPrepared)
 				{
 					if (ofGetFrameNum() % 60 < 20) {
 						ofFill();
 						ofSetColor(ofColor::red);
-						ofDrawCircle(ofPoint(x + 8, y), 8);
+						ofDrawCircle(ofPoint(x + 8, yy), 8);
 					}
 					ofNoFill();
 					ofSetLineWidth(2.f);
 					ofSetColor(ofColor::black);
-					ofDrawCircle(ofPoint(x + 8, y), 8);
-					y += 28;
+					ofDrawCircle(ofPoint(x + 8, yy), 8);
+					yy += 28;
 				}
-
-				//info
-				ofDrawBitmapStringHighlight(str, x, y);
-				y += 20;
 
 				ofPopStyle();
 			}
@@ -279,100 +310,109 @@ public:
 
 	//--------------------------------------------------------------
 	void keyPressed(ofKeyEventArgs &eventArgs) {///to received short keys control commands
-		const int key = eventArgs.key;
-
-		// modifiers
-		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
-		bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
-		bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
-		bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
-
-		//-
-
-		switch (key)
+		if (bActive)
 		{
+			const int key = eventArgs.key;
+
+			// modifiers
+			bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+			bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+			bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+			bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+
+			//-
+
+			switch (key)
+			{
+			
 			//toggle show info
-		case 'h':
-			setToggleVisibleInfo();
-			break;
+			case 'h':
+				setToggleVisibleInfo();
+				break;
+
+			//	//toggle active
+			//case 'a':
+			//	setToggleActive();
+			//	break;
 
 			//mount prepare record
-		case 'u':
-			bRecPrepared = !bRecPrepared;
-			ofLogWarning(__FUNCTION__) << "Mount: " << (bRecPrepared ? "ON" : "OFF");
-			break;
+			case 'u':
+				bRecPrepared = !bRecPrepared;
+				ofLogWarning(__FUNCTION__) << "Mount: " << (bRecPrepared ? "ON" : "OFF");
+				break;
 
 			//start recording
-		case 'U':
-		{
-			if (bRecording)//do stop
+			case 'U':
 			{
-				ofLogWarning(__FUNCTION__) << "Stop Recording";
+				if (bRecording)//do stop
+				{
+					ofLogWarning(__FUNCTION__) << "Stop Recording";
 
-				//bRecPrepared = false;
-				bRecording = false;
+					//bRecPrepared = false;
+					bRecording = false;
+				}
+				else//do start
+				{
+					bRecording = true;
+					timeStart = ofGetElapsedTimeMillis();
+					ofLogWarning(__FUNCTION__) << "Start Recording into: " << _pathFolderStills;
+				}
 			}
-			else//do start
-			{
-				bRecording = true;
-				timeStart = ofGetElapsedTimeMillis();
-				ofLogWarning(__FUNCTION__) << "Start Recording into: " << _pathFolderStills;
-			}
-		}
-		break;
-
-		//take screenshot
-		case OF_KEY_F11:
-		{
-			string _fileName = "snapshot_" + ofGetTimestampString() + ".png";
-			string _pathFilename = ofToDataPath(_pathFolderSnapshots + _fileName, true);//bin/data
-
-			ofImage img;
-			img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-			bool b = img.save(_pathFilename);
-
-			if (b) cout << __FUNCTION__ << " Saved screenshot successfully: " << _pathFilename << endl;
-			else cout << __FUNCTION__ << " Error saving screenshot:" << _pathFilename << endl;
-		}
-		break;
-
-		//set instagram size
-		case 'i':
-		{
-			int w, h;
-			w = 864;
-			h = 1080 + 19;
-			ofSetWindowShape(w, h);
-			windowResized(w, h);
-
-			cap_w = w;
-			cap_h = h;
-			buildAllocateFbo();
-		}
-		break;
-
-		//refresh window size to update fbo settings
-		case OF_KEY_F7:
-			windowResized(ofGetWidth(), ofGetHeight());
 			break;
+
+			//take screenshot
+			case OF_KEY_F11:
+			{
+				string _fileName = "snapshot_" + ofGetTimestampString() + ".png";
+				string _pathFilename = ofToDataPath(_pathFolderSnapshots + _fileName, true);//bin/data
+
+				ofImage img;
+				img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+				bool b = img.save(_pathFilename);
+
+				if (b) cout << __FUNCTION__ << " Saved screenshot successfully: " << _pathFilename << endl;
+				else cout << __FUNCTION__ << " Error saving screenshot:" << _pathFilename << endl;
+			}
+			break;
+
+			//set instagram size
+			case 'i':
+			{
+				int w, h;
+				w = 864;
+				h = 1080 + 19;
+				ofSetWindowShape(w, h);
+				windowResized(w, h);
+
+				cap_w = w;
+				cap_h = h;
+				buildAllocateFbo();
+			}
+			break;
+
+			//refresh window size to update fbo settings
+			case OF_KEY_F7:
+				windowResized(ofGetWidth(), ofGetHeight());
+				break;
 
 			//set full hd
-		case OF_KEY_F8:
-			windowResized(1920, 1080);
-			break;
+			case OF_KEY_F8:
+				windowResized(1920, 1080);
+				break;
 
 			//remove all captures stills
-		case OF_KEY_BACKSPACE: // ctrl + alt + backspace
-			if (!mod_COMMAND && !mod_SHIFT && mod_ALT && mod_CONTROL)
-			{
-				std::string _path = _pathFolderStills;
-				ofDirectory dataDirectory(ofToDataPath(_path, true));
-				dataDirectory.remove(true);
-				ofxSurfingHelpers::CheckFolder(_path);
+			case OF_KEY_BACKSPACE: // ctrl + alt + backspace
+				if (!mod_COMMAND && !mod_SHIFT && mod_ALT && mod_CONTROL)
+				{
+					std::string _path = _pathFolderStills;
+					ofDirectory dataDirectory(ofToDataPath(_path, true));
+					dataDirectory.remove(true);
+					ofxSurfingHelpers::CheckFolder(_path);
 
-				CaptureWindow.get
+					//CaptureWindow.get
+				}
+				break;
 			}
-			break;
 		}
 	}
 
