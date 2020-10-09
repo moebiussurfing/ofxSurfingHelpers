@@ -14,15 +14,92 @@
 #include "ofxTextureRecorder.h"
 #include "ofxSurfingHelpers.h"
 
-class CaptureWindow : public ofBaseApp
+class CaptureWindow : public ofBaseApp, public ofThread
 {
+
+public:
+
+	//--------------------------------------------------------------
+	void threadedFunction() {
+		ofLogWarning(__FUNCTION__);
+
+		if (isThreadRunning()) {
+			//while (isThreadRunning()) {
+
+			string cmd;
+			std::string strCom;
+
+			//// call the system command say
+			//std::string fileOut = "output.mp4";
+			//std::string format = "tif";
+			//
+			////std::string strCom = "ffmpeg.exe -r 60 -f image2 -s 1920x1080 -i %05d." + format + " -c:v libx264 -preset veryslow -qp 0 " + fileOut;
+			//strCom = "ffmpeg -r 60 -f image2 -s 1920x1080 -i %05d.tif -c:v libx264 -preset veryslow -qp 0 output22.mp4";
+			
+			//strCom = "data\\captures\\Stills\\.\ffmpeg_tifToVideo.ps1";
+			strCom = "\"data\\captures\\Stills\\ffmpeg_tifToVideo.ps1\"";
+			cmd = strCom;
+			ofLogWarning(__FUNCTION__) << endl << cmd;
+			ofSystem(cmd.c_str());
+
+			//string cmd = "cd data\\captures\\Stills\\";
+
+			//cmd = "cd data\\captures\\Stills\n";
+			//ofLogWarning(__FUNCTION__)<< endl << cmd;
+			//ofSystem(cmd.c_str());
+
+			//cmd = "dir\n";
+			//ofLogWarning(__FUNCTION__) << endl << cmd;
+			//ofSystem(cmd.c_str());
+
+			//cmd = "data\\captures\\Stills\\" + strCom;
+			//string cmd = "data\\" + _pathFolderStills + strCom;
+
+			//#ifdef TARGET_OSX
+			//		string cmd = "say " + words[step] + " "; // create the command
+			//#endif
+			//#ifdef TARGET_WIN32
+			//		string cmd = "data\\SayStatic.exe " + words[step];        // create the command
+			//#endif
+			//#ifdef TARGET_LINUX
+			//		string cmd = "echo " + words[step] + "|espeak";           // create the command
+			//#endif
+
+			//// print command and execute it
+			//ofLogWarning(__FUNCTION__)<< endl << cmd;
+			//ofSystem(cmd.c_str());
+
+			//cmd = "dir";
+			//ofSystem(cmd.c_str());
+
+			// slowdown boy
+			//ofSleepMillis(10);
+
+			// stop the thread on exit
+			//waitForThread(true);
+		}
+		else waitForThread(true);
+	}
+
+	//--------------------------------------------------------------
+	void doBuildFFmpeg() {
+		ofLogWarning(__FUNCTION__) << " to: " << _pathFolderStills;
+
+		// we are running the systems commands
+		// in a sperate thread so that it does
+		// not block the drawing
+		startThread();
+	}
 
 public:
 	CaptureWindow() {
 		cap_w = 1920;
 		cap_h = 1080;
 	};
-	~CaptureWindow() {};
+	~CaptureWindow() {
+		// stop the thread on exit
+		waitForThread(true);
+	};
 
 private:
 	ofxTextureRecorder recorder;
@@ -69,7 +146,7 @@ private:
 
 private:
 	uint32_t timeStart;
-	std::string textInfo;
+	std::string info;
 
 	ofImageFormat stillFormat;
 	//enum stillsImageFormat {
@@ -181,7 +258,7 @@ public:
 		if (bShowInfo && bActive) {
 
 			int x = 40;
-			int y = ofGetHeight() - 310;
+			int y = ofGetHeight() - 300;
 
 			//--
 
@@ -189,7 +266,6 @@ public:
 			{
 				//cap info
 				string str = "";
-
 				str += "FPS " + ofToString(ofGetFrameRate(), 0); str += +"\n";
 				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight()); str += +"\n";
 				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h); str += +"\n";
@@ -199,13 +275,9 @@ public:
 				//draw red circle and info when recording
 				ofPushStyle();
 
-				//refresh window size
-				str += "KEY F7: REFRESH WINDOW SIZE  "; str += +"\n";
-				str += "KEY F8: SET FULL HD SIZE"; str += +"\n";
-
 				if (bRecording)
 				{
-					str += "KEY U : STOP"; str += +"\n"; str += +"\n";
+					str += "F9 : STOP Recording"; str += "\n";
 					str += "RECORD DURATION: " + ofToString(getRecordedDuration(), 1); str += +"\n";
 
 					//error
@@ -228,8 +300,8 @@ public:
 				}
 				else if (bRecPrepared)
 				{
-					str += "KEY U : START"; str += +"\n";
-					str += "KEY u : UNMOUNT"; str += +"\n";
+					str += "F9 : START Recording"; str += "\n";
+					str += "F8 : UnMount Recorder"; str += "\n";
 
 					//animated points..
 					const int p = 30;//period in frames
@@ -238,7 +310,7 @@ public:
 					b0 = (fn > p * 3);
 					b1 = (fn > p * 2);
 					b2 = (fn > p * 1);
-					std:string sp = "";
+				std:string sp = "";
 					if (b0) sp += ".";
 					if (b1) sp += ".";
 					if (b2) sp += ".";
@@ -252,7 +324,7 @@ public:
 				//-
 
 				//red circle
-				int yy = y + 114;
+				int yy = y + 90;
 				if (bRecording)
 				{
 					ofFill();
@@ -284,9 +356,7 @@ public:
 			//-
 
 			//help
-			//y += 200;
-			y = y + 135;
-			//y = ofGetHeight() - 300;
+			y = y + 120;
 			drawHelp(x, y);
 		}
 	}
@@ -294,7 +364,7 @@ public:
 	//--------------------------------------------------------------
 	void drawHelp(int x = 50, int y = 50) {
 		// help info
-		ofDrawBitmapStringHighlight(textInfo, x, y);
+		ofDrawBitmapStringHighlight(info, x, y);
 
 		if (bRecording)
 		{
@@ -324,59 +394,23 @@ public:
 
 			switch (key)
 			{
-			
-			//toggle show info
+				//	//toggle active
+				//case 'a':
+				//	setToggleActive();
+				//	break;
+
+				//toggle show info
 			case 'h':
 				setToggleVisibleInfo();
 				break;
 
-			//	//toggle active
-			//case 'a':
-			//	setToggleActive();
-			//	break;
-
-			//mount prepare record
-			case 'u':
-				bRecPrepared = !bRecPrepared;
-				ofLogWarning(__FUNCTION__) << "Mount: " << (bRecPrepared ? "ON" : "OFF");
+				//set full HD
+			case OF_KEY_F5:
+				windowResized(1920, 1080);
 				break;
 
-			//start recording
-			case 'U':
-			{
-				if (bRecording)//do stop
-				{
-					ofLogWarning(__FUNCTION__) << "Stop Recording";
-
-					//bRecPrepared = false;
-					bRecording = false;
-				}
-				else//do start
-				{
-					bRecording = true;
-					timeStart = ofGetElapsedTimeMillis();
-					ofLogWarning(__FUNCTION__) << "Start Recording into: " << _pathFolderStills;
-				}
-			}
-			break;
-
-			//take screenshot
-			case OF_KEY_F11:
-			{
-				string _fileName = "snapshot_" + ofGetTimestampString() + ".png";
-				string _pathFilename = ofToDataPath(_pathFolderSnapshots + _fileName, true);//bin/data
-
-				ofImage img;
-				img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-				bool b = img.save(_pathFilename);
-
-				if (b) cout << __FUNCTION__ << " Saved screenshot successfully: " << _pathFilename << endl;
-				else cout << __FUNCTION__ << " Error saving screenshot:" << _pathFilename << endl;
-			}
-			break;
-
-			//set instagram size
-			case 'i':
+				//set instagram size
+			case OF_KEY_F6:
 			{
 				int w, h;
 				w = 864;
@@ -395,10 +429,54 @@ public:
 				windowResized(ofGetWidth(), ofGetHeight());
 				break;
 
-			//set full hd
+				//mount prepare record
 			case OF_KEY_F8:
-				windowResized(1920, 1080);
-				break;
+			{
+				bRecPrepared = !bRecPrepared;
+				ofLogWarning(__FUNCTION__) << "Mount: " << (bRecPrepared ? "ON" : "OFF");
+			}
+			break;
+
+			//start recording
+			case OF_KEY_F9:
+			{
+				if (bRecording)//do stop
+				{
+					ofLogWarning(__FUNCTION__) << "Stop Recording";
+
+					//bRecPrepared = false;
+					bRecording = false;
+				}
+				else//do start
+				{
+					bRecording = true;
+					timeStart = ofGetElapsedTimeMillis();
+					ofLogWarning(__FUNCTION__) << "Start Recording into: " << _pathFolderStills;
+				}
+			}
+			break;
+
+			//take screenshot
+			case OF_KEY_F10:
+			{
+				string _fileName = "snapshot_" + ofGetTimestampString() + ".png";
+				string _pathFilename = ofToDataPath(_pathFolderSnapshots + _fileName, true);//bin/data
+
+				ofImage img;
+				img.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+				bool b = img.save(_pathFilename);
+
+				if (b) ofLogWarning(__FUNCTION__) << " Saved screenshot successfully: " << _pathFilename;
+				else ofLogWarning(__FUNCTION__) << " Error saving screenshot:" << _pathFilename;
+			}
+			break;
+
+			//join stills to video after capture
+			case OF_KEY_F11:
+			{
+				doBuildFFmpeg();
+			}
+			break;
 
 			//remove all captures stills
 			case OF_KEY_BACKSPACE: // ctrl + alt + backspace
@@ -408,8 +486,6 @@ public:
 					ofDirectory dataDirectory(ofToDataPath(_path, true));
 					dataDirectory.remove(true);
 					ofxSurfingHelpers::CheckFolder(_path);
-
-					//CaptureWindow.get
 				}
 				break;
 			}
@@ -429,14 +505,18 @@ private:
 	void buildInfo() {///must be called after bitrate, framerate and size w/h are setted
 
 		//build help info
-		textInfo = "";
-		textInfo += "HELP KEYS"; textInfo += "\n";
-		textInfo += "h  : Show Help info"; textInfo += "\n";
-		textInfo += "u  : Mount Recorder"; textInfo += "\n";
-		textInfo += "U  : Start Recording"; textInfo += "\n";
-		//textInfo += "i  : Set optimal Instagram size"; textInfo += "\n";
-		textInfo += "F8 : Refresh Window size"; textInfo += "\n";
-		textInfo += "F11: Capture Screenshot"; textInfo += "\n";
-		textInfo += "Ctrl + Alt + BackSpace: Clear"; //textInfo += "\n";
+		info = "";
+		info += "HELP KEYS"; info += "\n";
+		info += "h  : Show Help info"; info += "\n";
+		info += "F5 : Set FullHD size"; info += "\n";
+		info += "F6 : Set optimal Instagram size"; info += "\n";
+		info += "F7 : Refresh Window size"; info += "\n";
+		info += "F8 : Mount Recorder"; info += "\n";
+		info += "F9 : Start Recording"; info += "\n";
+		info += "F10: Capture Screenshot"; info += "\n";
+		info += "F11: Join Stills to video"; info += "\n";
+		info += "Ctrl+Alt+BackSpace: Clear"; info += "\n";
+		//info += "path Stills     : "+ _pathFolderStills; info += "\n";
+		//info += "path Screenshots: "+ _pathFolderSnapshots; info += "\n";
 	}
 };
