@@ -19,12 +19,11 @@ class CaptureWindow : public ofBaseApp, public ofThread
 
 public:
 
+	// join all stills to a video file
 	//--------------------------------------------------------------
 	void threadedFunction() {
 		ofLogWarning(__FUNCTION__) << " Must run as Adniministrator!" << endl;
 		cout << (__FUNCTION__) << " Must run as Adniministrator!" << endl;
-
-		// join all stills to a video file
 
 		////while (isThreadRunning()) {
 		if (isThreadRunning())
@@ -45,7 +44,7 @@ public:
 			stringstream pathAppData;
 
 			pathAppData << "F:\\openFrameworks\\apps\\20\\CovidBCN-02\\bin\\data\\";
-			
+
 			ffmpeg << pathAppData.str().c_str() << _pathFolderRoot << "ffmpeg.exe";
 
 			pathDest << pathAppData.str().c_str() << _pathFolderRoot;
@@ -78,6 +77,11 @@ public:
 			cout << endl;
 			cout << "> Done video encoding into: " << fileOut.str().c_str();
 			cout << endl;
+
+			//-
+
+			// open video
+			cout << ofSystem(fileOut.str().c_str()) << endl;
 
 			//--
 
@@ -224,6 +228,8 @@ public:
 	void buildRecorder() {
 		ofLogWarning(__FUNCTION__);
 
+		recorder.stop();// TODO: trying to allo resize..
+		
 		ofxTextureRecorder::Settings settings(cap_Fbo.getTexture());
 		settings.imageFormat = stillFormat;
 
@@ -295,7 +301,7 @@ public:
 			{
 				//cap info
 				string str = "";
-				str += "FPS " + ofToString(ofGetFrameRate(), 0) + " " + ofToString(recorder.getFrame())+ "frames"; str += +"\n";
+				str += "FPS " + ofToString(ofGetFrameRate(), 0) + "   " + ofToString(recorder.getFrame()) + " frames"; str += +"\n";
 				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight()); str += +"\n";
 				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h); str += +"\n";
 				str += "RECORDER " + ofToString(recorder.getWidth()) + "x" + ofToString(recorder.getHeight());
@@ -327,7 +333,7 @@ public:
 						y += 20;
 					}
 				}
-				else if (bRecPrepared)
+				else if (bRecPrepared || isThreadRunning())
 				{
 					str += "F9 : START Recording"; str += "\n";
 					str += "F8 : UnMount Recorder"; str += "\n";
@@ -339,14 +345,14 @@ public:
 					b0 = (fn > p * 3);
 					b1 = (fn > p * 2);
 					b2 = (fn > p * 1);
-				std:string sp = "";
+					string sp = "";
 					if (b0) sp += ".";
 					if (b1) sp += ".";
 					if (b2) sp += ".";
-					
+
 					if (isThreadRunning()) { str += "BUILDING STILLS TO VIDEO" + sp; str += "\n"; }
 					else str += "MOUNTED > READY" + sp; str += "\n";
-					
+
 					//info
 					ofDrawBitmapStringHighlight(str, x, y);
 					y += 20;
@@ -356,32 +362,63 @@ public:
 
 				//red circle
 				int yy = y + 90;
-				if (bRecording)
-				{
-					ofFill();
-					ofSetColor(ofColor::red);
-					ofDrawCircle(ofPoint(x + 8, yy), 8);
-					ofNoFill();
-					ofSetLineWidth(2.f);
-					ofSetColor(ofColor::black);
-					ofDrawCircle(ofPoint(x + 8, yy), 8);
-					yy += 28;
-				}
-				else if (bRecPrepared)
-				{
-					if (ofGetFrameNum() % 60 < 20) {
+				if (!isThreadRunning()) {
+					if (bRecording)
+					{
 						ofFill();
 						ofSetColor(ofColor::red);
 						ofDrawCircle(ofPoint(x + 8, yy), 8);
+						ofNoFill();
+						ofSetLineWidth(2.f);
+						ofSetColor(ofColor::black);
+						ofDrawCircle(ofPoint(x + 8, yy), 8);
+						yy += 28;
 					}
-					ofNoFill();
-					ofSetLineWidth(2.f);
-					ofSetColor(ofColor::black);
-					ofDrawCircle(ofPoint(x + 8, yy), 8);
-					yy += 28;
+					else if (bRecPrepared)
+					{
+						if (ofGetFrameNum() % 60 < 20) {
+							ofFill();
+							ofSetColor(ofColor::red);
+							ofDrawCircle(ofPoint(x + 8, yy), 8);
+						}
+						ofNoFill();
+						ofSetLineWidth(2.f);
+						ofSetColor(ofColor::black);
+						ofDrawCircle(ofPoint(x + 8, yy), 8);
+						yy += 28;
+					}
 				}
 
 				ofPopStyle();
+			}
+
+			//-
+
+			// press F8
+			else if (!bRecPrepared && !isThreadRunning() && !bRecording)
+			{
+				string str = "";
+				str += "\n\n\n\n\n\n";
+				str += "F8 : MOUNT Recorder"; str += "\n";
+
+				//animated points..
+				const int p = 30;//period in frames
+				int fn = ofGetFrameNum() % (p * 4);
+				bool b0, b1, b2;
+				b0 = (fn > p * 3);
+				b1 = (fn > p * 2);
+				b2 = (fn > p * 1);
+				string sp = "";
+				if (b0) sp += ".";
+				if (b1) sp += ".";
+				if (b2) sp += ".";
+
+				str += "> PRESS F8" + sp; str += "\n";
+
+				//info
+
+				ofDrawBitmapStringHighlight(str, x, y);
+				y += 20;
 			}
 
 			//-
@@ -517,6 +554,7 @@ public:
 					ofDirectory dataDirectory(ofToDataPath(_path, true));
 					dataDirectory.remove(true);
 					ofxSurfingHelpers::CheckFolder(_path);
+
 				}
 				break;
 			}
@@ -546,7 +584,7 @@ private:
 		info += "F9 : Start Recording"; info += "\n";
 		info += "F10: Capture Screenshot"; info += "\n";
 		info += "F11: Join Stills to video"; info += "\n";
-		info += "Ctrl+Alt+BackSpace: Clear"; info += "\n";
+		info += "Ctrl+Alt+BackSpace: Clear Stills"; info += "\n";
 		//info += "path Stills     : "+ _pathFolderStills; info += "\n";
 		//info += "path Screenshots: "+ _pathFolderSnapshots; info += "\n";
 	}
