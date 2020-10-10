@@ -21,64 +21,83 @@ public:
 
 	//--------------------------------------------------------------
 	void threadedFunction() {
-		ofLogWarning(__FUNCTION__);
+		ofLogWarning(__FUNCTION__) << " Must run as Adniministrator!" << endl;
+		cout << (__FUNCTION__) << " Must run as Adniministrator!" << endl;
 
-		if (isThreadRunning()) {
-			//while (isThreadRunning()) {
+		// join all stills to a video file
 
-			string cmd;
-			std::string strCom;
+		////while (isThreadRunning()) {
+		if (isThreadRunning())
+		{
+			// build ffmpeg command
 
-			//// call the system command say
-			//std::string fileOut = "output.mp4";
-			//std::string format = "tif";
-			//
-			////std::string strCom = "ffmpeg.exe -r 60 -f image2 -s 1920x1080 -i %05d." + format + " -c:v libx264 -preset veryslow -qp 0 " + fileOut;
-			//strCom = "ffmpeg -r 60 -f image2 -s 1920x1080 -i %05d.tif -c:v libx264 -preset veryslow -qp 0 output22.mp4";
+			cout << "> Starting join all stills to a video file " << endl;
+
+			// template to join stills
+			// ffmpeg -r 60 -f image2 -s 1920x1080 -i %05d.tif -c:v libx264 -preset veryslow -qp 0 output.mp4 // lossless
+
+			stringstream cmd;
+			stringstream ffmpeg;
+			stringstream filesSrc;
+			stringstream pathDest;
+			stringstream nameDest;
+			stringstream fileOut;
+			stringstream pathAppData;
+
+			pathAppData << "F:\\openFrameworks\\apps\\20\\CovidBCN-02\\bin\\data\\";
 			
-			//strCom = "data\\captures\\Stills\\.\ffmpeg_tifToVideo.ps1";
-			strCom = "\"data\\captures\\Stills\\ffmpeg_tifToVideo.ps1\"";
-			cmd = strCom;
-			ofLogWarning(__FUNCTION__) << endl << cmd;
-			ofSystem(cmd.c_str());
+			ffmpeg << pathAppData.str().c_str() << _pathFolderRoot << "ffmpeg.exe";
 
-			//string cmd = "cd data\\captures\\Stills\\";
+			pathDest << pathAppData.str().c_str() << _pathFolderRoot;
+			filesSrc << pathAppData.str().c_str() << _pathFolderStills << "%05d.tif"; // data/stills/%05d.tif
+			nameDest << "output_" << ofGetTimestampString() << ".mp4"; // "output.mp4";
+			fileOut << pathDest.str().c_str() << nameDest;
 
-			//cmd = "cd data\\captures\\Stills\n";
-			//ofLogWarning(__FUNCTION__)<< endl << cmd;
-			//ofSystem(cmd.c_str());
+			// command:
+			cmd << ffmpeg << " -r 60 -f image2 -s 1920x1080 -i " << filesSrc << " -c:v libx264 -preset veryslow -qp 0 " << fileOut;
 
-			//cmd = "dir\n";
-			//ofLogWarning(__FUNCTION__) << endl << cmd;
-			//ofSystem(cmd.c_str());
+			cout << endl << endl;
+			cout << "ffmpeg : " << ffmpeg.str().c_str();
+			cout << endl << endl;
+			cout << "Source : " << filesSrc.str().c_str();
+			cout << endl << endl;
+			cout << "Out    : " << fileOut.str().c_str();
+			cout << endl << endl;
+			cout << "Command: " << cmd.str().c_str();
+			cout << endl << endl;
 
-			//cmd = "data\\captures\\Stills\\" + strCom;
-			//string cmd = "data\\" + _pathFolderStills + strCom;
+			// run
+			cout << ofSystem(cmd.str().c_str()) << endl;
 
-			//#ifdef TARGET_OSX
-			//		string cmd = "say " + words[step] + " "; // create the command
-			//#endif
-			//#ifdef TARGET_WIN32
-			//		string cmd = "data\\SayStatic.exe " + words[step];        // create the command
-			//#endif
-			//#ifdef TARGET_LINUX
-			//		string cmd = "echo " + words[step] + "|espeak";           // create the command
-			//#endif
+			//-
 
-			//// print command and execute it
-			//ofLogWarning(__FUNCTION__)<< endl << cmd;
-			//ofSystem(cmd.c_str());
+			// loop repeat if above while
+			//ofSleepMillis(5000);
+			//cout << "repeat" << endl;
 
-			//cmd = "dir";
-			//ofSystem(cmd.c_str());
+			cout << endl;
+			cout << "> Done video encoding into: " << fileOut.str().c_str();
+			cout << endl;
 
-			// slowdown boy
-			//ofSleepMillis(10);
+			//--
 
-			// stop the thread on exit
-			//waitForThread(true);
+			// some examples
+
+			//cout << ofSystem("cd data\\") << endl;
+			//cout << ofSystem("dir") << endl;
+			//cout << ofSystem("cd captures") << endl;
+			//cout << ofSystem("dir") << endl;
+
+			//stringstream someCmd;
+			//someCmd.clear();
+			//someCmd << "dir";
+			//cout << someCmd << endl;
+			//cout << ofSystem(someCmd.str().c_str()) << endl;
+
+			//-
+
 		}
-		else waitForThread(true);
+		//else waitForThread(true);
 	}
 
 	//--------------------------------------------------------------
@@ -92,10 +111,16 @@ public:
 	}
 
 public:
-	CaptureWindow() {
+	CaptureWindow()
+	{
 		cap_w = 1920;
 		cap_h = 1080;
+
+		_pathFolderRoot = "captures\\";
+		_pathFolderStills = _pathFolderRoot + "Stills\\";
+		_pathFolderSnapshots = _pathFolderRoot + "Snapshots\\";
 	};
+
 	~CaptureWindow() {
 		// stop the thread on exit
 		waitForThread(true);
@@ -108,6 +133,7 @@ private:
 	ofFbo::Settings cap_Fbo_Settings;
 	int cap_w, cap_h;
 
+	string _pathFolderRoot;
 	string _pathFolderStills;
 	string _pathFolderSnapshots;
 
@@ -160,11 +186,14 @@ private:
 public:
 	//--------------------------------------------------------------
 	//call with the path folder if you want to customize
-	void setup(std::string path = "captures/", ofImageFormat format = OF_IMAGE_FORMAT_TIFF) {
+	void setup(std::string path = "captures\\", ofImageFormat format = OF_IMAGE_FORMAT_TIFF) {
 		ofLogWarning(__FUNCTION__) << "path: " << path << " ofImageFormat: " << format;
 
-		_pathFolderStills = path + "Stills/";
-		_pathFolderSnapshots = path + "Snapshots/";
+		_pathFolderRoot = path; // "captures\\"
+		_pathFolderStills = _pathFolderRoot + "Stills\\";
+		_pathFolderSnapshots = _pathFolderRoot + "Snapshots\\";
+
+		ofxSurfingHelpers::CheckFolder(_pathFolderRoot);
 		ofxSurfingHelpers::CheckFolder(_pathFolderStills);
 		ofxSurfingHelpers::CheckFolder(_pathFolderSnapshots);
 
@@ -262,14 +291,14 @@ public:
 
 			//--
 
-			if (bRecPrepared || bRecording)
+			if (bRecPrepared || bRecording || isThreadRunning())
 			{
 				//cap info
 				string str = "";
-				str += "FPS " + ofToString(ofGetFrameRate(), 0); str += +"\n";
+				str += "FPS " + ofToString(ofGetFrameRate(), 0) + " " + ofToString(recorder.getFrame())+ "frames"; str += +"\n";
 				str += "WINDOW   " + ofToString(ofGetWidth()) + "x" + ofToString(ofGetHeight()); str += +"\n";
 				str += "FBO SIZE " + ofToString(cap_w) + "x" + ofToString(cap_h); str += +"\n";
-				str += "RECORDER " + ofToString(recorder.getWidth()) + "x" + ofToString(recorder.getHeight()) + " frame " + ofToString(recorder.getFrame());
+				str += "RECORDER " + ofToString(recorder.getWidth()) + "x" + ofToString(recorder.getHeight());
 				str += +"\n"; str += +"\n";
 
 				//draw red circle and info when recording
@@ -314,8 +343,10 @@ public:
 					if (b0) sp += ".";
 					if (b1) sp += ".";
 					if (b2) sp += ".";
-					str += "MOUNTED > READY" + sp; str += "\n";
-
+					
+					if (isThreadRunning()) { str += "BUILDING STILLS TO VIDEO" + sp; str += "\n"; }
+					else str += "MOUNTED > READY" + sp; str += "\n";
+					
 					//info
 					ofDrawBitmapStringHighlight(str, x, y);
 					y += 20;
