@@ -67,8 +67,8 @@ namespace ofxSurfingHelpers {
 		return true;//not used
 	}
 
-	//--------------------------------------------------------------
 	// TODO: seems not working well linked to the param.. requires better unique name?
+	//--------------------------------------------------------------
 	inline bool AddBigToggle(ofParameter<bool>& parameter, float h)
 	{
 		auto tmpRef = parameter.get();
@@ -127,6 +127,98 @@ namespace ofxSurfingHelpers {
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
 			if (ImGui::Button(name, ImVec2(w, h))) {
+				_boolToggle = true;
+				tmpRef = _boolToggle;
+				parameter.set(tmpRef);
+			}
+			ImGui::PopStyleColor(3);
+		}
+
+		//--
+
+		// checkbox
+		//ImGui::PushID(name);
+		//ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
+		//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(i / 7.0f, b, b));
+		//ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(i / 7.0f, c, c));
+		//if (ImGui::Checkbox(name, (bool *)&tmpRef))
+		//	//if (ImGui::Checkbox(ofxImGui::GetUniqueName(parameter), (bool *)&tmpRef))
+		//{
+		//	parameter.set(tmpRef);
+		//	ImGui::PopStyleColor(3);
+		//	ImGui::PopID();
+		//	return true;
+		//}
+		//ImGui::PopStyleColor(3);
+		//ImGui::PopID();
+		//return false;
+
+		return true;// not used
+	}
+	
+	// two states names
+	//--------------------------------------------------------------
+	inline bool AddBigToggle(ofParameter<bool>& parameter, float h, std::string nameTrue, std::string nameFalse)
+	{
+		auto tmpRef = parameter.get();
+		auto name = ofxImGui::GetUniqueName(parameter);
+
+		//--
+
+		// how to set colors
+		//static float b = 1.0f;
+		//static float c = 0.5f;
+		//static int i = 3;// hue colors are from 0 to 7
+		//ImVec4 _color1 = (ImVec4)ImColor::HSV(i / 7.0f, b, b);
+		//ImVec4 _color2 = (ImVec4)ImColor::HSV(i / 7.0f, c, c);
+
+		//--
+
+		// button toggle
+
+		float w;
+		//float h;
+		//h = 30;
+		//w = 200;
+		w = ImGui::GetWindowWidth()*0.9f;
+
+		// TODO: BUG: do not reflects the correct state...
+
+		bool _boolToggle = tmpRef;  // default value, the button is disabled 
+		//static bool _boolToggle = tmpRef;  // default value, the button is disabled 
+		if (_boolToggle == true)// enabled
+		{
+			ImGuiStyle *style = &ImGui::GetStyle();
+			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
+			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+			ImGui::PushID(nameTrue.c_str());
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
+			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+
+			ImGui::Button(nameTrue.c_str(), ImVec2(w, h));
+			if (ImGui::IsItemClicked(0))
+			{
+				_boolToggle = !_boolToggle;
+				tmpRef = _boolToggle;
+				parameter.set(tmpRef);
+			}
+			ImGui::PopStyleColor(3);
+			ImGui::PopID();
+		}
+		else// disabled
+		{
+			ImGuiStyle *style = &ImGui::GetStyle();
+			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
+			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
+			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
+			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+
+			if (ImGui::Button(nameFalse.c_str(), ImVec2(w, h))) {
 				_boolToggle = true;
 				tmpRef = _boolToggle;
 				parameter.set(tmpRef);
