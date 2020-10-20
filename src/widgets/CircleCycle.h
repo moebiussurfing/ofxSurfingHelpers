@@ -69,7 +69,7 @@ public:
 	void setRadius(float _size)
 	{
 		radiusMax = _size;
-		radiusMin = radiusMax * 0.2;
+		radiusMin = radiusMax * 0.3;
 	}
 	void setRadiusMin(float _size)
 	{

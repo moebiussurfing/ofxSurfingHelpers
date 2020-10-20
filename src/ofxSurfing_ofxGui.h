@@ -12,12 +12,12 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	// ofxGui theme
 	//--------------------------------------------------------------
-	inline void setThemeDark_ofxGui(string pathFont = "assets/fonts/overpass-mono-bold.otf")
+	inline void setThemeDark_ofxGui(std::string pathFont = "assets/fonts/overpass-mono-bold.otf", int size = 9)
 	{
 		ofFile file(pathFont);
 		if (file.exists())
 		{
-			ofxGuiSetFont(pathFont, 9);
+			ofxGuiSetFont(pathFont, size);
 		}
 		else {
 			ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
