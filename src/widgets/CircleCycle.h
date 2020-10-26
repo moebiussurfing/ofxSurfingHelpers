@@ -96,6 +96,15 @@ public:
 	{
 		return radiusMax;
 	}
+
+	float getX()
+	{
+		return position.x;
+	}
+	float getY()
+	{
+		return position.y;
+	}
 	glm::vec2 getPosition()
 	{
 		return position;
@@ -123,6 +132,28 @@ private:
 
 	//-
 
+	bool bLabel = false;
+	bool bTitle = false;
+public:
+	void setEnableLabel(bool b) {
+		bLabel = b;
+	}
+private:
+	ofTrueTypeFont fontCycle;
+	float fontCycleSize;
+	std::string label;
+	std::string tittle;
+public:
+	void setLabel(std::string _label) {
+		label = _label;
+	}
+	void setTitle(std::string _label) {
+		tittle = _label;
+		bTitle = true;
+	}
+
+	//-
+
 public:
 	CircleCycle() {
 		//float res = ofGetCircleResolution();
@@ -132,7 +163,7 @@ public:
 		color.set(255, 255, 255);
 		colorBg.set(0, 0, 0, 32);
 		alphaMax = 225;
-		alphaMin = 24;
+		alphaMin = 128;
 
 		setFps(60);
 		alpha = 0.0f;
@@ -144,6 +175,11 @@ public:
 
 		setSpeed(0.2);
 		line = 2.0f;
+
+		label = "";
+		fontCycleSize = 10;
+		if (!fontCycle.loadFont("assets/fonts/Pragmata Pro Mono Bold.otf", fontCycleSize))
+			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};
 
 	~CircleCycle() {};
@@ -189,6 +225,7 @@ public:
 		ofxArcStrip(radiusMin, radiusMax, _rad, ofDegToRad(0 + _off));
 		ofPopMatrix();
 
+		// TODO:
 		//if (bBorder)
 		//{
 		//	ofNoFill();
@@ -198,6 +235,17 @@ public:
 		//	//ofSetColor(color, alpha);
 		//	ofDrawCircle(position, radiusMax);
 		//}
+
+		if (bLabel || bTitle)
+		{
+			ofPushStyle();
+			if (bLabel) fontCycle.drawString(label, getX() - fontCycleSize, getY() + 0.5*fontCycleSize);
+			if (bTitle) fontCycle.drawString(tittle, 
+				getX() - fontCycle.getStringBoundingBox(tittle,0,0).getWidth()*0.5, 
+				getY() - radiusMax - 0.5*fontCycleSize);
+			//if (bTitle) fontCycle.drawString(tittle, getX() - radiusMax, getY() - radiusMax - 0.5*fontCycleSize);// left upper corner
+			ofPopStyle();
+		}
 
 		ofPopStyle();
 	}
