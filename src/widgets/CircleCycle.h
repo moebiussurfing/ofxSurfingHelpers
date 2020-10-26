@@ -69,7 +69,7 @@ public:
 	void setRadius(float _size)
 	{
 		radiusMax = _size;
-		radiusMin = radiusMax * 0.3;
+		radiusMin = radiusMax * 0.4;
 	}
 	void setRadiusMin(float _size)
 	{
@@ -162,8 +162,8 @@ public:
 
 		color.set(255, 255, 255);
 		colorBg.set(0, 0, 0, 32);
-		alphaMax = 225;
-		alphaMin = 128;
+		alphaMax = 220;
+		alphaMin = 100;
 
 		setFps(60);
 		alpha = 0.0f;
@@ -236,13 +236,14 @@ public:
 		//	ofDrawCircle(position, radiusMax);
 		//}
 
+		// labels
 		if (bLabel || bTitle)
 		{
 			ofPushStyle();
 			if (bLabel) fontCycle.drawString(label, getX() - fontCycleSize, getY() + 0.5*fontCycleSize);
 			if (bTitle) fontCycle.drawString(tittle, 
 				getX() - fontCycle.getStringBoundingBox(tittle,0,0).getWidth()*0.5, 
-				getY() - radiusMax - 0.5*fontCycleSize);
+				getY() - radiusMax - 0.5*fontCycleSize - 5);
 			//if (bTitle) fontCycle.drawString(tittle, getX() - radiusMax, getY() - radiusMax - 0.5*fontCycleSize);// left upper corner
 			ofPopStyle();
 		}
