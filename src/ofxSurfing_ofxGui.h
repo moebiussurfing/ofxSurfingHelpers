@@ -33,7 +33,6 @@ namespace ofxSurfingHelpers {
 		ofxGuiSetHeaderColor(ofColor(12));
 		ofxGuiSetBackgroundColor(ofColor::black);
 	}
-
 };// ofxSurfingHelpers
 
 
