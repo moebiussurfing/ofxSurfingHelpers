@@ -8,7 +8,7 @@ ofxSurfingHelpers
 ![Alt text](/readme_images/Capture.PNG?raw=true "Capture.PNG")
 
 ## Features
-- Look into the classes into **/src** for the momment...
+- Look into the classes into **/src** for the moment...
 
 ## Other MISC OF-Util Addons
 https://github.com/FilikaDesign/ofxFilika (some classes included here)  
