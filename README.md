@@ -12,8 +12,17 @@ ofxSurfingHelpers
 
 ## Other MISC OF-Util Addons
 https://github.com/FilikaDesign/ofxFilika (some classes included here)  
+https://github.com/alptugan/ofxFilikaUtils  
 https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp  
 https://github.com/chimanaco/ofxUtils/tree/master/src  
+https://github.com/nightshining/ofxControlUtils  
+https://github.com/bernardgeyer/ofxhUtils  
+https://github.com/NickHardeman/Tools  
+https://github.com/bakercp/ofxUtils  
+https://github.com/Iwanaka/ofxMyUtil  
+https://github.com/perevalovds/ofxKu/tree/master/src  
+https://github.com/ofTheo/ofxFileHelper  
+
 ...
 
 ## Tested systems
