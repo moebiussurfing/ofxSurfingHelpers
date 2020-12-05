@@ -2,7 +2,7 @@ ofxSurfingHelpers
 =============================
 
 ## Overview
-**ofxSurfingHelpers** is an collection with some useful OF-utils (WIP)...
+**ofxSurfingHelpers** is a (WIP) collection of some useful OF-Utils/Classes/Snippets...
 
 ## Screenshot
 ![Alt text](/readme_images/Capture.PNG?raw=true "Capture.PNG")
@@ -10,7 +10,7 @@ ofxSurfingHelpers
 ## Features
 - Look into the classes into **/src** for the moment...
 
-## Other MISC OF-Util Addons
+## Other MISC OF-Util Addons/Resources
 https://github.com/FilikaDesign/ofxFilika (some classes included here)  
 https://github.com/alptugan/ofxFilikaUtils  
 https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp  
