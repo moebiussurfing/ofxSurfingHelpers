@@ -273,6 +273,9 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x, int y, ofColor font0_Color = 255, ofColor colorBackground = 0, bool useShadow = false, ofColor colorShadow = 128)
 	{
+		x += 25;
+		y += 33;
+
 		int _pad = 50;
 		float _round = 5;
 
