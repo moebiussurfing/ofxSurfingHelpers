@@ -316,10 +316,12 @@ namespace ofxSurfingHelpers {
 	// get box width
 	//--------------------------------------------------------------
 	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
-		return (font.getStringBoundingBox(text, 0, 0)).getWidth();
+		int _pad = 50;
+		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
 	}
 	inline float getHeightBBtextBoxed(ofTrueTypeFont &font, string text) {
-		return (font.getStringBoundingBox(text, 0, 0)).getHeight();
+		int _pad = 50;
+		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
 	}
 
 	//---
