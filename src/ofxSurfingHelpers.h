@@ -369,4 +369,21 @@ namespace ofxSurfingHelpers {
 			return (mins + ":" + secs);
 	}
 
+	//-
+
+	//to debug/show mouse position and x,y coordinates to draw points into layouts
+	//--------------------------------------------------------------
+	inline void draw_Anchor(int x, int y)
+	{
+		ofPushStyle();
+		ofFill();
+		ofSetColor(ofColor::red);
+		ofDrawCircle(x, y, 3);
+		int pad;
+		if (y < 15) pad = 20;
+		else pad = -20;
+		ofDrawBitmapStringHighlight(ofToString(x) + "," + ofToString(y), x, y + pad);
+		ofPopStyle();
+	}
+
 };// ofxSurfingHelpers

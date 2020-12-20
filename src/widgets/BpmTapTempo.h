@@ -46,11 +46,36 @@ private:
 	bool bUpdatedBpm = false;
 
 public:
+	//--------------------------------------------------------------
 	void setPathSounds(string path) {
 		pathSounds = path;
+		ofLogNotice(__FUNCTION__) << pathSounds + "click1.wav";
+		ofLogNotice(__FUNCTION__) << pathSounds + "click2.wav";
+		ofLogNotice(__FUNCTION__) << pathSounds + "tapBell.wav";
 	}
 
 public:
+	//--------------------------------------------------------------
+	void trigSound(int index) {
+		if (ENABLE_SoundTapTempo.get() && !bTapRunning) {
+			if (index == 0) tapTic.play();
+			else if (index == 1) tapTac.play();
+			else if (index == 2) tapBell.play();
+		}
+	}
+	//--------------------------------------------------------------
+	void setVolume(float vol) {
+		tapTic.setVolume(vol);
+		tapTic.setMultiPlay(false);
+		tapTac.setVolume(vol * 0.5f);
+		tapTac.setMultiPlay(false);
+		tapBell.setVolume(vol);
+	}
+	//--------------------------------------------------------------
+	void setEnableSound(bool b) {
+		ENABLE_SoundTapTempo = b;
+	}
+
 	//--------------------------------------------------------------
 	void setup() {
 		ENABLE_SoundTapTempo.set("Enable Sound Tick", true);
@@ -77,9 +102,7 @@ public:
 
 		//custom callback for done load
 		listener_BangTapTempo = BangTapTempo.newListener([this](bool &)
-			{
-				this->Changed_BangTapTempo();
-			});
+			{this->Changed_BangTapTempo();});
 	}
 
 	//--------------------------------------------------------------
