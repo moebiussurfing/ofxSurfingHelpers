@@ -31,13 +31,48 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	////https://github.com/ocornut/imgui/issues/1537
 	//--------------------------------------------------------------
-	inline bool AddBigButton(ofParameter<bool>& parameter, float h)// button but using a bool not void param
+	inline bool AddBigButton(ofParameter<bool>& parameter, float h = 30)// button but using a bool not void param
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
-		float w;
-		w = ImGui::GetWindowWidth()*0.9f;
+		float w = ImGui::GetWindowWidth()*0.9f;
+
+		ImGuiStyle *style = &ImGui::GetStyle();
+
+		const ImVec4 colorButton = style->Colors[ImGuiCol_Button];// better for my theme
+		const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
+		const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+		//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];// better for default theme
+		//const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+		//const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+
+		ImGui::PushID(name);
+		ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
+
+		if (ImGui::Button((name), ImVec2(w, h)))
+		{
+			ofLogNotice(__FUNCTION__) << name << ": BANG";
+
+			tmpRef = true;
+			parameter.set(tmpRef);
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::PopID();
+
+		return true;//not used
+	}
+	
+	//--------------------------------------------------------------
+	inline bool AddSmallButton(ofParameter<bool>& parameter, float h = 5)// button but using a bool not void param
+	{
+		auto tmpRef = parameter.get();
+		auto name = ofxImGui::GetUniqueName(parameter);
+
+		float w = 2 * h;
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
