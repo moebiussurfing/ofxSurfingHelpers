@@ -67,12 +67,12 @@ namespace ofxSurfingHelpers {
 	}
 	
 	//--------------------------------------------------------------
-	inline bool AddSmallButton(ofParameter<bool>& parameter, float h = 5)// button but using a bool not void param
+	inline bool AddSmallButton(ofParameter<bool>& parameter, float w = 45, float h = 15)// button but using a bool not void param
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
-		float w = 2 * h;
+		//float w = 3 * h;
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
@@ -780,3 +780,8 @@ namespace ofxSurfingHelpers {
 
 	}
 };
+
+//custom int params:
+//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get(), boxRowsUser.getMin(), boxRowsUser.getMax());
+//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get());
+//boxSizeUser = ofClamp(boxSizeUser.get(), boxSizeUser.getMin(), boxSizeUser.getMax());
