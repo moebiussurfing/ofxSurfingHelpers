@@ -9,7 +9,7 @@
 #include "ofxImGui.h"
 
 namespace ofxSurfingHelpers {
-	
+
 	//----
 
 	//// 1. preset selector slider
@@ -23,7 +23,7 @@ namespace ofxSurfingHelpers {
 	//}
 
 	//ofxImGui::AddParameter(PRESET_Selected_IndexMain);//main preset selector
-	
+
 
 	//--------------------------------------------------------------
 	// ImGui Tools
@@ -31,12 +31,18 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	////https://github.com/ocornut/imgui/issues/1537
 	//--------------------------------------------------------------
-	inline bool AddBigButton(ofParameter<bool>& parameter, float h = 30)// button but using a bool not void param
+	inline bool AddBigButton(ofParameter<bool>& parameter, float w = 100, float h = 30)// button but using a bool not void param
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
-		float w = ImGui::GetWindowWidth()*0.9f;
+		//float w = ImGui::GetWindowWidth()*0.9f;
+
+		if (w == -1)
+		{
+			w = ImGui::GetWindowContentRegionWidth() * 0.9;
+			h = 70;
+		}
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
@@ -65,14 +71,20 @@ namespace ofxSurfingHelpers {
 
 		return true;//not used
 	}
-	
+
 	//--------------------------------------------------------------
-	inline bool AddSmallButton(ofParameter<bool>& parameter, float w = 45, float h = 15)// button but using a bool not void param
+	inline bool AddSmallButton(ofParameter<bool>& parameter, float w = 50, float h = 20)// button but using a bool not void param
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
 		//float w = 3 * h;
+
+		if (w == -1)
+		{
+			w = ImGui::GetWindowContentRegionWidth() * 0.85;
+			h = 70;
+		}
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
@@ -104,7 +116,7 @@ namespace ofxSurfingHelpers {
 
 	// TODO: seems not working well linked to the param.. requires better unique name?
 	//--------------------------------------------------------------
-	inline bool AddBigToggle(ofParameter<bool>& parameter, float h)
+	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30)
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
@@ -122,11 +134,11 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
-		float w;
-		//float h;
-		//h = 30;
-		//w = 200;
-		w = ImGui::GetWindowWidth()*0.9f;
+		//float w;
+		////float h;
+		////h = 30;
+		////w = 200;
+		//w = ImGui::GetWindowWidth()*0.9f;
 
 		static bool _boolToggle = tmpRef;  // default value, the button is disabled 
 		if (_boolToggle == true)// enabled
@@ -135,6 +147,7 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+
 			ImGui::PushID(name);
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
@@ -158,9 +171,11 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
 			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
+			
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+
 			if (ImGui::Button(name, ImVec2(w, h))) {
 				_boolToggle = true;
 				tmpRef = _boolToggle;
@@ -190,7 +205,7 @@ namespace ofxSurfingHelpers {
 
 		return true;// not used
 	}
-	
+
 	// two states names
 	//--------------------------------------------------------------
 	inline bool AddBigToggle(ofParameter<bool>& parameter, float h, std::string nameTrue, std::string nameFalse)
@@ -282,6 +297,43 @@ namespace ofxSurfingHelpers {
 
 		return true;// not used
 	}
+
+	inline bool AddBigSlider(ofParameter<float>& parameter, float w = 100, float h = 30)// button but using a bool not void param
+	{
+		auto tmpRef = parameter.get();
+		auto name = ofxImGui::GetUniqueName(parameter);
+
+		//float w = ImGui::GetWindowWidth()*0.9f;
+
+		ImGuiStyle *style = &ImGui::GetStyle();
+
+		const ImVec4 colorButton = style->Colors[ImGuiCol_Button];// better for my theme
+		const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
+		const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+		//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];// better for default theme
+		//const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+		//const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+
+		ImGui::PushID(name);
+		ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
+
+		//ImGui::SliderFloat(name, &parameter.get(), parameter.getMin(), parameter.getMax(), "ratio = %.3f");
+		//if (ImGui::SliderFloat((name), parameter.get(),  parameter.getMin(), parameter.getMax(), ImVec2(w, h)))
+		{
+			ofLogNotice(__FUNCTION__) << name << ": BANG";
+
+			tmpRef = parameter.get();
+			parameter.set(tmpRef);
+		}
+
+		ImGui::PopStyleColor(3);
+		ImGui::PopID();
+
+		return true;//not used
+	}
+
 
 	//--------------------------------------------------------------
 	inline void ImGui_FontCustom() {
@@ -781,7 +833,34 @@ namespace ofxSurfingHelpers {
 	}
 };
 
+//-
+
 //custom int params:
-//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get(), boxRowsUser.getMin(), boxRowsUser.getMax());
 //ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get());
 //boxSizeUser = ofClamp(boxSizeUser.get(), boxSizeUser.getMin(), boxSizeUser.getMax());
+
+//-
+
+//mainSettings = ofxImGui::Settings();
+
+//mainSettings.windowPos = ofVec2f(gui_x, gui_y);
+//mainSettings.windowSize = ofVec2f(guiWidth, ofGetWindowHeight() - gui_y);
+
+//    static bool no_titlebar = false;
+//    static bool no_scrollbar = false;
+//    static bool no_menu = false;
+//    static bool no_move = false;
+//    static bool no_resize = false;
+//    static bool no_collapse = false;
+//    static bool no_close = false;
+//    static bool no_nav = false;
+//    ImGuiWindowFlags window_flags = 0;
+////    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+////    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+////    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+////    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+////    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+//    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+////    if (no_nav)       window_flags |= ImGuiWindowFlags_NoNav;
+////    if (no_close)     p_open = NULL; // Don't pass our bool* to Begin
+//    if (ofxImGui::BeginWindow("COLOR PICKER", mainSettings, window_flags))
