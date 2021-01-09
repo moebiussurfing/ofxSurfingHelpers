@@ -203,7 +203,7 @@ namespace ofxSurfingHelpers {
 		}
 		else
 		{
-			ofLogNotice(__FUNCTION__) << _path << " OK!";// nothing to do
+			ofLogNotice(__FUNCTION__) << _path << " Found!";// nothing to do
 		}
 	}
 

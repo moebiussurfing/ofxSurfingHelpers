@@ -134,6 +134,12 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
+		if (w == -1)
+		{
+			w = 100;
+			h = 50;
+		}
+
 		//float w;
 		////float h;
 		////h = 30;
@@ -144,6 +150,7 @@ namespace ofxSurfingHelpers {
 		if (_boolToggle == true)// enabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
+
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
@@ -167,6 +174,7 @@ namespace ofxSurfingHelpers {
 		else// disabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
+
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
@@ -298,8 +306,25 @@ namespace ofxSurfingHelpers {
 		return true;// not used
 	}
 
+	inline bool AddIntStepped(ofParameter<int>& parameter)
+	{
+		bool bChanged = false;
+		auto tmpRefi = parameter.get();
+		const ImU32 u32_one = 1;
+		static bool inputs_step = true;
+		if (ImGui::InputScalar(parameter.getName().c_str(), ImGuiDataType_U32, (int *)&tmpRefi, inputs_step ? &u32_one : NULL, NULL, "%u"))
+		{
+			tmpRefi = ofClamp(tmpRefi, parameter.getMin(), parameter.getMax());
+			parameter.set(tmpRefi);
+
+			bChanged = true;
+		}
+		return bChanged;
+	}
+
 	inline bool AddBigSlider(ofParameter<float>& parameter, float w = 100, float h = 30)// button but using a bool not void param
 	{
+		bool bChanged = false;
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
@@ -319,6 +344,8 @@ namespace ofxSurfingHelpers {
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 
+		//TODO:
+
 		//ImGui::SliderFloat(name, &parameter.get(), parameter.getMin(), parameter.getMax(), "ratio = %.3f");
 		//if (ImGui::SliderFloat((name), parameter.get(),  parameter.getMin(), parameter.getMax(), ImVec2(w, h)))
 		{
@@ -326,14 +353,15 @@ namespace ofxSurfingHelpers {
 
 			tmpRef = parameter.get();
 			parameter.set(tmpRef);
+
+			bChanged = true;
 		}
 
 		ImGui::PopStyleColor(3);
 		ImGui::PopID();
 
-		return true;//not used
+		return bChanged;
 	}
-
 
 	//--------------------------------------------------------------
 	inline void ImGui_FontCustom() {
@@ -844,7 +872,7 @@ namespace ofxSurfingHelpers {
 //mainSettings = ofxImGui::Settings();
 
 //mainSettings.windowPos = ofVec2f(gui_x, gui_y);
-//mainSettings.windowSize = ofVec2f(guiWidth, ofGetWindowHeight() - gui_y);
+//mainSettings.windowSize = ofVec2f(w_Gui, ofGetWindowHeight() - gui_y);
 
 //    static bool no_titlebar = false;
 //    static bool no_scrollbar = false;
