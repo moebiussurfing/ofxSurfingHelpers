@@ -120,7 +120,7 @@ public:
 
 		label = "";
 		fontCycleSize = 10;
-		if (!fontCycle.loadFont("assets/fonts/Pragmata Pro Mono Bold.otf", fontCycleSize))
+		if (!fontCycle.loadFont("assets/fonts/mono.ttf", fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};
 

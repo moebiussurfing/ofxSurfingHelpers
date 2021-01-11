@@ -119,7 +119,7 @@ namespace ofxSurfingHelpers {
 	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30)
 	{
 		auto tmpRef = parameter.get();
-		auto name = ofxImGui::GetUniqueName(parameter);
+		std::string name = parameter.getName();
 
 		//--
 
@@ -134,19 +134,8 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
-		if (w == -1)
-		{
-			w = 100;
-			h = 50;
-		}
+		bool _boolToggle = tmpRef;  // default value, the button is disabled 
 
-		//float w;
-		////float h;
-		////h = 30;
-		////w = 200;
-		//w = ImGui::GetWindowWidth()*0.9f;
-
-		static bool _boolToggle = tmpRef;  // default value, the button is disabled 
 		if (_boolToggle == true)// enabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
@@ -155,12 +144,13 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
 
-			ImGui::PushID(name);
+			ImGui::PushID(name.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			//ImGui::PushItemWidth(w);
 
-			ImGui::Button(name, ImVec2(w, h));
+			ImGui::Button(name.c_str(), ImVec2(w, h));
 			if (ImGui::IsItemClicked(0))
 			{
 				_boolToggle = !_boolToggle;
@@ -168,6 +158,7 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
+			//ImGui::PopItemWidth();
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
@@ -180,16 +171,22 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
 			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
 			
+			//ImGui::PushID(name.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			//ImGui::PushItemWidth(w);
 
-			if (ImGui::Button(name, ImVec2(w, h))) {
+			if (ImGui::Button(name.c_str(), ImVec2(w, h))) 
+			{
 				_boolToggle = true;
 				tmpRef = _boolToggle;
 				parameter.set(tmpRef);
 			}
+
+			//ImGui::PopItemWidth();
 			ImGui::PopStyleColor(3);
+			//ImGui::PopID();
 		}
 
 		//--
@@ -240,16 +237,18 @@ namespace ofxSurfingHelpers {
 		//w = 200;
 		w = ImGui::GetWindowWidth()*0.9f;
 
-		// TODO: BUG: do not reflects the correct state...
+		// TODO: ?
+		//BUG: do not reflects the correct state...
 
 		bool _boolToggle = tmpRef;  // default value, the button is disabled 
-		//static bool _boolToggle = tmpRef;  // default value, the button is disabled 
+
 		if (_boolToggle == true)// enabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+
 			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
@@ -262,6 +261,7 @@ namespace ofxSurfingHelpers {
 				tmpRef = _boolToggle;
 				parameter.set(tmpRef);
 			}
+
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
@@ -272,6 +272,8 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
 			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
+
+			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
@@ -281,7 +283,9 @@ namespace ofxSurfingHelpers {
 				tmpRef = _boolToggle;
 				parameter.set(tmpRef);
 			}
+
 			ImGui::PopStyleColor(3);
+			ImGui::PopID();
 		}
 
 		//--
@@ -306,6 +310,7 @@ namespace ofxSurfingHelpers {
 		return true;// not used
 	}
 
+	//--------------------------------------------------------------
 	inline bool AddIntStepped(ofParameter<int>& parameter)
 	{
 		bool bChanged = false;
@@ -322,6 +327,7 @@ namespace ofxSurfingHelpers {
 		return bChanged;
 	}
 
+	//--------------------------------------------------------------
 	inline bool AddBigSlider(ofParameter<float>& parameter, float w = 100, float h = 30)// button but using a bool not void param
 	{
 		bool bChanged = false;
@@ -693,13 +699,12 @@ namespace ofxSurfingHelpers {
 
 		style->FramePadding = ImVec2(6, 4);
 		style->ItemSpacing = ImVec2(6, 4);
-		style->ItemInnerSpacing = ImVec2(6, 4);
+		style->ItemInnerSpacing = ImVec2(2, 4);
 		//style->Alpha = 1.0f;
 		style->Alpha = 0.95f;
 		style->WindowRounding = 0.0f;
 		style->FrameRounding = 0.0f;
 		style->IndentSpacing = 6.0f;
-		style->ItemInnerSpacing = ImVec2(2, 4);
 		style->ColumnsMinSpacing = 50.0f;
 		style->GrabMinSize = 14.0f;
 		style->GrabRounding = 0.0f;

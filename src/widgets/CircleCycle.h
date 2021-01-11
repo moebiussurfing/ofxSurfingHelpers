@@ -178,7 +178,8 @@ public:
 
 		label = "";
 		fontCycleSize = 10;
-		if (!fontCycle.loadFont("assets/fonts/Pragmata Pro Mono Bold.otf", fontCycleSize))
+		std::string path = "assets/fonts/Mono.ttf";
+		if (!fontCycle.loadFont(path, fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};
 

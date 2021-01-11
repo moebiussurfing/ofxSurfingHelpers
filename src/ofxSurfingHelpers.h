@@ -282,10 +282,12 @@ namespace ofxSurfingHelpers {
 		ofPushStyle();
 		//float fontSize = font.getSize();
 
-		if (!font.isLoaded()) {
+		if (!font.isLoaded()) 
+		{
 			ofDrawBitmapStringHighlight(text, x, y);
 		}
-		else {
+		else 
+		{
 			// bbox
 			ofSetColor(colorBackground);
 			ofFill();
@@ -300,7 +302,8 @@ namespace ofxSurfingHelpers {
 			//ofDrawRectangle(_r);
 
 			// text shadow
-			if (useShadow) {
+			if (useShadow)
+			{
 				ofSetColor(colorShadow);
 				font.drawString(text, x + 1, y + 1);
 			}
