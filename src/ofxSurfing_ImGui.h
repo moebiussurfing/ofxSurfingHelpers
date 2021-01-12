@@ -116,7 +116,7 @@ namespace ofxSurfingHelpers {
 
 	// TODO: seems not working well linked to the param.. requires better unique name?
 	//--------------------------------------------------------------
-	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30)
+	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30, bool border = false)
 	{
 		auto tmpRef = parameter.get();
 		std::string name = parameter.getName();
@@ -134,10 +134,23 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
+		// border to selected
+		ImVec4 color_Pick{ 1,1,1,0.25 };
+		float linew_Pick = 1.0;
+		bool bDrawBorder = false;
+
 		bool _boolToggle = tmpRef;  // default value, the button is disabled 
 
 		if (_boolToggle == true)// enabled
 		{
+			// border to selected
+			if (_boolToggle && border)
+			{
+				bDrawBorder = true;
+				ImGui::PushStyleColor(ImGuiCol_Border, color_Pick);
+				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, linew_Pick);
+			}
+
 			ImGuiStyle *style = &ImGui::GetStyle();
 
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -161,6 +174,14 @@ namespace ofxSurfingHelpers {
 			//ImGui::PopItemWidth();
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
+
+			//-
+
+			if (bDrawBorder && border)
+			{
+				ImGui::PopStyleColor();
+				ImGui::PopStyleVar(1);
+			}
 		}
 		else// disabled
 		{
