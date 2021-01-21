@@ -111,12 +111,12 @@ namespace ofxSurfingHelpers {
 		ImGui::PopStyleColor(3);
 		ImGui::PopID();
 
-		return true;//not used
+		return tmpRef;
 	}
 
 	// TODO: seems not working well linked to the param.. requires better unique name?
 	//--------------------------------------------------------------
-	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30, bool border = false)
+	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30, bool border = true)
 	{
 		auto tmpRef = parameter.get();
 		std::string name = parameter.getName();
