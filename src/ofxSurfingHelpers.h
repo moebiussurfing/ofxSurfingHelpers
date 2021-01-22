@@ -4,6 +4,9 @@
 
 //---------
 //
+// OPTIONAL
+
+
 #include "ofxSurfingConstants.h"
 
 #ifdef USE_IM_GUI
@@ -13,6 +16,9 @@
 #ifdef USE_ofxGui
 #include "ofxSurfing_ofxGui.h"
 #endif
+
+#define USE_FAST_SERIALIZER
+
 //
 //#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
 //#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers
@@ -77,6 +83,56 @@ namespace ofxSurfingHelpers {
 		ofPopMatrix();
 	}
 
+	//-----------------------------------------------------------------------------------------------
+
+
+	// 2 SERIALIZERS
+
+	//TODO:
+	//testing for improve performance
+	//public:
+	//private:
+
+	inline void ofDeserializeSilent(const ofJson & json, ofAbstractParameter & parameter) {
+		if (!parameter.isSerializable()) {
+			return;
+		}
+		std::string name = parameter.getEscapedName();
+		if (json.find(name) != json.end()) {
+			if (parameter.type() == typeid(ofParameterGroup).name()) {
+				ofParameterGroup & group = static_cast <ofParameterGroup &>(parameter);
+				for (auto & p : group) {
+					ofDeserializeSilent(json[name], *p);
+				}
+			}
+			else {
+				if (parameter.type() == typeid(ofParameter <int>).name() && json[name].is_number_integer()) {
+					parameter.cast <int>().setWithoutEventNotifications(json[name].get<int>());
+					//parameter.cast <int>() = json[name].get<int>();
+				}
+				else if (parameter.type() == typeid(ofParameter <float>).name() && json[name].is_number_float()) {
+					parameter.cast <float>().setWithoutEventNotifications(json[name].get<float>());
+					//parameter.cast <float>() = json[name].get<float>();
+				}
+				else if (parameter.type() == typeid(ofParameter <bool>).name() && json[name].is_boolean()) {
+					parameter.cast <bool>().setWithoutEventNotifications(json[name].get<bool>());
+					//parameter.cast <bool>() = json[name].get<bool>();
+				}
+				else if (parameter.type() == typeid(ofParameter <int64_t>).name() && json[name].is_number_integer()) {
+					parameter.cast <int64_t>().setWithoutEventNotifications(json[name].get<int64_t>());
+					//parameter.cast <int64_t>() = json[name].get<int64_t>();
+}
+				else if (parameter.type() == typeid(ofParameter <std::string>).name()) {
+					parameter.cast <std::string>().setWithoutEventNotifications(json[name].get<std::string>());
+					//parameter.cast <std::string>() = json[name].get<std::string>();
+				}
+				else {
+					parameter.fromString(json[name]);
+				}
+			}
+		}
+	}
+
 	//---
 
 	// xml
@@ -134,7 +190,14 @@ namespace ofxSurfingHelpers {
 
 		ofJson settings;
 		settings = ofLoadJson(path);
+
+#ifndef USE_FAST_SERIALIZER
 		ofDeserialize(settings, g);
+#endif
+#ifdef USE_FAST_SERIALIZER
+		ofDeserializeSilent(settings, g);
+#endif
+
 		bool b = !settings.is_null();//TODO:
 		//bool b = true;//TODO:
 
