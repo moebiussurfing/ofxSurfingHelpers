@@ -2,10 +2,13 @@
 
 #include "ofMain.h"
 
+//https://github.com/FilikaDesign/ofxFilika/blob/master/src/ofxFilikaUtils.h
+
 //---------
 //
 // OPTIONAL
 
+#define USE_FAST_SERIALIZER // test improve serialize performance..
 
 #include "ofxSurfingConstants.h"
 
@@ -17,8 +20,6 @@
 #include "ofxSurfing_ofxGui.h"
 #endif
 
-#define USE_FAST_SERIALIZER
-
 //
 //#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
 //#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers
@@ -29,6 +30,8 @@ namespace ofxSurfingHelpers {
 	//using namespace ofxSurfingHelpers;
 
 	//-
+
+	// 1. WIDGETS
 
 	//--------------------------------------------------------------
 	// circular progress bar
@@ -233,6 +236,10 @@ namespace ofxSurfingHelpers {
 		return b;
 	}
 #endif
+
+	//-
+
+	// 3. FILES
 
 	//--------------------------------------------------------------
 	// check if a folder path exist and creates one if not

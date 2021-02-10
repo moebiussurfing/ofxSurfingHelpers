@@ -178,7 +178,7 @@ public:
 
 		label = "";
 		fontCycleSize = 10;
-		std::string path = "assets/fonts/Mono.ttf";
+		std::string path = "assets/fonts/mono.ttf";
 		if (!fontCycle.loadFont(path, fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};

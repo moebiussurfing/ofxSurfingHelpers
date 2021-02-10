@@ -191,14 +191,14 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
 			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
-			
+
 			//ImGui::PushID(name.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
 			//ImGui::PushItemWidth(w);
 
-			if (ImGui::Button(name.c_str(), ImVec2(w, h))) 
+			if (ImGui::Button(name.c_str(), ImVec2(w, h)))
 			{
 				_boolToggle = true;
 				tmpRef = _boolToggle;
@@ -393,19 +393,30 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline void ImGui_FontCustom() {
 		ofLogNotice(__FUNCTION__);
-
-		ImGuiIO& io = ImGui::GetIO();
-
-		//float _size = 14.f;
-		//string _name = "FiraCodeRegular.ttf";
-		//float _size = 13.f;
-		//string _name = "overpass-mono-bold.otf";
-		float _size = 10.f;
-		string _name = "telegrama_render.otf";
-		string _path = "assets/fonts/" + _name;//assets folder
-
-		io.Fonts->AddFontFromFileTTF(&ofToDataPath(_path)[0], _size);
 	}
+
+	// WIP
+	//--------------------------------------------------------------
+	inline void ImGui_FontCustom(ofxImGui::Gui &gui, ImFont* customFont, string path = "assets/fonts/pathtelegrama_render.otf", float size = 10.f) {
+		ofLogNotice(__FUNCTION__);
+
+		auto normalCharRanges = ImGui::GetIO().Fonts->GetGlyphRangesDefault();
+		customFont = gui.addFont(path, size, nullptr, normalCharRanges);
+	}
+
+	//inline void ImGui_FontCustom() {
+	//ImGuiIO& io = ImGui::GetIO();
+	////float _size = 14.f;
+	////string _name = "FiraCodeRegular.ttf";
+	////float _size = 13.f;
+	////string _name = "overpass-mono-bold.otf";
+	//float _size = 10.f;
+	//string _name = "telegrama_render.otf";
+	//string _path = "assets/fonts/" + _name;//assets folder
+	//io.Fonts->AddFontFromFileTTF(&ofToDataPath(_path)[0], _size);
+	//}
+
+	//--
 
 	//// TODO:
 	////--------------------------------------------------------------
@@ -441,7 +452,7 @@ namespace ofxSurfingHelpers {
 	//				//draw button
 	//				if (ImGui::Button(name.c_str(), button_sz))
 	//				{
-	//					//loadPreset(n);//trig load preset
+	//					//populatePreset(n);//trig load preset
 	//					_selected = n;
 	//				}
 	//				//customize colors
