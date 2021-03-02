@@ -8,7 +8,7 @@
 //
 // OPTIONAL
 
-#define USE_FAST_SERIALIZER // test improve serialize performance..
+//#define USE_FAST_SERIALIZER // test improve serialize performance..
 
 #include "ofxSurfingConstants.h"
 
@@ -208,7 +208,7 @@ namespace ofxSurfingHelpers {
 		//if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
 		//else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
 
-		return b;
+		return b;//returns true if its ok
 	}
 
 	//--------------------------------------------------------------

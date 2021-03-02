@@ -132,10 +132,14 @@ namespace ofxSurfingHelpers {
 
 		//--
 
+		ImGuiStyle *style = &ImGui::GetStyle();
+
 		// button toggle
 
 		// border to selected
-		ImVec4 color_Pick{ 1,1,1,0.25 };
+		//ImVec4 color_Pick{ 1,1,1,0.25 };
+		const ImVec4 color_Pick = style->Colors[ImGuiCol_Separator];
+		
 		float linew_Pick = 1.0;
 		bool bDrawBorder = false;
 
@@ -150,8 +154,6 @@ namespace ofxSurfingHelpers {
 				ImGui::PushStyleColor(ImGuiCol_Border, color_Pick);
 				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, linew_Pick);
 			}
-
-			ImGuiStyle *style = &ImGui::GetStyle();
 
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
@@ -266,7 +268,8 @@ namespace ofxSurfingHelpers {
 		if (_boolToggle == true)// enabled
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
-			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+			//const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
+			const ImVec4 colorActive = style->Colors[ImGuiCol_Separator];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
 
@@ -725,33 +728,31 @@ namespace ofxSurfingHelpers {
 	{
 		ofLogNotice(__FUNCTION__);
 
-		// must be done after setup the gui
+		// this must be called after setup the gui!
 
 		ImGuiStyle *style = &ImGui::GetStyle();
 
 		style->FramePadding = ImVec2(6, 4);
 		style->ItemSpacing = ImVec2(6, 4);
 		style->ItemInnerSpacing = ImVec2(2, 4);
-		//style->Alpha = 1.0f;
 		style->Alpha = 0.95f;
-		style->WindowRounding = 0.0f;
-		style->FrameRounding = 0.0f;
-		style->IndentSpacing = 6.0f;
-		style->ColumnsMinSpacing = 50.0f;
-		style->GrabMinSize = 14.0f;
-		style->GrabRounding = 0.0f;
-		style->ScrollbarSize = 12.0f;
-		style->ScrollbarRounding = 0.0f;
-
+		style->WindowRounding = 0;
+		style->FrameBorderSize = 1;
+		style->FrameRounding = 3;
+		style->IndentSpacing = 3;
+		style->ColumnsMinSpacing = 50;
+		style->GrabMinSize = 18;
+		style->ScrollbarSize = 12;
+		style->ScrollbarRounding = 3;
+		style->TabRounding = 0;
+		style->WindowRounding = 2;
+		style->GrabRounding = 2;
 		//style->ChildRounding = 0;
-		//style->GrabRounding = 0;
-		style->FrameRounding = 2;
 		//style->PopupRounding = 0;
 		//style->ScrollbarRounding = 0;
-		//style->TabRounding = 2;
-		//style->WindowRounding = 0;
 		//style->FramePadding = { 4, 4 };
 
+		// colors 
 		// my dark theme
 
 		//ImVec4* colors = ImGui::GetStyle().Colors;
@@ -778,11 +779,11 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.74f, 0.75f, 0.77f, 0.79f);
 		style->Colors[ImGuiCol_Button] = ImVec4(0.28f, 0.28f, 0.28f, 1.00f);
 		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.79f);
-		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.70f);
+		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
 		style->Colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.31f);
 		style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
 		style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
-		style->Colors[ImGuiCol_Separator] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+		style->Colors[ImGuiCol_Separator] = ImVec4(0.0f, 0.0f, 0.00f, 0.50f);
 		style->Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.29f, 0.29f, 0.29f, 0.78f);
 		style->Colors[ImGuiCol_SeparatorActive] = ImVec4(0.37f, 0.37f, 0.37f, 1.00f);
 		style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.44f, 0.44f, 0.44f, 0.25f);
@@ -799,12 +800,13 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 		style->Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 
-
+		// tabs
 		style->Colors[ImGuiCol_Tab] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
 		style->Colors[ImGuiCol_TabHovered] = ImVec4(0.352f, 0.352f, 0.352f, 1.000f);
 		style->Colors[ImGuiCol_TabActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
 		style->Colors[ImGuiCol_TabUnfocused] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
 		style->Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+
 		// docking
 		style->Colors[ImGuiCol_DockingPreview] = ImVec4(1.000f, 0.391f, 0.000f, 0.781f);
 		style->Colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
@@ -890,7 +892,7 @@ namespace ofxSurfingHelpers {
 		style->GrabMinSize = 7.0f;
 		style->PopupRounding = 2.0f;
 		style->ScrollbarRounding = 12.0f;
-		style->ScrollbarSize = 13.0f;
+		style->ScrollbarSize = 14.0f;
 		style->TabBorderSize = 1.0f;
 		style->TabRounding = 0.0f;
 		style->WindowRounding = 4.0f;
