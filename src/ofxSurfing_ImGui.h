@@ -137,10 +137,10 @@ namespace ofxSurfingHelpers {
 		// button toggle
 
 		// border to selected
-		//ImVec4 color_Pick{ 1,1,1,0.25 };
-		const ImVec4 color_Pick = style->Colors[ImGuiCol_Separator];
+		//ImVec4 borderLineColor{ 1,1,1,0.25 };
+		const ImVec4 borderLineColor = style->Colors[ImGuiCol_Separator];
 		
-		float linew_Pick = 1.0;
+		float borderLineWidth = 1.0;
 		bool bDrawBorder = false;
 
 		bool _boolToggle = tmpRef;  // default value, the button is disabled 
@@ -151,8 +151,8 @@ namespace ofxSurfingHelpers {
 			if (_boolToggle && border)
 			{
 				bDrawBorder = true;
-				ImGui::PushStyleColor(ImGuiCol_Border, color_Pick);
-				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, linew_Pick);
+				ImGui::PushStyleColor(ImGuiCol_Border, borderLineColor);
+				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, borderLineWidth);
 			}
 
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -254,11 +254,15 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
-		float w;
+		//float w;
 		//float h;
 		//h = 30;
 		//w = 200;
-		w = ImGui::GetWindowWidth()*0.9f;
+		float _spc = ImGui::GetStyle().ItemInnerSpacing.x;
+		float w = ImGui::GetWindowWidth() - 20;
+		//w = ImGui::GetWindowWidth() -3 * _spc;//?
+
+		//w = ImGui::GetWindowWidth()*0.9f;
 
 		// TODO: ?
 		//BUG: do not reflects the correct state...
@@ -728,23 +732,25 @@ namespace ofxSurfingHelpers {
 	{
 		ofLogNotice(__FUNCTION__);
 
-		// this must be called after setup the gui!
+		// this must be called after the gui setup()!
 
 		ImGuiStyle *style = &ImGui::GetStyle();
+		//ImVec4* colors = ImGui::GetStyle().Colors;
 
+		//style->FramePadding = ImVec2(20, 4);//align
 		style->FramePadding = ImVec2(6, 4);
 		style->ItemSpacing = ImVec2(6, 4);
 		style->ItemInnerSpacing = ImVec2(2, 4);
 		style->Alpha = 0.95f;
 		style->WindowRounding = 0;
 		style->FrameBorderSize = 1;
-		style->FrameRounding = 3;
+		style->FrameRounding = 4;
 		style->IndentSpacing = 3;
 		style->ColumnsMinSpacing = 50;
 		style->GrabMinSize = 18;
 		style->ScrollbarSize = 12;
 		style->ScrollbarRounding = 3;
-		style->TabRounding = 0;
+		style->TabRounding = 3;
 		style->WindowRounding = 2;
 		style->GrabRounding = 2;
 		//style->ChildRounding = 0;
@@ -753,12 +759,8 @@ namespace ofxSurfingHelpers {
 		//style->FramePadding = { 4, 4 };
 
 		// colors 
-		// my dark theme
-
-		//ImVec4* colors = ImGui::GetStyle().Colors;
 		style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 		style->Colors[ImGuiCol_ChildBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
 		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
 		style->Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
@@ -777,8 +779,11 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.74f, 0.75f, 0.77f, 0.79f);
-		style->Colors[ImGuiCol_Button] = ImVec4(0.28f, 0.28f, 0.28f, 1.00f);
-		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.19f, 0.19f, 0.19f, 0.79f);
+
+		style->Colors[ImGuiCol_WindowBg] = ImVec4(25/255.f, 25 / 255.f, 25 / 255.f, 1.0f);
+		style->Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.2f, 1.00f);
+		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.1f, 0.1f, 0.1f, 0.6f);
+
 		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
 		style->Colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.31f);
 		style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
@@ -872,6 +877,7 @@ namespace ofxSurfingHelpers {
 		colors[ImGuiCol_TabActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
 		colors[ImGuiCol_TabUnfocused] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
 		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+
 		// docking
 		colors[ImGuiCol_DockingPreview] = ImVec4(1.000f, 0.391f, 0.000f, 0.781f);
 		colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
