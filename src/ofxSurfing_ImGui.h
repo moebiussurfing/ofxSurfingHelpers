@@ -139,7 +139,7 @@ namespace ofxSurfingHelpers {
 		// border to selected
 		//ImVec4 borderLineColor{ 1,1,1,0.25 };
 		const ImVec4 borderLineColor = style->Colors[ImGuiCol_Separator];
-		
+
 		float borderLineWidth = 1.0;
 		bool bDrawBorder = false;
 
@@ -236,13 +236,15 @@ namespace ofxSurfingHelpers {
 
 	// two states names
 	//--------------------------------------------------------------
-	inline bool AddBigToggle(ofParameter<bool>& parameter, float h, std::string nameTrue, std::string nameFalse)
+	inline bool AddBigToggleNamed(ofParameter<bool>& parameter, float w = -1, float h = -1, std::string nameTrue = "-1", std::string nameFalse = "-1")
 	{
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
 		//--
 
+		//TODO:
+		//blink..
 		// how to set colors
 		//static float b = 1.0f;
 		//static float c = 0.5f;
@@ -254,22 +256,23 @@ namespace ofxSurfingHelpers {
 
 		// button toggle
 
-		//float w;
-		//float h;
-		//h = 30;
-		//w = 200;
 		float _spc = ImGui::GetStyle().ItemInnerSpacing.x;
-		float w = ImGui::GetWindowWidth() - 20;
-		//w = ImGui::GetWindowWidth() -3 * _spc;//?
 
-		//w = ImGui::GetWindowWidth()*0.9f;
+		if (w == -1) w = ImGui::GetWindowWidth() - 20;
+		if (h == -1) h = 30;//TODO. get widget height
+
+		if (nameTrue == "-1") nameTrue = name;
+		if (nameFalse == "-1") nameFalse = name;
+
+		//--
 
 		// TODO: ?
 		//BUG: do not reflects the correct state...
 
 		bool _boolToggle = tmpRef;  // default value, the button is disabled 
 
-		if (_boolToggle == true)// enabled
+		// enabled
+		if (_boolToggle == true)
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
 			//const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -293,7 +296,9 @@ namespace ofxSurfingHelpers {
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
-		else// disabled
+		
+		// disabled
+		else
 		{
 			ImGuiStyle *style = &ImGui::GetStyle();
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
@@ -780,7 +785,7 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.74f, 0.75f, 0.77f, 0.79f);
 
-		style->Colors[ImGuiCol_WindowBg] = ImVec4(25/255.f, 25 / 255.f, 25 / 255.f, 1.0f);
+		style->Colors[ImGuiCol_WindowBg] = ImVec4(25 / 255.f, 25 / 255.f, 25 / 255.f, 1.0f);
 		style->Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.2f, 1.00f);
 		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.1f, 0.1f, 0.1f, 0.6f);
 
