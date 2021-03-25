@@ -93,6 +93,7 @@ namespace ofxSurfingHelpers {
 
 	//TODO:
 	//testing for improve performance
+	//changing the mode we trig the loaded params..
 	//public:
 	//private:
 
@@ -181,7 +182,8 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path, bool debug = true)
 	{
-		if (debug) {
+		if (debug) 
+		{
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
 			ofLogNotice(__FUNCTION__) << "parameters: \n\n" << g.toString();
 		}
