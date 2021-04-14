@@ -1108,6 +1108,7 @@ namespace ofxSurfingHelpers {
 		ImGui::Text(str_id);
 	}
 
+	// ofParameter
 	//--------------------------------------------------------------
 	inline bool AddToggleRounded(ofParameter<bool>& parameter, ImVec2 v = ImVec2(-1, -1))
 	{
@@ -1165,10 +1166,57 @@ namespace ofxSurfingHelpers {
 		draw_list->AddCircleFilled(ImVec2(p.x + radius + (tmpRef ? 1 : 0) * (width - radius * 2.0f),
 			p.y + radius), radius - 1.5f, c1);
 
+		//--
+
 		//label
-		ImGui::SameLine(0, 10);
-		ImGui::SameLine(0, + 0.5);
+
+		//// Render
+		//const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
+		//RenderNavHighlight(bb, id);
+		//RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
+
+		//ImVec2 pos = window->DC.CursorPos;
+		//if ((flags & ImGuiButtonFlags_AlignTextBaseLine) && style.FramePadding.y < window->DC.CurrLineTextBaseOffset) // Try to vertically align buttons that are smaller/have no padding so that text baseline matches (bit hacky, since it shouldn't be a flag)
+		//	pos.y += window->DC.CurrLineTextBaseOffset - style.FramePadding.y;
+		//ImVec2 size = CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+		//const ImRect bb(pos, pos + size);
+		//ImGui::RenderTextClipped(bb.Min + style.FramePadding, bb.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+		//ImGui::RenderTextClipped(.Max - style.FramePadding, label, NULL, &label_size, style.ButtonTextAlign, &bb);
+
+		//ImGui::SameLine(0, 10);
+		//ImGui::SameLine(0, 0.5);
+		ImGui::SameLine();
+		//ImGui::Dummy(ImVec2(-1.0f, 10.0f));
 		ImGui::Text(name.c_str());
+
+
+		//TODO. aligning
+		//const char* fmt;
+		//va_list args;
+		//ImVec2 size_arg(100, 30);
+		//ImVec2 align(0, 0);
+
+		//ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+		////ImGuiContext& g = *GetCurrentContext();
+		////
+		////auto g = ImGui::GetStyle();
+		////const ImGuiStyle& style = g.Style;
+		////const char* text_end = g.TempBuffer + ImFormatStringV(g.TempBuffer, IM_ARRAYSIZE(g.TempBuffer), fmt, args);
+		////const ImVec2 label_size = ImGui::CalcTextSize(g.TempBuffer, text_end, true, 0.0f);
+		////const ImGuiID id = window->GetID(g.TempBuffer, text_end);
+
+		//ImVec2 pos = window->DC.CursorPos;
+		////if ((flags & ImGuiButtonFlags_AlignTextBaseLine) && style.FramePadding.y < window->DC.CurrentLineTextBaseOffset)
+		//	//pos.y += window->DC.CurrentLineTextBaseOffset - style.FramePadding.y;
+		//ImVec2 size = ImGui::CalcItemSize(size_arg, label_size.x + style.FramePadding.x * 2.0f, label_size.y + style.FramePadding.y * 2.0f);
+
+
+		//const ImRect bb(pos, pos + size);
+		//ImGui::ItemSize(bb, style.FramePadding.y);
+		//ImGui::RenderTextClipped(bb.Min, bb.Max, g.TempBuffer, text_end, &label_size, align);
+
 
 		return tmpRef;// used
 	}

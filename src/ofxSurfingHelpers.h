@@ -344,6 +344,7 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	// draws a box with text
 	//--------------------------------------------------------------
+#define BOX_PADDING 50
 	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
 	{
 		x += 25;
@@ -353,6 +354,7 @@ namespace ofxSurfingHelpers {
 		float _round = 5;
 
 		ofPushStyle();
+
 		//float fontSize = font.getSize();
 
 		if (!font.isLoaded())
@@ -392,13 +394,20 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	// get box width
 	//--------------------------------------------------------------
+
 	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
-		int _pad = 50;
+		int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
 	}
+
 	inline float getHeightBBtextBoxed(ofTrueTypeFont &font, string text) {
-		int _pad = 50;
+		int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
+	}
+
+	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont &font, string text) {
+		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
+		return sh;
 	}
 
 	//---
