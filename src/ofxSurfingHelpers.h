@@ -125,7 +125,7 @@ namespace ofxSurfingHelpers {
 				else if (parameter.type() == typeid(ofParameter <int64_t>).name() && json[name].is_number_integer()) {
 					parameter.cast <int64_t>().setWithoutEventNotifications(json[name].get<int64_t>());
 					//parameter.cast <int64_t>() = json[name].get<int64_t>();
-}
+				}
 				else if (parameter.type() == typeid(ofParameter <std::string>).name()) {
 					parameter.cast <std::string>().setWithoutEventNotifications(json[name].get<std::string>());
 					//parameter.cast <std::string>() = json[name].get<std::string>();
@@ -182,7 +182,7 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path, bool debug = true)
 	{
-		if (debug) 
+		if (debug)
 		{
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
 			ofLogNotice(__FUNCTION__) << "parameters: \n\n" << g.toString();
@@ -340,6 +340,7 @@ namespace ofxSurfingHelpers {
 
 	//----
 
+
 	//--------------------------------------------------------------
 	// draws a box with text
 	//--------------------------------------------------------------
@@ -354,11 +355,11 @@ namespace ofxSurfingHelpers {
 		ofPushStyle();
 		//float fontSize = font.getSize();
 
-		if (!font.isLoaded()) 
+		if (!font.isLoaded())
 		{
 			ofDrawBitmapStringHighlight(text, x, y);
 		}
-		else 
+		else
 		{
 			// bbox
 			ofSetColor(colorBackground);
@@ -387,6 +388,7 @@ namespace ofxSurfingHelpers {
 
 		ofPopStyle();
 	}
+
 	//--------------------------------------------------------------
 	// get box width
 	//--------------------------------------------------------------
@@ -461,4 +463,33 @@ namespace ofxSurfingHelpers {
 		ofPopStyle();
 	}
 
+	//-
+
+	//get a blink faded to use as alpha on gui button when "active-listening-mode" enabled
+	//ie: blink when a new preset is editing
+	//--------------------------------------------------------------
+	inline float getFadeBlink(float min = 0.20, float max = 0.80, float freq = 0.15) {
+
+		float a = ofMap(glm::sin(freq * ofGetFrameNum()), -1, 1, min, max);
+
+		return a;
+	}
+
+	//-
+
+	// simple smooth
+	//--------------------------------------------------------------
+	template <typename T>
+	void ofxKuValueSmooth(T &value, T target, float smooth) {
+		value += (target - value) * (1 - smooth);
+	}
+
+	//--------------------------------------------------------------
+	template <typename T>
+	void ofxKuValueSmoothDirected(T &value, T target, float smooth0, float smooth1) {
+		float smooth = (target < value) ? smooth0 : smooth1;
+		ofxKuValueSmooth(value, target, smooth);
+	}
+
 };// ofxSurfingHelpers
+

@@ -2,11 +2,16 @@
 
 #include "ofMain.h"
 
+#define WIDGETS_HEIGHT 50
+#define PANEL_WIDGETS_WIDTH 250
+#define PANEL_WIDGETS_HEIGHT 500
+
 //---------
 //
 #include "ofxSurfingConstants.h"
 
 #include "ofxImGui.h"
+#include "imgui_internal.h"
 
 namespace ofxSurfingHelpers {
 
@@ -99,7 +104,6 @@ namespace ofxSurfingHelpers {
 		ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
-
 		if (ImGui::Button((name), ImVec2(w, h)))
 		{
 			ofLogNotice(__FUNCTION__) << name << ": BANG";
@@ -143,7 +147,7 @@ namespace ofxSurfingHelpers {
 		float borderLineWidth = 1.0;
 		bool bDrawBorder = false;
 
-		bool _boolToggle = tmpRef;  // default value, the button is disabled 
+		bool _boolToggle = tmpRef;  // default pre value, the button is disabled 
 
 		if (_boolToggle == true)// enabled
 		{
@@ -231,7 +235,8 @@ namespace ofxSurfingHelpers {
 		//ImGui::PopID();
 		//return false;
 
-		return true;// not used
+		//return true;// not used
+		return tmpRef;// used
 	}
 
 	// two states names
@@ -296,7 +301,7 @@ namespace ofxSurfingHelpers {
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 		}
-		
+
 		// disabled
 		else
 		{
@@ -401,6 +406,9 @@ namespace ofxSurfingHelpers {
 
 		return bChanged;
 	}
+
+
+
 
 	//--------------------------------------------------------------
 	inline void ImGui_FontCustom() {
@@ -739,31 +747,36 @@ namespace ofxSurfingHelpers {
 
 		// this must be called after the gui setup()!
 
-		ImGuiStyle *style = &ImGui::GetStyle();
-		//ImVec4* colors = ImGui::GetStyle().Colors;
+		// style
 
-		//style->FramePadding = ImVec2(20, 4);//align
+		ImGuiStyle *style = &ImGui::GetStyle();
+
 		style->FramePadding = ImVec2(6, 4);
+		style->ItemInnerSpacing = ImVec2(5, 4);
 		style->ItemSpacing = ImVec2(6, 4);
-		style->ItemInnerSpacing = ImVec2(2, 4);
-		style->Alpha = 0.95f;
+		style->Alpha = 0.97f;
 		style->WindowRounding = 0;
 		style->FrameBorderSize = 1;
 		style->FrameRounding = 4;
 		style->IndentSpacing = 3;
 		style->ColumnsMinSpacing = 50;
 		style->GrabMinSize = 18;
-		style->ScrollbarSize = 12;
-		style->ScrollbarRounding = 3;
-		style->TabRounding = 3;
+		style->ScrollbarSize = 14;
+		style->ScrollbarRounding = 4;
+		style->TabRounding = 4;
 		style->WindowRounding = 2;
 		style->GrabRounding = 2;
-		//style->ChildRounding = 0;
-		//style->PopupRounding = 0;
-		//style->ScrollbarRounding = 0;
-		//style->FramePadding = { 4, 4 };
 
 		// colors 
+
+		//ImVec4* colors = ImGui::GetStyle().Colors;
+
+		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.098f, 0.098f, 0.098f, 1.0f);
+
+		style->Colors[ImGuiCol_Button] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.80f);
+		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.08f, 0.08f, 0.08f, 0.9f);
+
 		style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
 		style->Colors[ImGuiCol_ChildBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
@@ -780,16 +793,11 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
 		style->Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.12f, 0.11f, 0.11f, 1.00f);
 		style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.19f, 0.19f, 0.19f, 1.00f);
-		style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+		style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 		style->Colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.74f, 0.75f, 0.77f, 0.79f);
 
-		style->Colors[ImGuiCol_WindowBg] = ImVec4(25 / 255.f, 25 / 255.f, 25 / 255.f, 1.0f);
-		style->Colors[ImGuiCol_Button] = ImVec4(0.2f, 0.2f, 0.2f, 1.00f);
-		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.1f, 0.1f, 0.1f, 0.6f);
-
-		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
 		style->Colors[ImGuiCol_Header] = ImVec4(0.00f, 0.00f, 0.00f, 0.31f);
 		style->Colors[ImGuiCol_HeaderHovered] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
 		style->Colors[ImGuiCol_HeaderActive] = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
@@ -810,32 +818,22 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 		style->Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 
+		//-
+
 		// tabs
+
 		style->Colors[ImGuiCol_Tab] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
-		style->Colors[ImGuiCol_TabHovered] = ImVec4(0.352f, 0.352f, 0.352f, 1.000f);
-		style->Colors[ImGuiCol_TabActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
 		style->Colors[ImGuiCol_TabUnfocused] = ImVec4(0.098f, 0.098f, 0.098f, 1.000f);
-		style->Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.195f, 0.195f, 0.195f, 1.000f);
+		style->Colors[ImGuiCol_TabHovered] = style->Colors[ImGuiCol_WindowBg];
+		style->Colors[ImGuiCol_TabActive] = ImVec4(0.2f, 0.2f, 0.2f, 0.9f);
+		style->Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.2f, 0.2f, 0.2f, 0.9f);
+
+		//-
 
 		// docking
-		style->Colors[ImGuiCol_DockingPreview] = ImVec4(1.000f, 0.391f, 0.000f, 0.781f);
-		style->Colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
 
-		//   //2. defaut dark theme exported
-		//   style->WindowMinSize = ImVec2(160, 65);
-		//   style->FramePadding = ImVec2(4, 2);
-		//   style->ItemSpacing = ImVec2(6, 2);
-		//   style->ItemInnerSpacing = ImVec2(6, 4);
-		//   style->Alpha = 1.0f;
-		//   style->WindowRounding = 0.0f;
-		//   style->FrameRounding = 0.0f;
-		//   style->IndentSpacing = 6.0f;
-		//   style->ItemInnerSpacing = ImVec2(2, 4);
-		//   style->ColumnsMinSpacing = 50.0f;
-		//   style->GrabMinSize = 14.0f;
-		//   style->GrabRounding = 0.0f;
-		//   style->ScrollbarSize = 12.0f;
-		//   style->ScrollbarRounding = 0.0f;
+		style->Colors[ImGuiCol_DockingPreview] = ImVec4(0.000f, 0.000f, 0.000f, 0.781f);
+		style->Colors[ImGuiCol_DockingEmptyBg] = ImVec4(0.180f, 0.180f, 0.180f, 1.000f);
 	}
 
 	//--------------------------------------------------------------
@@ -909,36 +907,269 @@ namespace ofxSurfingHelpers {
 		style->WindowRounding = 4.0f;
 
 	}
+
+	//-
+
+	//custom int params:
+	//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get());
+	//boxSizeUser = ofClamp(boxSizeUser.get(), boxSizeUser.getMin(), boxSizeUser.getMax());
+
+	//-
+
+	//mainSettings = ofxImGui::Settings();
+
+	//mainSettings.windowPos = ofVec2f(gui_x, gui_y);
+	//mainSettings.windowSize = ofVec2f(w_Gui, ofGetWindowHeight() - gui_y);
+
+	//    static bool no_titlebar = false;
+	//    static bool no_scrollbar = false;
+	//    static bool no_menu = false;
+	//    static bool no_move = false;
+	//    static bool no_resize = false;
+	//    static bool no_collapse = false;
+	//    static bool no_close = false;
+	//    static bool no_nav = false;
+	//    ImGuiWindowFlags window_flags = 0;
+	////    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+	////    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+	////    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+	////    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+	////    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+	//    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+	////    if (no_nav)       window_flags |= ImGuiWindowFlags_NoNav;
+	////    if (no_close)     p_open = NULL; // Don't pass our bool* to Begin
+	//    if (ofxImGui::BeginWindow("COLOR PICKER", mainSettings, window_flags))
+
+
+
+
+		//--
+
+		// spinner progress indicator
+		//https://github.com/ocornut/imgui/issues/1901
+		//https://discourse.dearimgui.org/t/spinner-modified-code-from-issue-1901/22
+
+	//namespace ImGui {
+	//
+	//	bool BufferingBar(const char* label, float value, const ImVec2& size_arg, const ImU32& bg_col, const ImU32& fg_col) {
+	//		ImGuiWindow* window = GetCurrentWindow();
+	//		if (window->SkipItems)
+	//			return false;
+	//
+	//		ImGuiContext& g = *GImGui;
+	//		const ImGuiStyle& style = g.Style;
+	//		const ImGuiID id = window->GetID(label);
+	//
+	//		ImVec2 pos = window->DC.CursorPos;
+	//		ImVec2 size = size_arg;
+	//		size.x -= style.FramePadding.x * 2;
+	//
+	//		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+	//		ItemSize(bb, style.FramePadding.y);
+	//		if (!ItemAdd(bb, id))
+	//			return false;
+	//
+	//		// Render
+	//		const float circleStart = size.x * 0.7f;
+	//		const float circleEnd = size.x;
+	//		const float circleWidth = circleEnd - circleStart;
+	//
+	//		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart, bb.Max.y), bg_col);
+	//		window->DrawList->AddRectFilled(bb.Min, ImVec2(pos.x + circleStart * value, bb.Max.y), fg_col);
+	//
+	//		const float t = g.Time;
+	//		const float r = size.y / 2;
+	//		const float speed = 1.5f;
+	//
+	//		const float a = speed * 0;
+	//		const float b = speed * 0.333f;
+	//		const float c = speed * 0.666f;
+	//
+	//		const float o1 = (circleWidth + r) * (t + a - speed * (int)((t + a) / speed)) / speed;
+	//		const float o2 = (circleWidth + r) * (t + b - speed * (int)((t + b) / speed)) / speed;
+	//		const float o3 = (circleWidth + r) * (t + c - speed * (int)((t + c) / speed)) / speed;
+	//
+	//		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o1, bb.Min.y + r), r, bg_col);
+	//		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o2, bb.Min.y + r), r, bg_col);
+	//		window->DrawList->AddCircleFilled(ImVec2(pos.x + circleEnd - o3, bb.Min.y + r), r, bg_col);
+	//	}
+	//
+	//	bool Spinner(const char* label, float radius, int thickness, const ImU32& color) {
+	//		ImGuiWindow* window = GetCurrentWindow();
+	//		if (window->SkipItems)
+	//			return false;
+	//
+	//		ImGuiContext& g = *GImGui;
+	//		const ImGuiStyle& style = g.Style;
+	//		const ImGuiID id = window->GetID(label);
+	//
+	//		ImVec2 pos = window->DC.CursorPos;
+	//		ImVec2 size((radius) * 2, (radius + style.FramePadding.y) * 2);
+	//
+	//		const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+	//		ItemSize(bb, style.FramePadding.y);
+	//		if (!ItemAdd(bb, id))
+	//			return false;
+	//
+	//		// Render
+	//		window->DrawList->PathClear();
+	//
+	//		int num_segments = 30;
+	//		int start = abs(ImSin(g.Time*1.8f)*(num_segments - 5));
+	//
+	//		const float a_min = IM_PI * 2.0f * ((float)start) / (float)num_segments;
+	//		const float a_max = IM_PI * 2.0f * ((float)num_segments - 3) / (float)num_segments;
+	//
+	//		const ImVec2 centre = ImVec2(pos.x + radius, pos.y + radius + style.FramePadding.y);
+	//
+	//		for (int i = 0; i < num_segments; i++) {
+	//			const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
+	//			window->DrawList->PathLineTo(ImVec2(centre.x + ImCos(a + g.Time * 8) * radius,
+	//				centre.y + ImSin(a + g.Time * 8) * radius));
+	//		}
+	//
+	//		window->DrawList->PathStroke(color, false, thickness);
+	//	}
+	//
+	//}
+		//namespace ImGui 
+		//{
+	//using ComVec4 = const ImVec4 &;
+	//auto Spinner(float radius, float thickness, int num_segments, float speed, ComVec4 color) -> void {
+	//	//auto ImGui::Spinner(float radius, float thickness, int num_segments, float speed, ComVec4 color) -> void {
+	//	auto window = GetCurrentWindow();
+	//	if (window->SkipItems)
+	//		return;
+	//
+	//	auto &g = *GImGui;
+	//	const auto &style = g.Style;
+	//	auto &&pos = ImGui::GetCursorPos();
+	//	ImVec2 size{ radius * 2, radius * 2 };
+	//	const ImRect bb{ pos, pos + size };
+	//	ItemSize(bb);
+	//	if (!ItemAdd(bb, 0))
+	//		return;
+	//
+	//	auto time = static_cast<float>(g.Time) * speed;
+	//	window->DrawList->PathClear();
+	//	int start = static_cast<int>(abs(ImSin(time) * (num_segments - 5)));
+	//	const float a_min = IM_PI * 2.0f * ((float)start) / (float)num_segments;
+	//	const float a_max = IM_PI * 2.0f * ((float)num_segments - 3) / (float)num_segments;
+	//	const auto &&centre = pos + radius;
+	//	for (auto i = 0; i < num_segments; i++) {
+	//		const float a = a_min + ((float)i / (float)num_segments) * (a_max - a_min);
+	//		window->DrawList->PathLineTo({ centre.x + ImCos(a + time * 8) * radius,
+	//									  centre.y + ImSin(a + time * 8) * radius });
+	//	}
+	//	window->DrawList->PathStroke(GetColorU32(color), false, thickness);
+	//}
+
+	//}
+
+	//cute widgets !
+	//https://github.com/soufianekhiat/DearWidgets
+
+	//spin arrows widget
+	//https://github.com/ocornut/imgui/issues/2649
+
+	//spinners, loading bars 
+	//https://github.com/ocornut/imgui/issues/1901#issuecomment-552185000
+	//https://github.com/ocornut/imgui/issues/1901
+
+	//Rotating text and icon demo for dear imgui 
+	//https://gist.github.com/ice1000/865c7666d13b945628254aa00bd9d62d
+
+
+	// rounded toggle buttons: bool & ofParameter<bool>
+	//--------------------------------------------------------------
+	inline void ToggleButton(const char* str_id, bool* v)
+	{
+		ImVec4* colors = ImGui::GetStyle().Colors;
+		ImVec2 p = ImGui::GetCursorScreenPos();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		float height = ImGui::GetFrameHeight();
+		float width = height * 1.55f;
+		float radius = height * 0.50f;
+
+		ImGui::InvisibleButton(str_id, ImVec2(width, height));
+		if (ImGui::IsItemClicked()) *v = !*v;
+		ImGuiContext& gg = *GImGui;
+		float ANIM_SPEED = 0.085f;
+		if (gg.LastActiveId == gg.CurrentWindow->GetID(str_id))// && g.LastActiveIdTimer < ANIM_SPEED)
+			float t_anim = ImSaturate(gg.LastActiveIdTimer / ANIM_SPEED);
+		if (ImGui::IsItemHovered())
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), ImGui::GetColorU32(*v ? colors[ImGuiCol_ButtonActive] : ImVec4(0.78f, 0.78f, 0.78f, 1.0f)), height * 0.5f);
+		else
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), ImGui::GetColorU32(*v ? colors[ImGuiCol_Button] : ImVec4(0.85f, 0.85f, 0.85f, 1.0f)), height * 0.50f);
+		draw_list->AddCircleFilled(ImVec2(p.x + radius + (*v ? 1 : 0) * (width - radius * 2.0f), p.y + radius), radius - 1.5f, IM_COL32(255, 255, 255, 255));
+
+		ImGui::SameLine();
+		ImGui::Text(str_id);
+	}
+
+	//--------------------------------------------------------------
+	inline bool AddToggleRounded(ofParameter<bool>& parameter, ImVec2 v = ImVec2(-1, -1))
+	{
+		auto tmpRef = parameter.get();
+		std::string name = parameter.getName();
+
+		ImVec4* colors = ImGui::GetStyle().Colors;
+		ImVec2 p = ImGui::GetCursorScreenPos();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		float width;
+		float radius;
+		float height;
+		
+		if (v.x == -1 && v.y == -1) 
+		{
+		height = ImGui::GetFrameHeight();
+			width = height * 1.55f;
+			radius = height * 0.50f;
+		}
+		else
+		{
+			width = v.x;
+			radius = v.y * 0.5f;
+			height = v.y;
+		}
+
+		ImGui::InvisibleButton(name.c_str(), ImVec2(width, height));
+		if (ImGui::IsItemClicked())
+		{
+			tmpRef = !tmpRef;
+
+			parameter.set(tmpRef);
+		}
+
+		ImGuiContext& gg = *GImGui;
+		float ANIM_SPEED = 0.085f;
+		if (gg.LastActiveId == gg.CurrentWindow->GetID(name.c_str()))// && g.LastActiveIdTimer < ANIM_SPEED)
+			float t_anim = ImSaturate(gg.LastActiveIdTimer / ANIM_SPEED);
+
+		if (ImGui::IsItemHovered())
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), 
+				ImGui::GetColorU32(tmpRef ? 
+					colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ButtonHovered]), height * 0.5f);
+		else
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), 
+				ImGui::GetColorU32(tmpRef ? 
+					colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ButtonHovered]), height * 0.5f);
+
+		//draw_list->AddCircleFilled(ImVec2(p.x + radius + (tmpRef ? 1 : 0) * (width - radius * 2.0f), 
+		//	p.y + radius), radius - 1.5f, IM_COL32(255, 255, 255, 255));
+
+		ImU32 c1 = IM_COL32(255 * colors[ImGuiCol_Button].x, 255 * colors[ImGuiCol_Button].y, 255 * colors[ImGuiCol_Button].z, 255);
+
+		draw_list->AddCircleFilled(ImVec2(p.x + radius + (tmpRef ? 1 : 0) * (width - radius * 2.0f),
+			p.y + radius), radius - 1.5f, c1);
+
+		//label
+		ImGui::SameLine(0, 10);
+		ImGui::SameLine(0, + 0.5);
+		ImGui::Text(name.c_str());
+
+		return tmpRef;// used
+	}
 };
-
-//-
-
-//custom int params:
-//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get());
-//boxSizeUser = ofClamp(boxSizeUser.get(), boxSizeUser.getMin(), boxSizeUser.getMax());
-
-//-
-
-//mainSettings = ofxImGui::Settings();
-
-//mainSettings.windowPos = ofVec2f(gui_x, gui_y);
-//mainSettings.windowSize = ofVec2f(w_Gui, ofGetWindowHeight() - gui_y);
-
-//    static bool no_titlebar = false;
-//    static bool no_scrollbar = false;
-//    static bool no_menu = false;
-//    static bool no_move = false;
-//    static bool no_resize = false;
-//    static bool no_collapse = false;
-//    static bool no_close = false;
-//    static bool no_nav = false;
-//    ImGuiWindowFlags window_flags = 0;
-////    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
-////    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
-////    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
-////    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
-////    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
-//    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
-////    if (no_nav)       window_flags |= ImGuiWindowFlags_NoNav;
-////    if (no_close)     p_open = NULL; // Don't pass our bool* to Begin
-//    if (ofxImGui::BeginWindow("COLOR PICKER", mainSettings, window_flags))
