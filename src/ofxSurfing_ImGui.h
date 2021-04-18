@@ -167,7 +167,6 @@ namespace ofxSurfingHelpers {
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
-			//ImGui::PushItemWidth(w);
 
 			ImGui::Button(name.c_str(), ImVec2(w, h));
 			if (ImGui::IsItemClicked(0))
@@ -177,7 +176,6 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
-			//ImGui::PopItemWidth();
 			ImGui::PopStyleColor(3);
 			ImGui::PopID();
 
@@ -195,14 +193,14 @@ namespace ofxSurfingHelpers {
 
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
-			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
-			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
+			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
+			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
+			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, colorTextDisabled.w * 0.5);
 
-			//ImGui::PushID(name.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
-			//ImGui::PushItemWidth(w);
+			ImGui::PushStyleColor(ImGuiCol_Text, colorTextDisabled);
 
 			if (ImGui::Button(name.c_str(), ImVec2(w, h)))
 			{
@@ -211,9 +209,7 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
-			//ImGui::PopItemWidth();
-			ImGui::PopStyleColor(3);
-			//ImGui::PopID();
+			ImGui::PopStyleColor(4);
 		}
 
 		//--
@@ -308,13 +304,15 @@ namespace ofxSurfingHelpers {
 			ImGuiStyle *style = &ImGui::GetStyle();
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
-			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];//better for my theme
-			//const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];//better for default theme
-
+			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
+			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
+			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, colorTextDisabled.w * 0.5);
+			
 			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			ImGui::PushStyleColor(ImGuiCol_Text, colorTextDisabled);
 
 			if (ImGui::Button(nameFalse.c_str(), ImVec2(w, h))) {
 				_boolToggle = true;
@@ -322,7 +320,7 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
-			ImGui::PopStyleColor(3);
+			ImGui::PopStyleColor(4);
 			ImGui::PopID();
 		}
 
@@ -408,8 +406,8 @@ namespace ofxSurfingHelpers {
 	}
 
 
-
-
+	//TODO:
+	// WIP
 	//--------------------------------------------------------------
 	inline void ImGui_FontCustom() {
 		ofLogNotice(__FUNCTION__);
@@ -773,9 +771,15 @@ namespace ofxSurfingHelpers {
 
 		style->Colors[ImGuiCol_WindowBg] = ImVec4(0.098f, 0.098f, 0.098f, 1.0f);
 
-		style->Colors[ImGuiCol_Button] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
-		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.80f);
-		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.08f, 0.08f, 0.08f, 0.9f);
+		// enabled is lighter
+		style->Colors[ImGuiCol_Button] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
+		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+
+		//// enabled is darker
+		//style->Colors[ImGuiCol_Button] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+		//style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.80f);
+		//style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.08f, 0.08f, 0.08f, 0.9f);
 
 		style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
