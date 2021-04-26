@@ -2,9 +2,43 @@
 
 #include "ofMain.h"
 
-#define WIDGETS_HEIGHT 50
 #define PANEL_WIDGETS_WIDTH 250
-#define PANEL_WIDGETS_HEIGHT 500
+#define PANEL_WIDGETS_HEIGHT 100
+#define BUTTON_BIG_HEIGHT 50
+#define BUTTON_COLOR_SIZE 40
+#define BUTTON_SLIM_HEIGHT2 20
+#define COLOR_STRIP_COLOR_HEIGHT 15
+#define WIDGETS_HEIGHT 50
+
+#define TEXT_INACTIVE_ALPHA 0.20f // for use on toggle buttons
+
+/*
+
+//-- GUIDE --//
+
+if (ofxImGui::BeginWindow("SURFING COVERS", mainSettings, flags))
+{
+
+	float _spc = ImGui::GetStyle().ItemSpacing.x;
+	float _w100 = ImGui::GetContentRegionAvail().x;
+	float _w99 = _w100 - _spc;
+	float _w50 = _w99 / 2;
+	float _w33 = _w99 / 3 - _spc;
+	float _h = BUTTON_BIG_HEIGHT;
+	//if (ImGui::Button("Save Engine", ImVec2(_w33, _h / 2)))
+
+	ofxSurfingHelpers::AddBigToggle(b1, _w100, _h);
+	ofxSurfingHelpers::AddBigToggle(b2, _w100, _h);
+
+	ImGui::PushItemWidth(-20);
+	//..
+	ImGui::PopItemWidth();
+
+}
+ofxImGui::EndWindow(mainSettings);
+
+*/
+
 
 //---------
 //
@@ -162,11 +196,14 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorActive = style->Colors[ImGuiCol_ButtonActive];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_ButtonHovered];
 			const ImVec4 colorHover = style->Colors[ImGuiCol_ButtonHovered];
+			ImVec4 colorHover2 = ImVec4(colorHover.x, colorHover.y, colorHover.z, colorHover.w * 0.75);
 
 			ImGui::PushID(name.c_str());
-			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
+			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorHover2);
+			//ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorButton);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover2);
 
 			ImGui::Button(name.c_str(), ImVec2(w, h));
 			if (ImGui::IsItemClicked(0))
@@ -195,11 +232,13 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
 			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
-			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, colorTextDisabled.w * 0.5);
+			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, 
+				colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
 
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorActive);
+			//ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colorHover);
 			ImGui::PushStyleColor(ImGuiCol_Text, colorTextDisabled);
 
 			if (ImGui::Button(name.c_str(), ImVec2(w, h)))
@@ -306,7 +345,8 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
 			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
-			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, colorTextDisabled.w * 0.5);
+			//colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, 
+			//	colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
 			
 			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
@@ -320,7 +360,8 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
-			ImGui::PopStyleColor(4);
+			ImGui::PopStyleColor(3);
+			//ImGui::PopStyleColor(4);
 			ImGui::PopID();
 		}
 
@@ -773,16 +814,18 @@ namespace ofxSurfingHelpers {
 
 		// enabled is lighter
 		style->Colors[ImGuiCol_Button] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
-		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.17f, 0.17f, 0.17f, 1.00f);
-		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+		style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.19f, 0.19f, 0.19f, 1.00f);
+		style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.22f, 0.22f, 0.22f, 1.00f);
 
 		//// enabled is darker
 		//style->Colors[ImGuiCol_Button] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 		//style->Colors[ImGuiCol_ButtonActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.80f);
 		//style->Colors[ImGuiCol_ButtonHovered] = ImVec4(0.08f, 0.08f, 0.08f, 0.9f);
 
-		style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+		style->Colors[ImGuiCol_Text] = ImVec4(0.90f, 0.90f, 0.90f, 0.95f);
+		//style->Colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+		style->Colors[ImGuiCol_TextDisabled] = ImVec4(0.55f, 0.55f, 0.55f, 1.00f);
+
 		style->Colors[ImGuiCol_ChildBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
 		style->Colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
 		style->Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
@@ -799,6 +842,7 @@ namespace ofxSurfingHelpers {
 		style->Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.19f, 0.19f, 0.19f, 1.00f);
 		style->Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 		style->Colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+
 		style->Colors[ImGuiCol_SliderGrab] = ImVec4(0.40f, 0.40f, 0.40f, 1.00f);
 		style->Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.74f, 0.75f, 0.77f, 0.79f);
 
@@ -1224,4 +1268,34 @@ namespace ofxSurfingHelpers {
 
 		return tmpRef;// used
 	}
+
+
+//https://gist.github.com/nariakiiwatani/dabf4cd2d04ad015bb6fabdedef7b2aa
+	//namespace ImGui
+	//{
+	//	static bool SelectFile(const std::string &path, std::string &selected, const std::vector<std::string> &ext = {}) {
+	//		bool ret = false;
+	//		if (ofFile(path).isDirectory()) {
+	//			if (TreeNode(ofFilePath::getBaseName(path).c_str())) {
+	//				ofDirectory dir;
+	//				if (!ext.empty()) {
+	//					dir.allowExt("");
+	//					for (auto &&e : ext) {
+	//						dir.allowExt(e);
+	//					}
+	//				}
+	//				dir.listDir(path);
+	//				for (auto &f : dir) {
+	//					ret |= SelectFile(f.path(), selected, ext);
+	//				}
+	//				TreePop();
+	//			}
+	//		}
+	//		else if (Button(ofFilePath::getFileName(path).c_str())) {
+	//			selected = path;
+	//			ret = true;
+	//		}
+	//		return ret;
+	//	}
+	//}
 };

@@ -455,7 +455,7 @@ private:
             }
 		}
     
-		void drawGui() {
+		void draw_ImGui() {
 			// If navigation enabled then draw it on screen in front of the video
 			if (isNavEnabled) {
 				if (isNavBarAutoHide) {

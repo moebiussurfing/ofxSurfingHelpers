@@ -26,70 +26,15 @@
 //
 //---------
 
+
+#include "ofxSurfing_Timers.h"
+#include "ofxSurfing_Widgets.h"
+
+
 namespace ofxSurfingHelpers {
-	//using namespace ofxSurfingHelpers;
+	
 
-	//-
-
-	// 1. WIDGETS
-
-	//--------------------------------------------------------------
-	// circular progress bar
-	//
-	// example:
-	//float val = ofMap(ofGetFrameNum() % 200, 0, 200, 0.f, 1.f, true);
-	//ofxSurfingHelpers::drawCircleProg(val);
-	//--------------------------------------------------------------
-	inline void drawCircleProg(float val) {
-		ofPushMatrix();
-		ofPushStyle();
-		ofSetLineWidth(5);
-
-		ofRotateXDeg(-90);
-
-		float radius = 50;
-		float ratio = 0.7;
-
-		//float val = 0.5;
-		//float progress = val / 100;
-
-		ofPoint point1(150, 120);
-
-		ofNoFill();
-
-		ofDrawRectangle(point1.x, point1.y, 100, 100);
-		//int startAngle = -90 * 16;
-		//int spanAngle = val * 360 * 16;		
-		int startAngle = -90;
-		int spanAngle = -90 + val * 360;
-		//int spanAngle = progress * 360 * 16;
-
-		//p.drawArc(rectangle, startAngle, spanAngle);
-		//void ofPolyline_::arc(float x, float y, float radiusX, float radiusY, float angleBegin, float angleEnd, int circleResolution=20)
-		//polyline1.arc(point1, 100, 100, 0, 360);
-
-		ofPolyline polyline1;
-		polyline1.lineTo(point1.x, point1.y + radius * ratio);
-		polyline1.lineTo(point1.x, point1.y + radius);
-		polyline1.arc(point1, radius, radius, startAngle, spanAngle);
-		polyline1.arc(point1, radius*ratio, radius*ratio, startAngle, spanAngle);
-		//polyline1.lineTo(0, point1.y + radius * ratio);
-		//polyline1.lineTo(0, point1.y + radius);
-		ofSetColor(ofColor::blue);
-		polyline1.draw();
-
-		string str = "prog" + ofToString(val * 100);
-		//string str = "prog" + ofToString(progress * 100);
-		ofDrawBitmapStringHighlight(str, point1.x, point1.y + 100);
-
-		ofPopStyle();
-		ofPopMatrix();
-	}
-
-	//-----------------------------------------------------------------------------------------------
-
-
-	// 2 SERIALIZERS
+	// SERIALIZERS
 
 	//TODO:
 	//testing for improve performance
@@ -337,79 +282,6 @@ namespace ofxSurfingHelpers {
 	//	return word_count;
 	//}
 
-
-	//----
-
-
-	//--------------------------------------------------------------
-	// draws a box with text
-	//--------------------------------------------------------------
-#define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
-	{
-		x += 25;
-		y += 33;
-
-		int _pad = 50;
-		float _round = 5;
-
-		ofPushStyle();
-
-		//float fontSize = font.getSize();
-
-		if (!font.isLoaded())
-		{
-			ofDrawBitmapStringHighlight(text, x, y);
-		}
-		else
-		{
-			// bbox
-			ofSetColor(colorBackground);
-			ofFill();
-
-			ofRectangle _r(font.getStringBoundingBox(text, x, y));
-			_r.setWidth(_r.getWidth() + _pad);
-			_r.setHeight(_r.getHeight() + _pad);
-			_r.setX(_r.getPosition().x - _pad / 2.);
-			_r.setY(_r.getPosition().y - _pad / 2.);
-
-			ofDrawRectRounded(_r, _round);
-			//ofDrawRectangle(_r);
-
-			// text shadow
-			if (useShadow)
-			{
-				ofSetColor(colorShadow);
-				font.drawString(text, x + 1, y + 1);
-			}
-
-			// text
-			ofSetColor(font0_Color);
-			font.drawString(text, x, y);
-		}
-
-		ofPopStyle();
-	}
-
-	//--------------------------------------------------------------
-	// get box width
-	//--------------------------------------------------------------
-
-	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
-		int _pad = BOX_PADDING;
-		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
-	}
-
-	inline float getHeightBBtextBoxed(ofTrueTypeFont &font, string text) {
-		int _pad = BOX_PADDING;
-		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
-	}
-
-	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont &font, string text) {
-		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
-		return sh;
-	}
-
 	//---
 
 	// original code copied from: ofxFilikaUtils.h
@@ -455,50 +327,50 @@ namespace ofxSurfingHelpers {
 			return (mins + ":" + secs);
 	}
 
-	//-
 
-	//to debug/show mouse position and x,y coordinates to draw points into layouts
-	//--------------------------------------------------------------
-	inline void draw_Anchor(int x, int y)
-	{
-		ofPushStyle();
-		ofFill();
-		ofSetColor(ofColor::red);
-		ofDrawCircle(x, y, 3);
-		int pad;
-		if (y < 15) pad = 20;
-		else pad = -20;
-		ofDrawBitmapStringHighlight(ofToString(x) + "," + ofToString(y), x, y + pad);
-		ofPopStyle();
+	//----
+
+	// linear to exponential conversion
+	//https://forum.openframeworks.cc/t/how-to-add-a-new-feature-to-someones-addon-exponential-scale-ofxguiextended-sliders/36909/2
+	//ofParameter<float> exponentialValue;
+	//ofxGuiFloatFunctionSlider* functionSlider = group->add<ofxGuiFloatFunctionSlider>(exponentialValue.set("exponential", 2, 1, 10000));
+	//functionSlider->setFunctions(exponentialFunction, reversedExponentialFunction);
+
+	// and here are example functions :
+
+	float exponentialFunction(float x) {
+		return pow(10, x);
 	}
 
-	//-
-
-	//get a blink faded to use as alpha on gui button when "active-listening-mode" enabled
-	//ie: blink when a new preset is editing
-	//--------------------------------------------------------------
-	inline float getFadeBlink(float min = 0.20, float max = 0.80, float freq = 0.15) {
-
-		float a = ofMap(glm::sin(freq * ofGetFrameNum()), -1, 1, min, max);
-
-		return a;
+	float reversedExponentialFunction(float y) {
+		return log10(y);
 	}
 
-	//-
-
-	// simple smooth
-	//--------------------------------------------------------------
-	template <typename T>
-	void ofxKuValueSmooth(T &value, T target, float smooth) {
-		value += (target - value) * (1 - smooth);
-	}
-
-	//--------------------------------------------------------------
-	template <typename T>
-	void ofxKuValueSmoothDirected(T &value, T target, float smooth0, float smooth1) {
-		float smooth = (target < value) ? smooth0 : smooth1;
-		ofxKuValueSmooth(value, target, smooth);
-	}
 
 };// ofxSurfingHelpers
+
+//--
+
+// randoms
+#include <random>
+//#include <iostream>
+//https://forum.openframeworks.cc/t/normal-gaussian-random-generator/11469/4?u=moebiussurfing
+class MyRandom
+{
+public:
+	float NextGaussian(const float center, const float standard_dev)
+	{
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::normal_distribution<float> distribution(center, standard_dev);
+		return distribution(mt);
+	}
+	float NextReal(const float lower, const float upper)
+	{
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_real_distribution<float> distribution(lower, upper);
+		return distribution(mt);
+	}
+};
 
