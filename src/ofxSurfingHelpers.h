@@ -33,6 +33,7 @@
 
 namespace ofxSurfingHelpers {
 	
+	//----
 
 	// SERIALIZERS
 
@@ -284,7 +285,8 @@ namespace ofxSurfingHelpers {
 
 	//---
 
-	// original code copied from: ofxFilikaUtils.h
+	// original code copied from
+	// ofxFilikaUtils.h
 #define SECS_PER_MIN 60
 #define SECS_PER_HOUR 3600
 	//--------------------------------------------------------------
