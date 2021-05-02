@@ -69,6 +69,9 @@ namespace ofxSurfingHelpers {
 
 	//--
 
+	//ofDrawBitmapStringHighlight("No empty dock space, nowhere to draw for oF !", posX, posY);
+	//ofBitmapFont f;
+	//ofRectangle strSize = f.getBoundingBox("No empty dock space, nowhere to draw for oF !", posX, posY);
 
 	//--------------------------------------------------------------
 	// draws a transparent box with centered text

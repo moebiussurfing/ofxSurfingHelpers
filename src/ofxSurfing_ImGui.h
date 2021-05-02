@@ -496,7 +496,7 @@ namespace ofxSurfingHelpers {
 	//		for (int n = 0; n < _amtButtons; n++)
 	//		{
 	//			ImGui::PushID(n);
-	//			//string name = ofToString((char)(keys[0][n]));
+	//			//string name = ofToString((char)(bKeys[0][n]));
 	//			//customize colors
 	//			{
 	//				if (PRESET_Selected_IndexMain.get() == n)//when selected

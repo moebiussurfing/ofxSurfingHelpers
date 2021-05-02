@@ -17,10 +17,10 @@ public:
 			float f = -ofMap(i, 0, n, startAngle, stopAngle);
 			float x1 = innerRadius * cos(f);
 			float y1 = innerRadius * sin(f);
-			float x2 = outerRadius * cos(f);
-			float y2 = outerRadius * sin(f);
+			float xRect = outerRadius * cos(f);
+			float yRect = outerRadius * sin(f);
 			glVertex2f(x1, y1);
-			glVertex2f(x2, y2);
+			glVertex2f(xRect, yRect);
 		}
 		glEnd();
 #endif

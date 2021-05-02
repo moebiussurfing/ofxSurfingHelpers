@@ -62,7 +62,7 @@ public:
 		delay = _del;
 
 		if (isAnimatable) {
-			/*params2.setup(&x1, x1, x2, _del, 0.4f, EASE_OUT_SINE);
+			/*params2.setup(&x1, x1, xRect, _del, 0.4f, EASE_OUT_SINE);
 			Tweenzor::add(params2);
 
 			Tweenzor::addCompleteListener(Tweenzor::getTween(params2.property), this, &ofxFilikaColorButton::onCompleteAnim);*/
@@ -340,7 +340,7 @@ private:
 
 
 	// Tween Lib
-	float x1, x2;
+	float x1, xRect;
 
 	//TweenParams params2;
 };
