@@ -18,13 +18,15 @@
 
 if (ofxImGui::BeginWindow("SURFING COVERS", mainSettings, flags))
 {
+	//float _spcx;
+	//float _spcy;
+	//float _w100;
+	//float _h100;
+	//float _w99;
+	//float _w50;
+	//float _h;
+	//ofxSurfingHelpers::refreshWidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
 
-	float _spc = ImGui::GetStyle().ItemSpacing.x;
-	float _w100 = ImGui::GetContentRegionAvail().x;
-	float _w99 = _w100 - _spc;
-	float _w50 = _w99 / 2;
-	float _w33 = _w99 / 3 - _spc;
-	float _h = BUTTON_BIG_HEIGHT;
 	//if (ImGui::Button("Save Engine", ImVec2(_w33, _h / 2)))
 
 	ofxSurfingHelpers::AddBigToggle(b1, _w100, _h);
@@ -48,6 +50,31 @@ ofxImGui::EndWindow(mainSettings);
 #include "imgui_internal.h"
 
 namespace ofxSurfingHelpers {
+
+	//--------------------------------------------------------------
+	// pass external variables as references
+	//snippet to use inside ImGui window/tree
+	//float _spcx;
+	//float _spcy;
+	//float _w100;
+	//float _h100;
+	//float _w99;
+	//float _w50;
+	//float _h;
+	//ofxSurfingHelpers::refreshWidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+	//--------------------------------------------------------------
+	inline void refreshWidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
+	{
+		__spcx = ImGui::GetStyle().ItemSpacing.x;
+		__spcy = ImGui::GetStyle().ItemSpacing.y;
+		__w100 = ImGui::GetContentRegionAvail().x;
+		__h100 = ImGui::GetContentRegionAvail().y;
+		__w99 = __w100 - __spcx;
+		__w50 = __w100 / 2 - __spcx/2;
+		__w33 = __w100 / 3 - __spcx/3;
+		__w25 = __w100 / 4 - __spcx/4;
+		__h = BUTTON_BIG_HEIGHT;
+	}
 
 	//----
 
@@ -232,7 +259,7 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorHover = style->Colors[ImGuiCol_Button];
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
 			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
-			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, 
+			colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z,
 				colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
 
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
@@ -347,7 +374,7 @@ namespace ofxSurfingHelpers {
 			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
 			//colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, 
 			//	colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
-			
+
 			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
 			ImGui::PushStyleColor(ImGuiCol_Button, colorHover);
@@ -797,7 +824,6 @@ namespace ofxSurfingHelpers {
 		style->WindowRounding = 0;
 		style->FrameBorderSize = 1;
 		style->FrameRounding = 4;
-		style->IndentSpacing = 3;
 		style->ColumnsMinSpacing = 50;
 		style->GrabMinSize = 18;
 		style->ScrollbarSize = 14;
@@ -805,6 +831,8 @@ namespace ofxSurfingHelpers {
 		style->TabRounding = 4;
 		style->WindowRounding = 2;
 		style->GrabRounding = 2;
+		style->IndentSpacing = 5;
+		//style->IndentSpacing = 3;
 
 		// colors 
 
@@ -1170,10 +1198,10 @@ namespace ofxSurfingHelpers {
 		float width;
 		float radius;
 		float height;
-		
-		if (v.x == -1 && v.y == -1) 
+
+		if (v.x == -1 && v.y == -1)
 		{
-		height = ImGui::GetFrameHeight();
+			height = ImGui::GetFrameHeight();
 			width = height * 1.55f;
 			radius = height * 0.50f;
 		}
@@ -1198,12 +1226,12 @@ namespace ofxSurfingHelpers {
 			float t_anim = ImSaturate(gg.LastActiveIdTimer / ANIM_SPEED);
 
 		if (ImGui::IsItemHovered())
-			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), 
-				ImGui::GetColorU32(tmpRef ? 
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height),
+				ImGui::GetColorU32(tmpRef ?
 					colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ButtonHovered]), height * 0.5f);
 		else
-			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height), 
-				ImGui::GetColorU32(tmpRef ? 
+			draw_list->AddRectFilled(p, ImVec2(p.x + width, p.y + height),
+				ImGui::GetColorU32(tmpRef ?
 					colors[ImGuiCol_ButtonActive] : colors[ImGuiCol_ButtonHovered]), height * 0.5f);
 
 		//draw_list->AddCircleFilled(ImVec2(p.x + radius + (tmpRef ? 1 : 0) * (width - radius * 2.0f), 
@@ -1270,32 +1298,32 @@ namespace ofxSurfingHelpers {
 	}
 
 
-//https://gist.github.com/nariakiiwatani/dabf4cd2d04ad015bb6fabdedef7b2aa
-	//namespace ImGui
-	//{
-	//	static bool SelectFile(const std::string &path, std::string &selected, const std::vector<std::string> &ext = {}) {
-	//		bool ret = false;
-	//		if (ofFile(path).isDirectory()) {
-	//			if (TreeNode(ofFilePath::getBaseName(path).c_str())) {
-	//				ofDirectory dir;
-	//				if (!ext.empty()) {
-	//					dir.allowExt("");
-	//					for (auto &&e : ext) {
-	//						dir.allowExt(e);
-	//					}
-	//				}
-	//				dir.listDir(path);
-	//				for (auto &f : dir) {
-	//					ret |= SelectFile(f.path(), selected, ext);
-	//				}
-	//				TreePop();
-	//			}
-	//		}
-	//		else if (Button(ofFilePath::getFileName(path).c_str())) {
-	//			selected = path;
-	//			ret = true;
-	//		}
-	//		return ret;
-	//	}
-	//}
+	//https://gist.github.com/nariakiiwatani/dabf4cd2d04ad015bb6fabdedef7b2aa
+		//namespace ImGui
+		//{
+		//	static bool SelectFile(const std::string &path, std::string &selected, const std::vector<std::string> &ext = {}) {
+		//		bool ret = false;
+		//		if (ofFile(path).isDirectory()) {
+		//			if (TreeNode(ofFilePath::getBaseName(path).c_str())) {
+		//				ofDirectory dir;
+		//				if (!ext.empty()) {
+		//					dir.allowExt("");
+		//					for (auto &&e : ext) {
+		//						dir.allowExt(e);
+		//					}
+		//				}
+		//				dir.listDir(path);
+		//				for (auto &f : dir) {
+		//					ret |= SelectFile(f.path(), selected, ext);
+		//				}
+		//				TreePop();
+		//			}
+		//		}
+		//		else if (Button(ofFilePath::getFileName(path).c_str())) {
+		//			selected = path;
+		//			ret = true;
+		//		}
+		//		return ret;
+		//	}
+		//}
 };
