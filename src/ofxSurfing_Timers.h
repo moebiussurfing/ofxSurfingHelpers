@@ -2,6 +2,11 @@
 
 #include "ofMain.h"
 
+
+#include <random>
+#include <iostream>
+
+
 namespace ofxSurfingHelpers {
 
 	//------------------------------------------------------------------------------
@@ -30,7 +35,25 @@ namespace ofxSurfingHelpers {
 
 	}  // namespace
 
-	//-
+    //--
+
+        inline float NextGaussian(const float center, const float standard_dev)
+        {
+            std::random_device rd;
+            std::mt19937 mt(rd());
+            std::normal_distribution<float> distribution(center, standard_dev);
+            return distribution(mt);
+        }
+        inline float NextReal(const float lower, const float upper)
+        {
+            std::random_device rd;
+            std::mt19937 mt(rd());
+            std::uniform_real_distribution<float> distribution(lower, upper);
+            return distribution(mt);
+        }
+
+
+	//
 
 	//get a blink faded to use as alpha on gui button when "active-listening-mode" enabled
 	//ie: blink when a new preset is editing
