@@ -28,8 +28,10 @@ namespace ofxSurfingHelpers {
 
 		/* Noise function used by the gradient scaling. */
 		float Noise(const ofPoint &vertex) {
-			return /*24.0f **/ ofNoise(0.005f*vertex + 0.5f*ofGetElapsedTimeMillis()*0.0002f);
-		}
+//            return /*24.0f **/ ofNoise(0.005f*vertex + 0.5f*ofGetElapsedTimeMillis()*0.0002f);
+
+            return ofNoise(0.05f*vertex + 0.5f*ofGetElapsedTimeMillis()*0.002f);
+        }
 
 		static constexpr int32_t kCharsetSize = 26;
 
