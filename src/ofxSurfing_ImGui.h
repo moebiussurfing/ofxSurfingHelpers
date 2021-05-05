@@ -176,15 +176,18 @@ namespace ofxSurfingHelpers {
 					//--
 
 					//mouse lockers
-					ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
-					ofxImGui::AddParameter(auto_resize);
-					ofxImGui::AddParameter(auto_lockToBorder);
-					ofxImGui::AddParameter(bLockMouseByImGui);
+					//ImGui::Dummy(ImVec2(0.0f, 2.0f));
+					//if (ImGui::CollapsingHeader("ADVANCED"))
+					//{
+					//	ofxImGui::AddParameter(auto_resize);
+					//	ofxImGui::AddParameter(bLockMouseByImGui);
+					//	//ofxImGui::AddParameter(auto_lockToBorder);
+					//}
 				}
 				ofxImGui::EndWindow(mainSettings);
 			}
@@ -258,21 +261,7 @@ namespace ofxSurfingHelpers {
 		h = __h100 / amntRows - __spcy / amntRows;
 	}
 
-
 	//----
-
-	//// 1. preset selector slider
-
-	//auto parameter = PRESET_Selected_IndexMain;
-	//auto tmpRef = PRESET_Selected_IndexMain.get();
-	//auto name = ofxImGui::GetUniqueName(PRESET_Selected_IndexMain);
-	//if (ImGui::SliderInt(ofxImGui::GetUniqueName(parameter), (int *)&tmpRef, parameter.getMin(), parameter.getMax()))
-	//{
-	//	parameter.set(tmpRef);
-	//}
-
-	//ofxImGui::AddParameter(PRESET_Selected_IndexMain);//main preset selector
-
 
 	//--------------------------------------------------------------
 	// ImGui Widgets
@@ -1168,41 +1157,6 @@ namespace ofxSurfingHelpers {
 
 	}
 
-	//-
-
-	//custom int params:
-	//ImGui::InputInt(boxRowsUser.getName().c_str(), (int *)&boxRowsUser.get());
-	//boxSizeUser = ofClamp(boxSizeUser.get(), boxSizeUser.getMin(), boxSizeUser.getMax());
-
-	//-
-
-	//mainSettings = ofxImGui::Settings();
-
-	//mainSettings.windowPos = ofVec2f(gui_x, gui_y);
-	//mainSettings.windowSize = ofVec2f(w_Gui, ofGetWindowHeight() - gui_y);
-
-	//    static bool no_titlebar = false;
-	//    static bool no_scrollbar = false;
-	//    static bool no_menu = false;
-	//    static bool no_move = false;
-	//    static bool no_resize = false;
-	//    static bool no_collapse = false;
-	//    static bool no_close = false;
-	//    static bool no_nav = false;
-	//    ImGuiWindowFlags window_flags = 0;
-	////    if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
-	////    if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
-	////    if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
-	////    if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
-	////    if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
-	//    if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
-	////    if (no_nav)       window_flags |= ImGuiWindowFlags_NoNav;
-	////    if (no_close)     p_open = NULL; // Don't pass our bool* to Begin
-	//    if (ofxImGui::BeginWindow("COLOR PICKER", mainSettings, window_flags))
-
-
-
-
 		//--
 
 		// spinner progress indicator
@@ -1368,7 +1322,7 @@ namespace ofxSurfingHelpers {
 		ImGui::Text(str_id);
 	}
 
-	// ofParameter
+	// ofParameter bool toggle
 	//--------------------------------------------------------------
 	inline bool AddToggleRounded(ofParameter<bool>& parameter, ImVec2 v = ImVec2(-1, -1))
 	{
