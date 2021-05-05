@@ -25,7 +25,7 @@ if (ofxImGui::BeginWindow("SURFING COVERS", mainSettings, flags))
 	//float _w99;
 	//float _w50;
 	//float _h;
-	//ofxSurfingHelpers::refreshWidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
 
 	//if (ImGui::Button("Save Engine", ImVec2(_w33, _h / 2)))
 
@@ -42,39 +42,224 @@ ofxImGui::EndWindow(mainSettings);
 */
 
 
-//---------
+//------------------------------
 //
-#include "ofxSurfingConstants.h"
-
 #include "ofxImGui.h"
 #include "imgui_internal.h"
+#include "ofxSurfingConstants.h"
 
 namespace ofxSurfingHelpers {
 
+	//----------------------------------------
+	// snippets to include when using ofxImgui
+	//----------------------------------------
+
+	//--
+
+	// 1. window, panels, and sub panels/trees
+
+	//window
+	ImGuiColorEditFlags _flagw = ImGuiWindowFlags_None;
+	string name = "myWindow"
+		if (ofxImGui::BeginWindow(name.c_str(), mainSettings, flagsw))
+		{
+			//..
+		}
+	ofxImGui::EndWindow(mainSettings);
+
+	//tree
+	if (ImGui::TreeNode("_Tree"))
+	{
+		//..
+		ImGui::TreePop();
+	}
+
+	//collapsing
+	if (ImGui::CollapsingHeader("_Collapsing"))
+	{
+		//..
+	}
+
+	//treeEx
+	bool bOpen = true;
+	ImGuiColorEditFlags _flagw = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+	if (ImGui::TreeNodeEx("_TreeEx", _flagw)) {
+		//..
+		ImGui::TreePop();
+	}
+
+	//--
+
+	//snippets
+
+	// copy paste all this to your ofApp
+
+	//ofApp.h
+	void setup_ImGui();
+	void draw_ImGui();
+	ofxImGui::Gui gui;
+	ofxImGui::Settings mainSettings = ofxImGui::Settings();
+	ImFont* customFont = nullptr;
+	ofParameter<bool> bGui{ "Show Gui", true };
+	ofParameter<bool> auto_lockToBorder{ "Lock GUI", false };
+	bool bLockMouseByImGui = false;
+
+	//ofApp.cpp
 	//--------------------------------------------------------------
+	void setup_ImGui()
+	{
+		ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
+		bool bAutoDraw = false;
+		bool bRestore = true;
+		bool bMouse = false;
+		gui.setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
+
+		auto &io = ImGui::GetIO();
+		auto normalCharRanges = io.Fonts->GetGlyphRangesDefault();
+
+		//-
+
+		// font
+		std::string fontName;
+		float fontSizeParam;
+		fontName = "telegrama_render.otf";
+		fontSizeParam = 11;
+
+		//-
+
+		std::string _path = "assets/fonts/"; // assets folder
+		customFont = gui.addFont(_path + fontName, fontSizeParam, nullptr, normalCharRanges);
+		io.FontDefault = customFont;
+	}
+
+	//--------------------------------------------------------------
+	void draw_ImGui()
+	{
+		gui.begin();
+		{
+			bLockMouseByImGui = false;
+
+			//panels sizes
+			float xx = 10;
+			float yy = 10;
+			float ww = PANEL_WIDGETS_WIDTH;
+			float hh = PANEL_WIDGETS_HEIGHT;
+
+			//widgets sizes
+			float _spcx;
+			float _spcy;
+			float _w100;
+			float _h100;
+			float _w99;
+			float _w50;
+			float _w33;
+			float _w25;
+			float _h;
+			ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+			static bool auto_resize = true;
+
+			ImGuiWindowFlags flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
+			flagsw |= ImGuiCond_FirstUseEver;
+
+			if (auto_lockToBorder) flagsw |= ImGuiCond_Always;
+			else flagsw |= ImGuiCond_FirstUseEver;
+
+			ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsw);
+			ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsw);
+
+			ImGui::PushFont(customFont);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
+			{
+				std::string n = "myPanelName";
+				if (ofxImGui::BeginWindow(n.c_str(), mainSettings, flagsw))
+				{
+					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+
+					//ImGui::PushItemWidth(-100);
+					//ofxImGui::AddParameter(_param);
+					//ImGui::PopItemWidth();
+
+					//if (ImGui::Button("_Button", ImVec2(_w100, _h / 2))) {}
+					//ofxImGui::AddGroup(_group, mainSettings);
+					//ofxSurfingHelpers::AddBigToggle(_param, _w100, _h);
+
+					//ImGui::PushButtonRepeat(true);
+					//float __w = ofxSurfingHelpers::getImGui_WidgetWidth(w, 2);
+					//if (ImGui::Button("<", ImVec2(__w, _h))) {} ImGui::SameLine();
+					//if (ImGui::Button(">", ImVec2(__w, _h))) {}
+					//ImGui::PopButtonRepeat();
+
+					ImGui::Dummy(ImVec2(0.0f, 2.0f));
+				}
+				ofxImGui::EndWindow(mainSettings);
+			}
+			ImGui::PopStyleVar();
+			ImGui::PopFont();
+		}
+		gui.end();
+
+		//mouse lockers
+		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
+		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
+		gui.draw();
+	}
+
+
+	//-----
+
+
+	//--------------------------------------------------------------
+	// helpers to assist layout widget sizes to fit panel width or height
+	// example: 
+	// declare size vars for typical sizes 100%, 50%, 33% ..etc
 	// pass external variables as references
-	//snippet to use inside ImGui window/tree
+	// snippet to use inside ImGui window/tree adapting for his shape
 	//float _spcx;
 	//float _spcy;
 	//float _w100;
 	//float _h100;
 	//float _w99;
 	//float _w50;
+	//float _w33;
+	//float _w25;
 	//float _h;
-	//ofxSurfingHelpers::refreshWidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 	//--------------------------------------------------------------
-	inline void refreshWidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
+	inline void refreshImGui_WidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
 	{
 		__spcx = ImGui::GetStyle().ItemSpacing.x;
 		__spcy = ImGui::GetStyle().ItemSpacing.y;
 		__w100 = ImGui::GetContentRegionAvail().x;
 		__h100 = ImGui::GetContentRegionAvail().y;
 		__w99 = __w100 - __spcx;
-		__w50 = __w100 / 2 - __spcx/2;
-		__w33 = __w100 / 3 - __spcx/3;
-		__w25 = __w100 / 4 - __spcx/4;
+		__w50 = __w100 / 2 - __spcx / 2;
+		__w33 = __w100 / 3 - __spcx / 3;
+		__w25 = __w100 / 4 - __spcx / 4;
 		__h = BUTTON_BIG_HEIGHT;
 	}
+
+	// example: 
+	// allows to make exaxt width of widgets to fit panel size for two buttons:
+	//float __w = getImGui_WidgetWidth(__ww, 2);
+	//if (ImGui::Button("_Button", ImVec2(__ww, _h / 2))) {}
+	//--------------------------------------------------------------
+	inline void getImGui_WidgetWidth(float &w, int amntColumns)
+	{
+		float __spcx = ImGui::GetStyle().ItemSpacing.x;
+		float __w100 = ImGui::GetContentRegionAvail().x;
+		float w = __w100 / amntColumns - __spcx / amntColumns;
+	}
+	//--------------------------------------------------------------
+	inline void getImGui_WidgetHeight(float &h, int amntRows)
+	{
+		float __spcy = ImGui::GetStyle().ItemSpacing.y;
+		float __h100 = ImGui::GetContentRegionAvail().y;
+		float h = __h100 / amntRows - __spcy / amntRows;
+	}
+
 
 	//----
 
@@ -92,7 +277,7 @@ namespace ofxSurfingHelpers {
 
 
 	//--------------------------------------------------------------
-	// ImGui Tools
+	// ImGui Widgets
 	// why? my custom ImGui helpers
 	//--------------------------------------------------------------
 	////https://github.com/ocornut/imgui/issues/1537
@@ -473,6 +658,7 @@ namespace ofxSurfingHelpers {
 		return bChanged;
 	}
 
+	//----
 
 	//TODO:
 	// WIP
