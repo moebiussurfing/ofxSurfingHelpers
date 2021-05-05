@@ -25,7 +25,7 @@ if (ofxImGui::BeginWindow("SURFING COVERS", mainSettings, flags))
 	//float _w99;
 	//float _w50;
 	//float _h;
-	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 	//if (ImGui::Button("Save Engine", ImVec2(_w33, _h / 2)))
 
@@ -57,7 +57,7 @@ namespace ofxSurfingHelpers {
 	//--
 
 	// 1. window, panels, and sub panels/trees
-
+	/*
 	//window
 	ImGuiColorEditFlags _flagw = ImGuiWindowFlags_None;
 	string name = "myWindow"
@@ -87,13 +87,14 @@ namespace ofxSurfingHelpers {
 		//..
 		ImGui::TreePop();
 	}
+	*/
 
 	//--
 
 	//snippets
 
 	// copy paste all this to your ofApp
-
+	/*
 	//ofApp.h
 	void setup_ImGui();
 	void draw_ImGui();
@@ -174,7 +175,7 @@ namespace ofxSurfingHelpers {
 				std::string n = "myPanelName";
 				if (ofxImGui::BeginWindow(n.c_str(), mainSettings, flagsw))
 				{
-					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _h);
+					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 					//ImGui::PushItemWidth(-100);
 					//ofxImGui::AddParameter(_param);
@@ -206,7 +207,7 @@ namespace ofxSurfingHelpers {
 
 		gui.draw();
 	}
-
+	*/
 
 	//-----
 
@@ -217,16 +218,18 @@ namespace ofxSurfingHelpers {
 	// declare size vars for typical sizes 100%, 50%, 33% ..etc
 	// pass external variables as references
 	// snippet to use inside ImGui window/tree adapting for his shape
-	//float _spcx;
-	//float _spcy;
-	//float _w100;
-	//float _h100;
-	//float _w99;
-	//float _w50;
-	//float _w33;
-	//float _w25;
-	//float _h;
-	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+	/*
+	float _spcx;
+	float _spcy;
+	float _w100;
+	float _h100;
+	float _w99;
+	float _w50;
+	float _w33;
+	float _w25;
+	float _h;
+	ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+	*/
 	//--------------------------------------------------------------
 	inline void refreshImGui_WidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
 	{
@@ -242,7 +245,7 @@ namespace ofxSurfingHelpers {
 	}
 
 	// example: 
-	// allows to make exaxt width of widgets to fit panel size for two buttons:
+	// allows to make exaCt width of widgets to fit panel size for two buttons:
 	//float __w = getImGui_WidgetWidth(__ww, 2);
 	//if (ImGui::Button("_Button", ImVec2(__ww, _h / 2))) {}
 	//--------------------------------------------------------------
@@ -250,14 +253,14 @@ namespace ofxSurfingHelpers {
 	{
 		float __spcx = ImGui::GetStyle().ItemSpacing.x;
 		float __w100 = ImGui::GetContentRegionAvail().x;
-		float w = __w100 / amntColumns - __spcx / amntColumns;
+		w = __w100 / amntColumns - __spcx / amntColumns;
 	}
 	//--------------------------------------------------------------
 	inline void getImGui_WidgetHeight(float &h, int amntRows)
 	{
 		float __spcy = ImGui::GetStyle().ItemSpacing.y;
 		float __h100 = ImGui::GetContentRegionAvail().y;
-		float h = __h100 / amntRows - __spcy / amntRows;
+		h = __h100 / amntRows - __spcy / amntRows;
 	}
 
 
