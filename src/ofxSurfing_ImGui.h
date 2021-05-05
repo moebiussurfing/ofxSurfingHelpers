@@ -12,41 +12,11 @@
 
 #define TEXT_INACTIVE_ALPHA 0.20f // for use on toggle buttons
 
-/*
-
-//-- GUIDE --//
-
-if (ofxImGui::BeginWindow("SURFING COVERS", mainSettings, flags))
-{
-	//float _spcx;
-	//float _spcy;
-	//float _w100;
-	//float _h100;
-	//float _w99;
-	//float _w50;
-	//float _h;
-	//ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
-
-	//if (ImGui::Button("Save Engine", ImVec2(_w33, _h / 2)))
-
-	ofxSurfingHelpers::AddBigToggle(b1, _w100, _h);
-	ofxSurfingHelpers::AddBigToggle(b2, _w100, _h);
-
-	ImGui::PushItemWidth(-20);
-	//..
-	ImGui::PopItemWidth();
-
-}
-ofxImGui::EndWindow(mainSettings);
-
-*/
-
 
 //------------------------------
 //
 #include "ofxImGui.h"
 #include "imgui_internal.h"
-#include "ofxSurfingConstants.h"
 
 namespace ofxSurfingHelpers {
 
@@ -57,6 +27,7 @@ namespace ofxSurfingHelpers {
 	//--
 
 	// 1. window, panels, and sub panels/trees
+
 	/*
 	//window
 	ImGuiColorEditFlags _flagw = ImGuiWindowFlags_None;
@@ -91,23 +62,29 @@ namespace ofxSurfingHelpers {
 
 	//--
 
-	//snippets
+	// snippets
 
 	// copy paste all this to your ofApp
+
 	/*
 	//ofApp.h
+	//#include "ofxSurfing_ImGui.h"
 	void setup_ImGui();
 	void draw_ImGui();
 	ofxImGui::Gui gui;
 	ofxImGui::Settings mainSettings = ofxImGui::Settings();
 	ImFont* customFont = nullptr;
 	ofParameter<bool> bGui{ "Show Gui", true };
+	ofParameter<bool> auto_resize{ "Auto Resize", true };
+	ofParameter<bool> bLockMouseByImGui{ "Mouse Locked", false };
 	ofParameter<bool> auto_lockToBorder{ "Lock GUI", false };
-	bool bLockMouseByImGui = false;
+
 
 	//ofApp.cpp
+	setup_ImGui();
+	draw_ImGui();
 	//--------------------------------------------------------------
-	void setup_ImGui()
+	void ofApp::setup_ImGui()
 	{
 		ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
 		bool bAutoDraw = false;
@@ -123,7 +100,7 @@ namespace ofxSurfingHelpers {
 		// font
 		std::string fontName;
 		float fontSizeParam;
-		fontName = "telegrama_render.otf";
+		fontName = "telegrama_render.otf"; //  WARNING: will crash if font not present!
 		fontSizeParam = 11;
 
 		//-
@@ -131,10 +108,14 @@ namespace ofxSurfingHelpers {
 		std::string _path = "assets/fonts/"; // assets folder
 		customFont = gui.addFont(_path + fontName, fontSizeParam, nullptr, normalCharRanges);
 		io.FontDefault = customFont;
+
+		// theme
+		ofxSurfingHelpers::ImGui_ThemeMoebiusSurfing();
+		//ofxSurfingHelpers::ImGui_ThemeModernDark();
 	}
 
 	//--------------------------------------------------------------
-	void draw_ImGui()
+	void ofApp::draw_ImGui()
 	{
 		gui.begin();
 		{
@@ -161,13 +142,12 @@ namespace ofxSurfingHelpers {
 			static bool auto_resize = true;
 
 			ImGuiWindowFlags flagsw = auto_resize ? ImGuiWindowFlags_AlwaysAutoResize : ImGuiWindowFlags_None;
-			flagsw |= ImGuiCond_FirstUseEver;
 
-			if (auto_lockToBorder) flagsw |= ImGuiCond_Always;
-			else flagsw |= ImGuiCond_FirstUseEver;
-
-			ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsw);
-			ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsw);
+			//flagsw |= ImGuiCond_FirstUseEver;
+			//if (auto_lockToBorder) flagsw |= ImGuiCond_Always;
+			//else flagsw |= ImGuiCond_FirstUseEver;
+			//ImGui::SetNextWindowSize(ImVec2(ww, hh), flagsw);
+			//ImGui::SetNextWindowPos(ImVec2(xx, yy), flagsw);
 
 			ImGui::PushFont(customFont);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
@@ -191,7 +171,20 @@ namespace ofxSurfingHelpers {
 					//if (ImGui::Button(">", ImVec2(__w, _h))) {}
 					//ImGui::PopButtonRepeat();
 
+					//ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+					//--
+
+					//mouse lockers
 					ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
+					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
+					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
+
+					ofxImGui::AddParameter(auto_resize);
+					ofxImGui::AddParameter(auto_lockToBorder);
+					ofxImGui::AddParameter(bLockMouseByImGui);
 				}
 				ofxImGui::EndWindow(mainSettings);
 			}
@@ -217,6 +210,7 @@ namespace ofxSurfingHelpers {
 	// example: 
 	// declare size vars for typical sizes 100%, 50%, 33% ..etc
 	// pass external variables as references
+
 	// snippet to use inside ImGui window/tree adapting for his shape
 	/*
 	float _spcx;
@@ -230,6 +224,7 @@ namespace ofxSurfingHelpers {
 	float _h;
 	ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 	*/
+
 	//--------------------------------------------------------------
 	inline void refreshImGui_WidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
 	{
@@ -245,9 +240,9 @@ namespace ofxSurfingHelpers {
 	}
 
 	// example: 
-	// allows to make exaCt width of widgets to fit panel size for two buttons:
+	// allows to make exact width of n widgets to fit panel size for two buttons:
 	//float __w = getImGui_WidgetWidth(__ww, 2);
-	//if (ImGui::Button("_Button", ImVec2(__ww, _h / 2))) {}
+	//if (ImGui::Button("_Button", ImVec2(__w, _h))) {}
 	//--------------------------------------------------------------
 	inline void getImGui_WidgetWidth(float &w, int amntColumns)
 	{
@@ -1515,4 +1510,64 @@ namespace ofxSurfingHelpers {
 		//		return ret;
 		//	}
 		//}
+
+	//TODO:
+	//BUG:
+	//when drawing two plots both are sharing variables ?? so only drawing one
+	//--------------------------------------------------------------
+	inline void AddPlot(ofParameter<float>& parameter, ImVec2 v2 = ImVec2(100, 80.0f))
+	{
+		ImGui::PushID(1);
+
+		static float min = parameter.getMin();
+		static float max = parameter.getMax();
+		static std::string name = parameter.getName();
+		//ImGui::Text(name.c_str());
+
+		static bool animate = true;
+
+		// Fill an array of contiguous float values to plot
+		// Tip: If your float aren't contiguous but part of a structure, you can pass a pointer to your first float
+		// and the sizeof() of your structure in the "stride" parameter.
+		
+		//static const size_t duration = 60 * 4;//fps * secs
+		//static float values[duration] = {};
+		static float values[120] = {};
+
+		static int values_offset = 0;
+		static double refresh_time = 0.0;
+
+		if (!animate || refresh_time == 0.0)
+			refresh_time = ImGui::GetTime();
+		while (refresh_time < ImGui::GetTime()) // Create data at fixed 60 Hz rate for the demo
+		{
+			static float phase = 0.0f;
+			values[values_offset] = parameter.get();
+			//values[values_offset] = cosf(phase);
+
+			values_offset = (values_offset + 1) % IM_ARRAYSIZE(values);
+			phase += 0.10f * values_offset;
+			refresh_time += 1.0f / 60.0f;
+		}
+
+		static bool bOverlayAvg = false;
+		static char overlay[32] = "";
+		if (bOverlayAvg)
+		{
+			float average = 0.0f;
+			for (int n = 0; n < IM_ARRAYSIZE(values); n++)
+				average += values[n];
+			average /= (float)IM_ARRAYSIZE(values);
+			sprintf(overlay, "avg %f", average);
+		}
+
+		//ImGui::PushID(1);
+		//ImGui::PlotLines("Plot", values, IM_ARRAYSIZE(values), values_offset, overlay, min, max, v2);
+		ImGui::PlotLines(name.c_str(), values, IM_ARRAYSIZE(values), values_offset, overlay, min, max, v2);
+
+		//ImGui::PushID(1);
+		ImGui::Checkbox("Animate", &animate);
+		
+		ImGui::PopID();
+	}
 };
