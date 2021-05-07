@@ -32,10 +32,10 @@ namespace ofxSurfingHelpers {
 	//window
 	ImGuiColorEditFlags _flagw = ImGuiWindowFlags_None;
 	string name = "myWindow"
-		if (ofxImGui::BeginWindow(name.c_str(), mainSettings, flagsw))
-		{
-			//..
-		}
+	if (ofxImGui::BeginWindow(name.c_str(), mainSettings, flagsw))
+	{
+		//..
+	}
 	ofxImGui::EndWindow(mainSettings);
 
 	//tree
@@ -46,7 +46,9 @@ namespace ofxSurfingHelpers {
 	}
 
 	//collapsing
-	if (ImGui::CollapsingHeader("_Collapsing"))
+	bool bOpen = false;
+	ImGuiColorEditFlags _flagw = (bOpen ? ImGuiWindowFlags_NoCollapse : ImGuiWindowFlags_None);
+	if (ImGui::CollapsingHeader("_Collapsing", _flagw))
 	{
 		//..
 	}
@@ -54,6 +56,7 @@ namespace ofxSurfingHelpers {
 	//treeEx
 	bool bOpen = true;
 	ImGuiColorEditFlags _flagw = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+	_flagw |= ImGuiTreeNodeFlags_Framed;
 	if (ImGui::TreeNodeEx("_TreeEx", _flagw)) {
 		//..
 		ImGui::TreePop();
@@ -351,10 +354,24 @@ namespace ofxSurfingHelpers {
 		return tmpRef;
 	}
 
+	//----
+
+	//example: blink white border depending on state
+	//if you want to overwrite the border color, like when blinking.. Yo need to set border to false
+	//float a;
+	//bool b = myToggleState.get();
+	//if (b) a = ofxSurfingHelpers::getFadeBlink();
+	//else a = 1.0f;
+	//if (b) ImGui::PushStyleColor(ImGuiCol_Border, (ImVec4)ImColor::HSV(0.5f, 0.0f, 1.0f, a));//white blink border
+	//ofxSurfingHelpers::AddBigToggle(myToggleState, _w100, _h, false);
+	//if (b) ImGui::PopStyleColor();
+
 	// TODO: seems not working well linked to the param.. requires better unique name?
 	//--------------------------------------------------------------
 	inline bool AddBigToggle(ofParameter<bool>& parameter, float w = 100, float h = 30, bool border = true)
 	{
+		//AddBigToggle(_pTcp, _w100, _h, false);
+
 		auto tmpRef = parameter.get();
 		std::string name = parameter.getName();
 
