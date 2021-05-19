@@ -126,8 +126,10 @@ namespace ofxSurfingHelpers {
 
 #ifdef USE_JSON
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup &g, string path, bool debug = true)
+	inline bool loadGroup(ofParameterGroup &g, string path = "", bool debug = true)
 	{
+		if (path == "") path = "settings.json";
+
 		if (debug)
 		{
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
@@ -160,8 +162,10 @@ namespace ofxSurfingHelpers {
 	}
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup &g, string path, bool debug = true)
+	inline bool saveGroup(ofParameterGroup &g, string path = "", bool debug = true)
 	{
+		if (path == "") path = "settings.json";
+
 		if (debug) {
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
 			ofLogNotice(__FUNCTION__) << "parameters: \n\n" << g.toString();

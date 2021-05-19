@@ -53,11 +53,11 @@ void ofxAutosaveGroupTimer::update()
 
 		//saveParams(params_Control, path_GLOBAL + path_Params_Control);
 		
-		// DISABLE_Callbacks = true;
+		// bDISABLE_CALLBACKS = true;
 		// //get gui position before save
 		// Gui_Position = glm::vec2(gui_Control.getPosition());
 		// saveParams(params_Control, path_GLOBAL + path_Params_Control);
-		// DISABLE_Callbacks = false;
+		// bDISABLE_CALLBACKS = false;
 
 		//-
 
