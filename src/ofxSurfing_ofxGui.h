@@ -10,6 +10,10 @@
 // https://github.com/openframeworks/openFrameworks/pull/6479
 // https://github.com/openframeworks/openFrameworks/issues/6470
 
+// snippets
+//#include "ofxSurfing_ofxGui.h"
+//ofxSurfingHelpers::setThemeDark_ofxGui();
+
 namespace ofxSurfingHelpers {
 	//using namespace ofxSurfingHelpers;
 
