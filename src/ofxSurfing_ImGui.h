@@ -19,105 +19,6 @@
 #include "ofxSurfing_ImGui_Themes.h"
 #include "imgui_internal.h"
 
-//TODO:
-//extra widgets
-//https://github.com/MacFurax/ofxImGui/blob/docking/libs/imgui/src/imgui_widgets.cpp
-namespace ImGui {
-	//used by AddKnob
-	inline bool KnobNeedleTrail(const char* label, float* p_value, float v_min, float v_max, float trailZero, float radius = 20, float incPrecision = 0.001)
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiStyle& style = ImGui::GetStyle();
-
-		ImVec2 pos = ImGui::GetCursorScreenPos(); // get top left pos of current widget
-		float line_height = ImGui::GetTextLineHeight();
-		float space_height = line_height * 0.1; // to add between top, label, knob, value and bottom
-		float space_width = radius * 0.1; // to add on left and right to diameter of knob
-		ImVec4 widgetRec = ImVec4(pos.x, pos.y, radius*2.0f + space_width * 2.0f, space_height*4.0f + radius * 2.0f + line_height * 2.0f);
-		ImVec2 labelLength = ImGui::CalcTextSize(label);
-
-		ImVec2 center = ImVec2(pos.x + space_width + radius, pos.y + space_height * 2 + line_height + radius);
-
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-		float ANGLE_MIN = 3.141592f * 0.75f;
-		float ANGLE_MAX = 3.141592f * 2.25f;
-
-		ImGui::InvisibleButton(label, ImVec2(widgetRec.z, widgetRec.w));
-		bool value_changed = false;
-		bool is_active = ImGui::IsItemActive();
-		bool is_hovered = ImGui::IsItemHovered();
-		if (is_active && io.MouseDelta.x != 0.0f)
-		{
-			float step = (v_max - v_min) / incPrecision;
-			*p_value += io.MouseDelta.x * step;
-			if (*p_value < v_min) *p_value = v_min;
-			if (*p_value > v_max) *p_value = v_max;
-			value_changed = true;
-		}
-
-		float t = (*p_value - v_min) / (v_max - v_min);
-		float angle = ANGLE_MIN + (ANGLE_MAX - ANGLE_MIN) * t;
-		float angle_cos = cosf(angle), angle_sin = sinf(angle);
-		float radius_inner = radius * 0.35f;
-
-		float refZeroTrailVal = (trailZero - v_min) / (v_max - v_min);
-		float refZeroTrailAngle = ANGLE_MIN + (ANGLE_MAX - ANGLE_MIN) * refZeroTrailVal;
-
-
-		//draw label
-		float texPos = pos.x + ((widgetRec.z - labelLength.x) * 0.5f);
-		draw_list->AddText(ImVec2(texPos, pos.y + space_height), ImGui::GetColorU32(ImGuiCol_Text), label);
-		// draw knob
-		if (style.FrameBorderSize > 0.0f)
-		{
-			draw_list->AddCircleFilled(center, radius + style.FrameBorderSize + 1.0f, ImGui::GetColorU32(ImGuiCol_BorderShadow), 32);
-			draw_list->AddCircleFilled(center, radius + style.FrameBorderSize, ImGui::GetColorU32(ImGuiCol_Border), 32);
-		}
-		// draw outer knob
-		draw_list->AddCircleFilled(center, radius, ImGui::GetColorU32(ImGuiCol_FrameBg), 32);
-
-		// draw needle
-		/*draw_list->AddLine(ImVec2(center.x + angle_cos * radius_inner, center.y + angle_sin * radius_inner),
-			ImVec2(center.x + angle_cos * (radius-1.5f), center.y + angle_sin * (radius-1.5f)),
-			ImGui::GetColorU32(ImGuiCol_SliderGrabActive), 2.0f);*/
-
-		draw_list->AddLine(ImVec2(center.x + angle_cos * radius_inner, center.y + angle_sin * radius_inner),
-			ImVec2(center.x + angle_cos * (radius - 1.5f), center.y + angle_sin * (radius - 1.5f)),
-			ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab), 2.0f);
-
-		//ImGuiCol_SliderGrab
-
-
-
-		// draw needle trail
-		if (refZeroTrailAngle < angle)
-		{
-			draw_list->PathArcTo(center, radius - 4.5f, refZeroTrailAngle, angle, 2 + (4 * (angle - refZeroTrailAngle))); // draw needle trail
-		}
-		else {
-			draw_list->PathArcTo(center, radius - 4.5f, angle, refZeroTrailAngle, 2 + (4 * (refZeroTrailAngle - angle))); // draw needle trail
-		}
-
-		draw_list->PathStroke(ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab), false, 6.0f);
-
-		//draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_FrameBgActive : is_hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), 16); // draw inner knob
-		//draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : is_hovered ? ImGuiCol_ButtonHovered : ImGuiCol_FrameBg), 16); // draw inner knob
-		draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : is_hovered ? ImGuiCol_ButtonHovered : ImGuiCol_FrameBg), 16); // draw inner knob
-
-		// draw value
-		char temp_buf[64];
-		sprintf(temp_buf, "%.2f", *p_value);
-		labelLength = ImGui::CalcTextSize(temp_buf);
-		texPos = pos.x + ((widgetRec.z - labelLength.x) * 0.5f);
-
-		draw_list->AddText(ImVec2(texPos, pos.y + space_height * 3 + line_height + radius * 2), ImGui::GetColorU32(ImGuiCol_Text), temp_buf);
-
-		return value_changed;
-	}
-};//ImGui
-
-
 //----
 
 namespace ofxSurfingHelpers {
@@ -1191,8 +1092,138 @@ namespace ofxSurfingHelpers {
 		ImGui::PopID();
 	}
 
+//----
+
+		////TODO:
+	////snap engine
+	//auto snap = [=](float value, float snap_threshold) -> float {
+	//	float modulo = std::fmodf(value, snap_threshold);
+	//	float moduloRatio = std::fabsf(modulo) / snap_threshold;
+	//	if (moduloRatio < 0.5f)
+	//		value -= modulo;
+	//	else if (moduloRatio > (1.f - 0.5f))
+	//		value = value - modulo + snap_threshold * ((value < 0.f) ? -1.f : 1.f);
+	//	return value;
+	//};
+	////ImGui::Begin(name.data());
+	////if (ImGui::IsItemActive()) 
+	//{
+	//	auto p = ImGui::GetWindowPos();
+	//	auto size = ImGui::GetWindowSize();
+
+	//	float x = snap(p.x, 16.f);
+	//	float y = snap(p.y, 16.f);
+	//	float sizex = snap(size.x, 16.f);
+	//	float sizey = snap(size.y, 16.f);
+	//	ImGui::SetWindowPos(ImFloor(ImVec2(x, y)));
+	//}
+
+};
+
+
+//-----
+
+//TODO:
+//extra widgets
+//https://github.com/MacFurax/ofxImGui/blob/docking/libs/imgui/src/imgui_widgets.cpp
+namespace ImGui {
+	//used by AddKnob
+	inline bool KnobNeedleTrail(const char* label, float* p_value, float v_min, float v_max, float trailZero, float radius = 20, float incPrecision = 0.001)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+
+		ImVec2 pos = ImGui::GetCursorScreenPos(); // get top left pos of current widget
+		float line_height = ImGui::GetTextLineHeight();
+		float space_height = line_height * 0.1; // to add between top, label, knob, value and bottom
+		float space_width = radius * 0.1; // to add on left and right to diameter of knob
+		ImVec4 widgetRec = ImVec4(pos.x, pos.y, radius*2.0f + space_width * 2.0f, space_height*4.0f + radius * 2.0f + line_height * 2.0f);
+		ImVec2 labelLength = ImGui::CalcTextSize(label);
+
+		ImVec2 center = ImVec2(pos.x + space_width + radius, pos.y + space_height * 2 + line_height + radius);
+
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		float ANGLE_MIN = 3.141592f * 0.75f;
+		float ANGLE_MAX = 3.141592f * 2.25f;
+
+		ImGui::InvisibleButton(label, ImVec2(widgetRec.z, widgetRec.w));
+		bool value_changed = false;
+		bool is_active = ImGui::IsItemActive();
+		bool is_hovered = ImGui::IsItemHovered();
+		if (is_active && io.MouseDelta.x != 0.0f)
+		{
+			float step = (v_max - v_min) / incPrecision;
+			*p_value += io.MouseDelta.x * step;
+			if (*p_value < v_min) *p_value = v_min;
+			if (*p_value > v_max) *p_value = v_max;
+			value_changed = true;
+		}
+
+		float t = (*p_value - v_min) / (v_max - v_min);
+		float angle = ANGLE_MIN + (ANGLE_MAX - ANGLE_MIN) * t;
+		float angle_cos = cosf(angle), angle_sin = sinf(angle);
+		float radius_inner = radius * 0.35f;
+
+		float refZeroTrailVal = (trailZero - v_min) / (v_max - v_min);
+		float refZeroTrailAngle = ANGLE_MIN + (ANGLE_MAX - ANGLE_MIN) * refZeroTrailVal;
+
+
+		//draw label
+		float texPos = pos.x + ((widgetRec.z - labelLength.x) * 0.5f);
+		draw_list->AddText(ImVec2(texPos, pos.y + space_height), ImGui::GetColorU32(ImGuiCol_Text), label);
+		// draw knob
+		if (style.FrameBorderSize > 0.0f)
+		{
+			draw_list->AddCircleFilled(center, radius + style.FrameBorderSize + 1.0f, ImGui::GetColorU32(ImGuiCol_BorderShadow), 32);
+			draw_list->AddCircleFilled(center, radius + style.FrameBorderSize, ImGui::GetColorU32(ImGuiCol_Border), 32);
+		}
+		// draw outer knob
+		draw_list->AddCircleFilled(center, radius, ImGui::GetColorU32(ImGuiCol_FrameBg), 32);
+
+		// draw needle
+		/*draw_list->AddLine(ImVec2(center.x + angle_cos * radius_inner, center.y + angle_sin * radius_inner),
+			ImVec2(center.x + angle_cos * (radius-1.5f), center.y + angle_sin * (radius-1.5f)),
+			ImGui::GetColorU32(ImGuiCol_SliderGrabActive), 2.0f);*/
+
+		draw_list->AddLine(ImVec2(center.x + angle_cos * radius_inner, center.y + angle_sin * radius_inner),
+			ImVec2(center.x + angle_cos * (radius - 1.5f), center.y + angle_sin * (radius - 1.5f)),
+			ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab), 2.0f);
+
+		//ImGuiCol_SliderGrab
+
+
+
+		// draw needle trail
+		if (refZeroTrailAngle < angle)
+		{
+			draw_list->PathArcTo(center, radius - 4.5f, refZeroTrailAngle, angle, 2 + (4 * (angle - refZeroTrailAngle))); // draw needle trail
+		}
+		else {
+			draw_list->PathArcTo(center, radius - 4.5f, angle, refZeroTrailAngle, 2 + (4 * (refZeroTrailAngle - angle))); // draw needle trail
+		}
+
+		draw_list->PathStroke(ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : ImGuiCol_SliderGrab), false, 6.0f);
+
+		//draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_FrameBgActive : is_hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), 16); // draw inner knob
+		//draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : is_hovered ? ImGuiCol_ButtonHovered : ImGuiCol_FrameBg), 16); // draw inner knob
+		draw_list->AddCircleFilled(center, radius_inner, ImGui::GetColorU32(is_active ? ImGuiCol_SliderGrabActive : is_hovered ? ImGuiCol_ButtonHovered : ImGuiCol_FrameBg), 16); // draw inner knob
+
+		// draw value
+		char temp_buf[64];
+		sprintf(temp_buf, "%.2f", *p_value);
+		labelLength = ImGui::CalcTextSize(temp_buf);
+		texPos = pos.x + ((widgetRec.z - labelLength.x) * 0.5f);
+
+		draw_list->AddText(ImVec2(texPos, pos.y + space_height * 3 + line_height + radius * 2), ImGui::GetColorU32(ImGuiCol_Text), temp_buf);
+
+		return value_changed;
+	}
+};//ImGui
 
 	//----
+
+namespace ofxSurfingHelpers {
 
 	//TODO:
 	//knob
@@ -1250,32 +1281,6 @@ namespace ofxSurfingHelpers {
 	//		return true;
 	//	}
 	//	return false;
-	//}
-
-//----
-
-		////TODO:
-	////snap engine
-	//auto snap = [=](float value, float snap_threshold) -> float {
-	//	float modulo = std::fmodf(value, snap_threshold);
-	//	float moduloRatio = std::fabsf(modulo) / snap_threshold;
-	//	if (moduloRatio < 0.5f)
-	//		value -= modulo;
-	//	else if (moduloRatio > (1.f - 0.5f))
-	//		value = value - modulo + snap_threshold * ((value < 0.f) ? -1.f : 1.f);
-	//	return value;
-	//};
-	////ImGui::Begin(name.data());
-	////if (ImGui::IsItemActive()) 
-	//{
-	//	auto p = ImGui::GetWindowPos();
-	//	auto size = ImGui::GetWindowSize();
-
-	//	float x = snap(p.x, 16.f);
-	//	float y = snap(p.y, 16.f);
-	//	float sizex = snap(size.x, 16.f);
-	//	float sizey = snap(size.y, 16.f);
-	//	ImGui::SetWindowPos(ImFloor(ImVec2(x, y)));
 	//}
 
 };

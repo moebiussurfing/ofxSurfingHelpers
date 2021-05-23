@@ -38,11 +38,12 @@ public:
 private:
 	bool bUseAdvancedSubPanel = false;//enable advanced sub panel
 
-	//panels sizes
+	//panels minimal sizes
 	float xx = 10;
 	float yy = 10;
 	float ww = PANEL_WIDGETS_WIDTH;
-	float hh = PANEL_WIDGETS_HEIGHT;
+	float hh = 20;
+	//float hh = PANEL_WIDGETS_HEIGHT;
 
 	/*
 	//snippet
@@ -67,7 +68,7 @@ private:
 		{
 			ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-			//drawWidgets();
+			//drawParams();
 
 			guiManager.drawAdvancedSubPanel();
 		}
