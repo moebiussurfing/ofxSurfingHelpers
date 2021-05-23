@@ -5,7 +5,9 @@ ofxSurfingHelpers
 **ofxSurfingHelpers** is a (WIP) collection of some useful OF-Utils/Classes/Snippets...
 
 ## Screenshot
-![Alt text](/readme_images/Capture.PNG?raw=true "Capture.PNG")
+* ofxSurfing_ImGui_LayoutManager.h:
+Speed up ImGui layouts with ofParameter helpers  
+![ofxSurfing_ImGui_LayoutManager](/readme_images/Capture.PNG?raw=true "ofxSurfing_ImGui_LayoutManager.jpg")
 
 ## Features
 - Look into the classes into **/src** for the moment...
