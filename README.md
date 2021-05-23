@@ -7,7 +7,7 @@ ofxSurfingHelpers
 ## Screenshot
 * ofxSurfing_ImGui_LayoutManager.h:
 Speed up ImGui layouts with ofParameter helpers  
-![ofxSurfing_ImGui_LayoutManager](/readme_images/Capture.PNG?raw=true "ofxSurfing_ImGui_LayoutManager.jpg")
+![ofxSurfing_ImGui_LayoutManager](/readme_images/ImGui_Layout.jpg?raw=true "ofxSurfing_ImGui_LayoutManager.jpg")
 
 ## Features
 - Look into the classes into **/src** for the moment...
