@@ -9,22 +9,30 @@ class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
-		void update();
 		void draw();
 
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-
-		ofxImGui::Gui gui;
-		ofxSurfing_ImGui_LayoutManager guiManager;
+		//ofxImGui::Gui gui; // can be instantiated outside the class
+		ofxSurfing_ImGui_LayoutManager guiManager; // gui will be instatiated inside the class
 		void drawWidgets();
+
+		// parameters
+		ofParameterGroup params;
+		ofParameter<bool> bEnable;
+		ofParameter<bool> bPrevious;
+		ofParameter<bool> bNext;
+		ofParameter<float> lineWidth;
+		ofParameter<float> separation;
+		ofParameter<float> speed;
+		ofParameter<int> shapeType;
+		ofParameter<int> amount;
+		ofParameter<int> size;
+		ofParameterGroup params2;
+		ofParameter<int> shapeType2;
+		ofParameter<int> amount2;
+		ofParameter<int> size2;
+		ofParameterGroup params3;
+		ofParameter<float> lineWidth3;
+		ofParameter<float> separation3;
+		ofParameter<float> speed3;
+		ofParameter<int> shapeType3;
 };

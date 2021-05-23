@@ -291,7 +291,6 @@ namespace ofxSurfingHelpers {
 					//	ofxImGui::AddParameter(bLockMouseByImGui);
 					//	//ofxImGui::AddParameter(auto_lockToBorder);
 					//}
-				}
 				ofxImGui::EndWindow(mainSettings);
 			}
 			ImGui::PopStyleVar();
@@ -327,7 +326,7 @@ namespace ofxSurfingHelpers {
 	*/
 
 	//--------------------------------------------------------------
-	inline void refreshImGui_WidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)
+	inline void refreshImGui_WidgetsSizes(float& __spcx, float& __spcy, float& __w100, float& __h100, float& __w99, float& __w50, float& __w33, float& __w25, float& __h)// we will update the sizes on any gui drawing point, like inside a new foldered sub-window that could be indendeted and full size is being 
 	{
 		__spcx = ImGui::GetStyle().ItemSpacing.x;
 		__spcy = ImGui::GetStyle().ItemSpacing.y;
