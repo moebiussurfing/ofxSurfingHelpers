@@ -224,8 +224,6 @@ namespace ofxSurfingHelpers {
 	{
 		gui.begin();
 		{
-			bLockMouseByImGui = false;
-
 			//panels sizes
 			float xx = 10;
 			float yy = 10;
@@ -281,7 +279,7 @@ namespace ofxSurfingHelpers {
 					//--
 
 					//mouse lockers
-
+					bLockMouseByImGui = false;
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
 					bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
@@ -300,11 +298,6 @@ namespace ofxSurfingHelpers {
 			ImGui::PopFont();
 		}
 		gui.end();
-
-		//mouse lockers
-		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow);
-		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
-		bLockMouseByImGui = bLockMouseByImGui | ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 
 		//gui.draw();
 	}
