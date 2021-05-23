@@ -2,7 +2,7 @@ ofxSurfingHelpers
 =============================
 
 ## Overview
-**ofxSurfingHelpers** is a (WIP) collection of some useful OF-Utils/Classes/Snippets...
+**ofxSurfingHelpers** is a (WIP) opinionated collection of some useful OF-Utils/Classes/Snippets...
 
 ## Screenshots
 
@@ -34,7 +34,7 @@ https://github.com/ofTheo/ofxFileHelper
 - **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
 
 ## Author
-MoebiusSurfing, July 2020. 
+moebiusSurfing, 2020-2021. 
 
 ## License
 *MIT License.*
