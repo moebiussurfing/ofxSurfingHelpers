@@ -4,6 +4,8 @@
 
 #include "ofxImGui.h"
 #include "ofxSurfing_ImGui_LayoutManager.h"
+//#include "ofxSurfing_ImGui_Widgets.h"
+#include "range_slider.h"
 
 class ofApp : public ofBaseApp{
 

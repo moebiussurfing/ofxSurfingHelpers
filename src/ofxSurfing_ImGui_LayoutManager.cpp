@@ -83,3 +83,16 @@ void ofxSurfing_ImGui_LayoutManager::end() {
 	if (guiPtr != nullptr) guiPtr->end();
 	else gui.end();
 }
+
+////--------------------------------------------------------------
+//void ofxSurfing_ImGui_LayoutManager::drawRangue() {
+//    static float v1 = 0;
+//    static float v2 = 1;
+//    static float v_min = 0;
+//    static float v_max = 10;
+//    bool b = ImGui::RangeSliderFloat("range", &v1, &v2, v_min, v_max);
+////    if (ImGui::RangeSliderFloat("range", &v1, &v2, v_min, v_max, "(%.3f, %.3f)", 1.f))
+////    {
+////    }
+//}
+

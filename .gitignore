@@ -555,3 +555,7 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 example-ImGui_Layout/bin/imgui.ini
+example-ImGui_Layout/config.make
+example-ImGui_Layout/Makefile
+example-ImGui_Layout/openFrameworks-Info.plist
+example-ImGui_Layout/Project.xcconfig

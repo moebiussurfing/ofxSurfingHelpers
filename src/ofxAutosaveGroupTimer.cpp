@@ -1,6 +1,6 @@
 #include "ofxAutosaveGroupTimer.h"
 
-#pragma once
+//#pragma once
 
 //--------------------------------------------------------------
 ofxAutosaveGroupTimer::ofxAutosaveGroupTimer()

@@ -4,6 +4,8 @@
 
 #include "ofxSurfing_ImGui.h"
 
+//#include "range_slider.h"
+
 //using namespace ImGui;
 //namespace ofxSurfingHelpers
 //{
@@ -90,6 +92,9 @@ public:
 			//ofxImGui::AddParameter(auto_lockToBorder);
 		}
 	}
+
+    //--------------------------------------------------------------
+//    void drawRangue();
 
 	//--------------------------------------------------------------
 	//void setUseAdvancedSubPanel(bool b) {

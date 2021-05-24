@@ -2,7 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-
+    ofSetFrameRate(25);
+    
 	//guiManager.setup(gui); // can be instantiated out of the class, localy
 	guiManager.setup();
 
@@ -10,8 +11,8 @@ void ofApp::setup() {
 	params.setName("paramsGroup");// main container
 	params2.setName("paramsGroup2");// nested
 	params3.setName("paramsGroup3");// nested
-	params.add(bPrevious.set("<", false));
-	params.add(bNext.set(">", false));
+//    params.add(bPrevious.set("<", false));
+//    params.add(bNext.set(">", false));
 	params.add(bEnable.set("Enable", false));
 	params.add(lineWidth.set("lineWidth", 0.5, 0, 1));
 	params.add(separation.set("separation", 50, 1, 100));
@@ -67,27 +68,50 @@ void ofApp::drawWidgets() {
 	ofxImGui::AddGroup(params3, mainSettings);
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));// spacing
 
-	// add big toggle full width
-	ofxSurfingHelpers::AddBigToggle(bEnable, _w100, _h / 2);
-	ImGui::Dummy(ImVec2(0.0f, 2.0f));// spacing
+    //-
 
-	// two buttons on same line
-	ofxImGui::AddGroup(params2, mainSettings);
-	if (ofxSurfingHelpers::AddBigButton(bPrevious, _w50, _h)) {
-		bPrevious = false;
-	}
-	ImGui::SameLine();
-	ofxSurfingHelpers::AddBigButton(bNext, _w50, _h);
-	ImGui::Dummy(ImVec2(0.0f, 5.0f));// spacing
+    // ranges
 
-	// full width buttons. half height
-	if (ImGui::Button("RANDOMIZE!", ImVec2(_w100, _h / 2)))
-	{
-	}
-	if (ImGui::Button("RESET", ImVec2(_w100, _h / 2)))
-	{
-	}
-	ofxImGui::AddGroup(params, mainSettings);
+    static float v1 = 0;
+    static float v2 = 1;
+    static float v_min = 0;
+    static float v_max = 1;
+    ImGui::RangeSliderFloat("range1", &v1, &v2, v_min, v_max);
+
+    static float v3 = 0;
+    static float v4 = 1;
+    ImGui::RangeSliderFloat("range2", &v3, &v4, v_min, v_max);
+
+    static float begin = 10, end = 90;
+    ImGui::DragFloatRange2("range", &begin, &end, 0.25f, 0.0f, 100.0f, "Min: %.1f %%", "Max: %.1f %%");
+
+    static int begin_i = 100, end_i = 1000;
+    ImGui::DragIntRange2("range int (no bounds)", &begin_i, &end_i, 5, 0, 0, "Min: %.0f units", "Max: %.0f units");
+
+    //-
+
+//    // add big toggle full width
+//    ofxSurfingHelpers::AddBigToggle(bEnable, _w100, _h / 2);
+//    ImGui::Dummy(ImVec2(0.0f, 2.0f));// spacing
+//
+//    // two buttons on same line
+//    ofxImGui::AddGroup(params2, mainSettings);
+//    if (ofxSurfingHelpers::AddBigButton(bPrevious, _w50, _h)) {
+//        bPrevious = false;
+//    }
+//    ImGui::SameLine();
+//    ofxSurfingHelpers::AddBigButton(bNext, _w50, _h);
+//    ImGui::Dummy(ImVec2(0.0f, 5.0f));// spacing
+//
+//    // full width buttons. half height
+//    if (ImGui::Button("RANDOMIZE!", ImVec2(_w100, _h / 2)))
+//    {
+//    }
+//    if (ImGui::Button("RESET", ImVec2(_w100, _h / 2)))
+//    {
+//    }
+//    ofxImGui::AddGroup(params, mainSettings);
+
 
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 }
