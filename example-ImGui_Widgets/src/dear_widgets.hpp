@@ -1,4 +1,7 @@
-﻿
+#pragma once
+#include "ofMain.h"
+#include "ofxImGui.h"
+
 //////////////////////////////////////////////////////////////////////////
 // Helpers
 template < typename Type >

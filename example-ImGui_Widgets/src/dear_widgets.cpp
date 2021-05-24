@@ -1,4 +1,4 @@
-﻿#include <dear_widgets.h>
+#include <dear_widgets.h>
 
 //#include <clipper.hpp>
 
@@ -1109,15 +1109,16 @@ namespace ImWidgets {
 					ImGui::FocusableItemUnregister(window);
 				}
 			}
-			// Experimental: simple click (without moving) turns Drag into an InputText
-			// FIXME: Currently polling ImGuiConfigFlags_IsTouchScreen, may either poll an hypothetical ImGuiBackendFlags_HasKeyboard and/or an explicit drag settings.
-			if (g.IO.ConfigDragClickToInputText && temp_input_allowed && !temp_input_is_active)
-				if (g.ActiveId == id && hovered && g.IO.MouseReleased[0] && !ImGui::IsMouseDragPastThreshold(0, g.IO.MouseDragThreshold * 0.5f/*DRAG_MOUSE_THRESHOLD_FACTOR*/))
-				{
-					g.NavInputId = id;
-					temp_input_is_active = true;
-					ImGui::FocusableItemUnregister(window);
-				}
+            //?
+//            // Experimental: simple click (without moving) turns Drag into an InputText
+//            // FIXME: Currently polling ImGuiConfigFlags_IsTouchScreen, may either poll an hypothetical ImGuiBackendFlags_HasKeyboard and/or an explicit drag settings.
+//            if (g.IO.ConfigDragClickToInputText && temp_input_allowed && !temp_input_is_active)
+//                if (g.ActiveId == id && hovered && g.IO.MouseReleased[0] && !ImGui::IsMouseDragPastThreshold(0, g.IO.MouseDragThreshold * 0.5f/*DRAG_MOUSE_THRESHOLD_FACTOR*/))
+//                {
+//                    g.NavInputId = id;
+//                    temp_input_is_active = true;
+//                    ImGui::FocusableItemUnregister(window);
+//                }
 		}
 
 		if (temp_input_is_active)
@@ -1140,8 +1141,8 @@ namespace ImWidgets {
 		// Display value using user-provided display format so user can add prefix/suffix/decorations to the value.
 		char value_buf[64];
 		const char* value_buf_end = value_buf + ImGui::DataTypeFormatString(value_buf, IM_ARRAYSIZE(value_buf), ImGuiDataType_Float, data, "%f");
-		if (g.LogEnabled)
-			ImGui::LogSetNextTextDecoration("{", "}");
+//?//        if (g.LogEnabled)
+//            ImGui::LogSetNextTextDecoration("{", "}");
 		ImGui::RenderTextClipped(frame_bb.Min, frame_bb.Max, value_buf, value_buf_end, NULL, ImVec2(0.5f, 0.5f));
 
 		if (label_size.x > 0.0f)
@@ -1242,9 +1243,10 @@ namespace ImWidgets {
 
 		ImGuiID const iID = ImGui::GetID(pLabel);
 
-		ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * 1.1f;
+//        ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * 1.1f;
+        ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * ImVec2(1.1f, 1.1f);
 
-		float const vSizeFull = (ImGui::GetContentRegionAvail().x - vSizeSubstract.x) * fScale;
+        float const vSizeFull = (ImGui::GetContentRegionAvail().x - vSizeSubstract.x) * fScale;
 		ImVec2 const vSize(vSizeFull, vSizeFull);
 
 		float const fHeightOffset = ImGui::GetTextLineHeight();
@@ -1593,7 +1595,7 @@ namespace ImWidgets {
 
 		ImGuiID const iID = ImGui::GetID(pLabel);
 
-		ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * 1.1f;
+		ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * ImVec2(1.1f, 1.1f);
 
 		float const vSizeFull = (ImGui::GetContentRegionAvail().x - vSizeSubstract.x) * fScale;
 		ImVec2 const vSize(vSizeFull, vSizeFull);
@@ -1810,7 +1812,7 @@ namespace ImWidgets {
 
 		ImGuiID const iID = ImGui::GetID(pLabel);
 
-		ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * 1.1f;
+		ImVec2 const vSizeSubstract = ImGui::CalcTextSize(std::to_string(1.0f).c_str()) * ImVec2(1.1f, 1.1f);
 
 		float const vSizeFull = ImGui::GetContentRegionAvail().x;
 		float const fMinSize = (vSizeFull - vSizeSubstract.x * 0.5f) * fScale * 0.75f;
@@ -2103,7 +2105,7 @@ namespace ImWidgets {
 		pDrawList->AddNgonFilled((vDragEnd - vDragStart) * fScaleZ + vDragStart, fHandleRadius, uBlue, 4);
 
 		ImGui::Dummy(vHeightOffset);
-		ImGui::Dummy(vHeightOffset * 1.25f);
+		ImGui::Dummy(vHeightOffset * ImVec2(1.25f, 1.25f));
 		ImGui::Dummy(vSize);
 
 		return bModified;
@@ -2243,7 +2245,7 @@ namespace ImWidgets {
 				float* pY = &buffer[2 * (j * columns + i) + 1];
 
 				ImVec2 vCenter = oRect.GetTL() + ImVec2(*pX * width, *pY * height);
-				ImRect oLocalRect(vCenter - oRect.GetSize() * 0.01f, vCenter + oRect.GetSize() * 0.01f);
+				ImRect oLocalRect(vCenter - oRect.GetSize() * ImVec2(0.01f,0.01f), vCenter + oRect.GetSize() * ImVec2(0.01f, 0.01f));
 
 				ImGui::PushID(pX);
 
@@ -2255,7 +2257,8 @@ namespace ImWidgets {
 					ImVec2 vCursorPos = ImGui::GetMousePos();
 					ImVec2 vDelta = vCursorPos - oLocalRect.GetCenter();
 
-					vDelta /= oRect.GetSize();
+//                    vDelta /= oRect.GetSize();
+                    vDelta = vDelta / oRect.GetSize();
 
 					*pX += vDelta.x;
 					*pY += vDelta.y;
@@ -2275,70 +2278,70 @@ namespace ImWidgets {
 		return false;
 	}
 
-	bool PlaneMovePoint2D(const char* label, float* buffer_aot, int float2_count, float minX, float maxX, float minY, float maxY)
-	{
-		assert(minX < maxX);
-		assert(minY < maxY);
-
-		ImGuiID const iID = ImGui::GetID(label);
-		ImGui::PushID(iID);
-
-		float const vSizeFull = ImGui::GetContentRegionAvail().x;
-		ImVec2 const vSecurity(15.0f, 15.0f);
-		ImVec2 const vSize(vSizeFull - vSecurity.x, vSizeFull - vSecurity.y);
-
-		float const fHeightOffset = ImGui::GetTextLineHeight();
-		ImVec2 const vHeightOffset(0.0f, fHeightOffset);
-
-		ImVec2 vPos = ImGui::GetCursorScreenPos();
-		ImRect oRect(vPos + vSecurity, vPos + vSize);
-
-		float const width = oRect.GetWidth();
-		float const height = oRect.GetHeight();
-
-		//ImGui::InvisibleButton("##Zone", oRect.GetSize(), 0);
-		ImGui::Dummy(oRect.GetSize());
-
-		bool hovered;
-		bool held;
-
-		ImDrawList* pDrawList = ImGui::GetWindowDrawList();
-		for (int i = 0; i < float2_count; ++i)
-		{
-			float* pX = &buffer_aot[2 * i + 0];
-			float* pY = &buffer_aot[2 * i + 1];
-
-			ImVec2 vCenter = oRect.GetTL() + ImVec2(*pX * width, *pY * height);
-			ImRect oLocalRect(vCenter - oRect.GetSize() * 0.01f, vCenter + oRect.GetSize() * 0.01f);
-
-			ImGui::PushID(pX);
-
-			ImGui::ButtonBehavior(oLocalRect, ImGui::GetID(pY), &hovered, &held);
-			bool dragged = hovered && held;
-			pDrawList->AddCircleFilled(vCenter, vSize.x * 0.01f, IM_COL32(hovered ? 0 : 255, hovered ? 255 : 0, 0, 255), 16);
-			if (dragged)
-			{
-				ImVec2 vCursorPos = ImGui::GetMousePos();
-				ImVec2 vDelta = vCursorPos - oLocalRect.GetCenter();
-
-				vDelta /= oRect.GetSize();
-
-				*pX += vDelta.x;
-				*pY += vDelta.y;
-
-				*pX = ImSaturate(*pX);
-				*pY = ImSaturate(*pY);
-			}
-
-			ImGui::PopID();
-		}
-
-		ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetTextLineHeightWithSpacing()));
-
-		ImGui::PopID();
-
-		return false;
-	}
+//    bool PlaneMovePoint2D(const char* label, float* buffer_aot, int float2_count, float minX, float maxX, float minY, float maxY)
+//    {
+//        assert(minX < maxX);
+//        assert(minY < maxY);
+//
+//        ImGuiID const iID = ImGui::GetID(label);
+//        ImGui::PushID(iID);
+//
+//        float const vSizeFull = ImGui::GetContentRegionAvail().x;
+//        ImVec2 const vSecurity(15.0f, 15.0f);
+//        ImVec2 const vSize(vSizeFull - vSecurity.x, vSizeFull - vSecurity.y);
+//
+//        float const fHeightOffset = ImGui::GetTextLineHeight();
+//        ImVec2 const vHeightOffset(0.0f, fHeightOffset);
+//
+//        ImVec2 vPos = ImGui::GetCursorScreenPos();
+//        ImRect oRect(vPos + vSecurity, vPos + vSize);
+//
+//        float const width = oRect.GetWidth();
+//        float const height = oRect.GetHeight();
+//
+//        //ImGui::InvisibleButton("##Zone", oRect.GetSize(), 0);
+//        ImGui::Dummy(oRect.GetSize());
+//
+//        bool hovered;
+//        bool held;
+//
+//        ImDrawList* pDrawList = ImGui::GetWindowDrawList();
+//        for (int i = 0; i < float2_count; ++i)
+//        {
+//            float* pX = &buffer_aot[2 * i + 0];
+//            float* pY = &buffer_aot[2 * i + 1];
+//
+//            ImVec2 vCenter = oRect.GetTL() + ImVec2(*pX * width, *pY * height);
+//            ImRect oLocalRect(vCenter - oRect.GetSize() * 0.01f, vCenter + oRect.GetSize() * 0.01f);
+//
+//            ImGui::PushID(pX);
+//
+//            ImGui::ButtonBehavior(oLocalRect, ImGui::GetID(pY), &hovered, &held);
+//            bool dragged = hovered && held;
+//            pDrawList->AddCircleFilled(vCenter, vSize.x * 0.01f, IM_COL32(hovered ? 0 : 255, hovered ? 255 : 0, 0, 255), 16);
+//            if (dragged)
+//            {
+//                ImVec2 vCursorPos = ImGui::GetMousePos();
+//                ImVec2 vDelta = vCursorPos - oLocalRect.GetCenter();
+//
+//                vDelta /= oRect.GetSize();
+//
+//                *pX += vDelta.x;
+//                *pY += vDelta.y;
+//
+//                *pX = ImSaturate(*pX);
+//                *pY = ImSaturate(*pY);
+//            }
+//
+//            ImGui::PopID();
+//        }
+//
+//        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetTextLineHeightWithSpacing()));
+//
+//        ImGui::PopID();
+//
+//        return false;
+//    }
 
 	IMGUI_API bool MoveLine2D(const char* label, float* buffer_aot, int float2_count, float minX, float maxX, float minY, float maxY, bool closeLoop)
 	{
@@ -2398,7 +2401,7 @@ namespace ImWidgets {
 			float y = Rescale(*pY, minY, maxY, 0.0f, 1.0f);
 
 			ImVec2 vCenter = oRect.GetTL() + ImVec2(x * width, y * height);
-			ImRect oLocalRect(vCenter - oRect.GetSize() * 0.01f, vCenter + oRect.GetSize() * 0.01f);
+			ImRect oLocalRect(vCenter - oRect.GetSize() * ImVec2(0.01f, 0.01f), vCenter + oRect.GetSize() * ImVec2(0.01f, 0.01f));
 
 			ImGui::PushID(pX);
 
@@ -2410,7 +2413,8 @@ namespace ImWidgets {
 				ImVec2 vCursorPos = ImGui::GetMousePos();
 				ImVec2 vDelta = vCursorPos - oLocalRect.GetCenter();
 
-				vDelta /= oRect.GetSize();
+//                vDelta /= oRect.GetSize();
+                vDelta = vDelta / oRect.GetSize();
 
 				*pX += vDelta.x;
 				*pY += vDelta.y;
@@ -3054,9 +3058,11 @@ namespace ImWidgets {
 			ImVec2& bnd = bb_pts[boundIdx];
 			ImVec2 v0 = vBuffer[curIdx] - bnd;
 			ImVec2 v1 = vBuffer[nextIdx] - bnd;
-			v0 /= ImLength(v0);
-			v1 /= ImLength(v1);
-			float crossSignZ = ImSign(v0.x * v1.y - v0.y * v1.x);
+//            v0 /= ImLength(v0);
+//            v1 /= ImLength(v1);
+            v0 = v0/ImVec2(ImLength(v0),ImLength(v0));
+            v1 = v1/ImVec2(ImLength(v1), ImLength(v1));
+            float crossSignZ = ImSign(v0.x * v1.y - v0.y * v1.x);
 			float dot = v0.x * v1.x + v0.y * v1.y;
 			//if (dot > 0.9999999f)
 			//if (dot > 0.9999f)
@@ -3338,10 +3344,10 @@ namespace ImWidgets {
 						ImVec2 x11 = curPos + ImVec2(sx * (i + 0), sy * (j + 0));
 						ImVec2 x10 = curPos + ImVec2(sx * (i + 0), sy * (j - 1));
 
-						ImVec2 vals[] = {	x00 * 0.5f + x01 * 0.5f,
-											x01 * 0.5f + x11 * 0.5f,
-											x11 * 0.5f + x10 * 0.5f,
-											x10 * 0.5f + x00 * 0.5f };
+						ImVec2 vals[] = {	x00 * ImVec2(0.5f, 0.5f) + x01 * ImVec2(0.5f, 0.5f),
+											x01 * ImVec2(0.5f, 0.5f) + x11 * ImVec2(0.5f, 0.5f),
+											x11 * ImVec2(0.5f, 0.5f) + x10 * ImVec2(0.5f, 0.5f),
+											x10 * ImVec2(0.5f, 0.5f) + x00 * ImVec2(0.5f, 0.5f) };
 						//ImVec2 vals[] = {	(x00 * _00f + x01 * _01f) / (_00f + _01f),
 						//					(x01 * _01f + x11 * _11f) / (_01f + _11f),
 						//					(x11 * _11f + x10 * _10f) / (_11f + _10f),
@@ -3454,7 +3460,7 @@ namespace ImWidgets {
 		auto labelRect = s_GroupPanelLabelStack.back();
 		s_GroupPanelLabelStack.pop_back();
 
-		ImVec2 halfFrame = ImVec2(frameHeight * 0.25f, frameHeight) * 0.5f;
+		ImVec2 halfFrame = ImVec2(frameHeight * 0.25f, frameHeight) * ImVec2(0.5f, 0.5f);
 		ImRect frameRect = ImRect(itemMin + halfFrame, itemMax - ImVec2(halfFrame.x, 0.0f));
 		labelRect.Min.x -= itemSpacing.x;
 		labelRect.Max.x += itemSpacing.x;
