@@ -386,7 +386,8 @@ namespace ImGui
 
         if (!display_format)
             display_format = "(%.3f, %.3f)";
-        int decimal_precision = ImParseFormatPrecision(display_format, 3);
+//display_format = "%.3f - %.3f";
+            int decimal_precision = ImParseFormatPrecision(display_format, 3);
 
         // Tabbing or CTRL-clicking on Slider turns it into an input box
         bool start_text_input = false;
@@ -403,6 +404,7 @@ namespace ImGui
             }
         }
 
+        //crash
 //        if (start_text_input || (g.ActiveId == id && g.TempInputId == id))
 //        {
 //            char fmt[64];

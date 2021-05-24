@@ -559,3 +559,7 @@ example-ImGui_Layout/config.make
 example-ImGui_Layout/Makefile
 example-ImGui_Layout/openFrameworks-Info.plist
 example-ImGui_Layout/Project.xcconfig
+example-ImGui_Widgets/Project.xcconfig
+example-ImGui_Widgets/openFrameworks-Info.plist
+example-ImGui_Widgets/Makefile
+example-ImGui_Widgets/config.make
