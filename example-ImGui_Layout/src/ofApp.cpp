@@ -70,22 +70,21 @@ void ofApp::drawWidgets() {
 
     //-
 
-    // ranges
+    // range_slider.h
 
     static float v1 = 0;
     static float v2 = 1;
     static float v_min = 0;
     static float v_max = 1;
-    ImGui::RangeSliderFloat("range1", &v1, &v2, v_min, v_max);
-
     static float v3 = 0;
     static float v4 = 1;
+    ImGui::RangeSliderFloat("range1", &v1, &v2, v_min, v_max);
     ImGui::RangeSliderFloat("range2", &v3, &v4, v_min, v_max);
 
+    //vanilla
     static float begin = 10, end = 90;
-    ImGui::DragFloatRange2("range", &begin, &end, 0.25f, 0.0f, 100.0f, "Min: %.1f %%", "Max: %.1f %%");
-
     static int begin_i = 100, end_i = 1000;
+    ImGui::DragFloatRange2("range", &begin, &end, 0.25f, 0.0f, 100.0f, "Min: %.1f %%", "Max: %.1f %%");
     ImGui::DragIntRange2("range int (no bounds)", &begin_i, &end_i, 5, 0, 0, "Min: %.0f units", "Max: %.0f units");
 
     //-

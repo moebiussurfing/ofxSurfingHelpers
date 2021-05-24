@@ -13,6 +13,7 @@ class ofxSurfing_ImGui_LayoutManager
 {
 public:
 
+    
 	ofxSurfing_ImGui_LayoutManager();
 	~ofxSurfing_ImGui_LayoutManager();
 

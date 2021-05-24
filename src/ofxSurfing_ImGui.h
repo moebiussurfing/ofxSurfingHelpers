@@ -13,6 +13,10 @@
 //#define TEXT_INACTIVE_ALPHA 0.20f // for use on toggle buttons
 
 
+//links
+//https://github.com/nem0/LumixEngine/blob/timeline_gui/external/imgui/imgui_user.inl#L814
+
+
 //------------------------------
 //
 #include "ofxImGui.h"
