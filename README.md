@@ -6,7 +6,7 @@ ofxSurfingHelpers
 
 ---------------
 
-## ImGui Widgets/Helpers
+## 1. ImGui Widgets/Helpers
 
 ### Screenshots
 
