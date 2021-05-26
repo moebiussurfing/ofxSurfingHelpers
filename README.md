@@ -20,6 +20,9 @@ ofxSurfingHelpers
 ### example-ImGui_Widgets
 * Layout example, full/half width buttons, range sliders and DearWidgets. 
 
+## Dependencies
+[ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
+
 #### USEFUL LINKS
 https://github.com/soufianekhiat/DearWidgets  
 https://github.com/yumataesu/ImGui_Widgets  
