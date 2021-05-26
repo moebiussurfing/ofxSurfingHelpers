@@ -21,11 +21,11 @@ ofxSurfingHelpers
 * Layout example, full/half width buttons, range sliders and DearWidgets. 
 
 #### USEFUL LINKS
-https://github.com/soufianekhiat/DearWidgets
-https://github.com/yumataesu/ImGui_Widgets
-https://github.com/njazz/AutomationCurveEditor
-https://github.com/leiradel/ImGuiAl
-https://github.com/aiekick/ImTools/tree/main/LayoutManager
+https://github.com/soufianekhiat/DearWidgets  
+https://github.com/yumataesu/ImGui_Widgets  
+https://github.com/njazz/AutomationCurveEditor  
+https://github.com/leiradel/ImGuiAl  
+https://github.com/aiekick/ImTools/tree/main/LayoutManager  
 
 ---------------
 
