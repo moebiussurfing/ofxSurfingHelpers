@@ -26,7 +26,8 @@ void ofxSurfing_ImGui_LayoutManager::setup_ImGui()
 	ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
 	bool bAutoDraw = true;
 	bool bRestore = true;
-	bool bMouse = false;
+	bool bMouse = true;
+	//bool bMouse = false;
 
 	if (guiPtr != nullptr) guiPtr->setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
 	else gui.setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
