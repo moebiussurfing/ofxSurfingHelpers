@@ -497,7 +497,6 @@ namespace ofxSurfingHelpers {
 		//return false;
 
 
-
 		//return tmpRef;// used
 		////return true;// not used
 

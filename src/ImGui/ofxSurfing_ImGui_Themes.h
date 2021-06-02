@@ -5,14 +5,14 @@
 #include "ofxImGui.h"
 #include "imgui_internal.h"
 
-#define PANEL_WIDGETS_WIDTH 250
+#define PANEL_WIDGETS_WIDTH 250 // will be applied as minimal panel shape
 #define PANEL_WIDGETS_HEIGHT 100
 #define BUTTON_BIG_HEIGHT 50
 #define BUTTON_COLOR_SIZE 40
 #define BUTTON_SLIM_HEIGHT2 20
 #define COLOR_STRIP_COLOR_HEIGHT 15
-#define WIDGETS_HEIGHT 50
-#define WIDGET_PARAM_PADDING 100
+#define WIDGETS_HEIGHT 50 // will be applied to tbuttons/toggles heights
+#define WIDGET_PARAM_PADDING 110 // will be applied to the ofParams sliders. 110 must be the max labels width of params names
 
 #define TEXT_INACTIVE_ALPHA 0.20f // for use on toggle buttons
 
