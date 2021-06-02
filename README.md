@@ -6,7 +6,7 @@ ofxSurfingHelpers
 
 ---------------
 
-## ImGui Widgets/Helpers
+## 1. ImGui Widgets/Helpers
 
 ### Screenshots
 
@@ -20,12 +20,15 @@ ofxSurfingHelpers
 ### example-ImGui_Widgets
 * Layout example, full/half width buttons, range sliders and DearWidgets. 
 
+## Dependencies
+[ofxImGui](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
+
 #### USEFUL LINKS
-https://github.com/soufianekhiat/DearWidgets
-https://github.com/yumataesu/ImGui_Widgets
-https://github.com/njazz/AutomationCurveEditor
-https://github.com/leiradel/ImGuiAl
-https://github.com/aiekick/ImTools/tree/main/LayoutManager
+https://github.com/soufianekhiat/DearWidgets  
+https://github.com/yumataesu/ImGui_Widgets  
+https://github.com/njazz/AutomationCurveEditor  
+https://github.com/leiradel/ImGuiAl  
+https://github.com/aiekick/ImTools/tree/main/LayoutManager  
 
 ---------------
 
