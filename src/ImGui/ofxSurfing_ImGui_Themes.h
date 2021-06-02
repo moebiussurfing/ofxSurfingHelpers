@@ -12,6 +12,7 @@
 #define BUTTON_SLIM_HEIGHT2 20
 #define COLOR_STRIP_COLOR_HEIGHT 15
 #define WIDGETS_HEIGHT 50
+#define WIDGET_PARAM_PADDING 100
 
 #define TEXT_INACTIVE_ALPHA 0.20f // for use on toggle buttons
 

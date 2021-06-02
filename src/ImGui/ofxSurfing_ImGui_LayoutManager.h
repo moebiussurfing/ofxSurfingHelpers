@@ -11,20 +11,28 @@
 //{
 class ofxSurfing_ImGui_LayoutManager
 {
-public:
 
-    
+public:
 	ofxSurfing_ImGui_LayoutManager();
 	~ofxSurfing_ImGui_LayoutManager();
 
+public:
 	void setup();
 	void setup(ofxImGui::Gui & gui);
 	void begin();
 	void end();
 
-private:
+public:
+	// Force autodraw
+	//--------------------------------------------------------------
+	void setImGuiAutodraw(bool b){ bAutoDraw = b; }
+	// Force shared context
+	//--------------------------------------------------------------
+	void setSharedMode(bool b) {gui.setSharedMode(b); }
 
+private:
 	void setup_ImGui();
+	bool bAutoDraw = true;//must be false when multiple ImGui instances created!
 
 	ofxImGui::Gui * guiPtr = NULL;
 	ofxImGui::Gui gui;

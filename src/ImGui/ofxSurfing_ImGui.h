@@ -512,10 +512,12 @@ namespace ofxSurfingHelpers {
 		auto tmpRef = parameter.get();
 		auto name = ofxImGui::GetUniqueName(parameter);
 
+		bool bPre = tmpRef;
+
 		//--
 
 		//TODO:
-		//blink..
+		//blink...
 		// how to set colors
 		//static float b = 1.0f;
 		//static float c = 0.5f;
@@ -530,7 +532,7 @@ namespace ofxSurfingHelpers {
 		float _spc = ImGui::GetStyle().ItemInnerSpacing.x;
 
 		if (w == -1) w = ImGui::GetWindowWidth() - 20;
-		if (h == -1) h = 30;//TODO. get widget height
+		if (h == -1) h = 30;//TODO: get widget height
 
 		if (nameTrue == "-1") nameTrue = name;
 		if (nameFalse == "-1") nameFalse = name;
@@ -577,7 +579,7 @@ namespace ofxSurfingHelpers {
 			const ImVec4 colorButton = style->Colors[ImGuiCol_Button];
 			ImVec4 colorTextDisabled = style->Colors[ImGuiCol_Text];
 			//colorTextDisabled = ImVec4(colorTextDisabled.x, colorTextDisabled.y, colorTextDisabled.z, 
-			//	colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
+			//colorTextDisabled.w * TEXT_INACTIVE_ALPHA);
 
 			ImGui::PushID(nameTrue.c_str());
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, colorActive);
@@ -591,8 +593,8 @@ namespace ofxSurfingHelpers {
 				parameter.set(tmpRef);
 			}
 
-			ImGui::PopStyleColor(3);
-			//ImGui::PopStyleColor(4);
+			//ImGui::PopStyleColor(3);
+			ImGui::PopStyleColor(4);
 			ImGui::PopID();
 		}
 
@@ -615,7 +617,10 @@ namespace ofxSurfingHelpers {
 		//ImGui::PopID();
 		//return false;
 
-		return true;// not used
+		//--
+
+		//return true;// not used
+		return (bPre != tmpRef);// used
 	}
 
 	//--------------------------------------------------------------
@@ -677,6 +682,25 @@ namespace ofxSurfingHelpers {
 		return bChanged;
 	}
 
+	//--------------------------------------------------------------
+	inline bool AddDragFloatSlider(ofParameter<float>& parameter/*, float w = 100*/)// button but using a bool not void param
+	{
+		bool bChanged = false;
+		auto tmpRef = parameter.get();
+		auto name = ofxImGui::GetUniqueName(parameter);
+		float v_speed = 0.001f;//1ms
+
+		//ImGui::PushItemWidth(w);
+		//bool ImGui::DragFloat(const char* label, float* v, float v_speed, float v_min, float v_max, const char* format, ImGuiSliderFlags flags)
+		if (ImGui::DragFloat(name, &tmpRef, v_speed, parameter.getMin(), parameter.getMax()))
+		{
+			parameter.set(tmpRef);
+			bChanged = true;
+		}
+		//ImGui::PopItemWidth();
+
+		return bChanged;
+	}
 
 	//--
 
@@ -1098,31 +1122,31 @@ namespace ofxSurfingHelpers {
 		ImGui::PopID();
 	}
 
-//----
+	//----
 
-		////TODO:
-	////snap engine
-	//auto snap = [=](float value, float snap_threshold) -> float {
-	//	float modulo = std::fmodf(value, snap_threshold);
-	//	float moduloRatio = std::fabsf(modulo) / snap_threshold;
-	//	if (moduloRatio < 0.5f)
-	//		value -= modulo;
-	//	else if (moduloRatio > (1.f - 0.5f))
-	//		value = value - modulo + snap_threshold * ((value < 0.f) ? -1.f : 1.f);
-	//	return value;
-	//};
-	////ImGui::Begin(name.data());
-	////if (ImGui::IsItemActive()) 
-	//{
-	//	auto p = ImGui::GetWindowPos();
-	//	auto size = ImGui::GetWindowSize();
+			////TODO:
+		////snap engine
+		//auto snap = [=](float value, float snap_threshold) -> float {
+		//	float modulo = std::fmodf(value, snap_threshold);
+		//	float moduloRatio = std::fabsf(modulo) / snap_threshold;
+		//	if (moduloRatio < 0.5f)
+		//		value -= modulo;
+		//	else if (moduloRatio > (1.f - 0.5f))
+		//		value = value - modulo + snap_threshold * ((value < 0.f) ? -1.f : 1.f);
+		//	return value;
+		//};
+		////ImGui::Begin(name.data());
+		////if (ImGui::IsItemActive()) 
+		//{
+		//	auto p = ImGui::GetWindowPos();
+		//	auto size = ImGui::GetWindowSize();
 
-	//	float x = snap(p.x, 16.f);
-	//	float y = snap(p.y, 16.f);
-	//	float sizex = snap(size.x, 16.f);
-	//	float sizey = snap(size.y, 16.f);
-	//	ImGui::SetWindowPos(ImFloor(ImVec2(x, y)));
-	//}
+		//	float x = snap(p.x, 16.f);
+		//	float y = snap(p.y, 16.f);
+		//	float sizex = snap(size.x, 16.f);
+		//	float sizey = snap(size.y, 16.f);
+		//	ImGui::SetWindowPos(ImFloor(ImVec2(x, y)));
+		//}
 
 };
 

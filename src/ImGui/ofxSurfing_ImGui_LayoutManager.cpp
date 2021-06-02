@@ -24,7 +24,6 @@ void ofxSurfing_ImGui_LayoutManager::setup(ofxImGui::Gui & _gui) {//using extern
 void ofxSurfing_ImGui_LayoutManager::setup_ImGui()
 {
 	ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
-	bool bAutoDraw = true;
 	bool bRestore = true;
 	bool bMouse = true;
 	//bool bMouse = false;
@@ -37,6 +36,8 @@ void ofxSurfing_ImGui_LayoutManager::setup_ImGui()
 
 	//-
 
+	//TODO: crashes if font not present!
+
 	// font
 	std::string fontName;
 	float fontSizeParam;
@@ -44,7 +45,7 @@ void ofxSurfing_ImGui_LayoutManager::setup_ImGui()
 	fontSizeParam = 11;
 
 	std::string _path = "assets/fonts/"; // assets folder
-	ofFile fileToRead(_path); // a file that exists
+	ofFile fileToRead(_path+ fontName); // a file that exists
 	bool b = fileToRead.exists();
 	if (b) {
 		if (guiPtr != nullptr) customFont = guiPtr->addFont(_path + fontName, fontSizeParam, nullptr, normalCharRanges);

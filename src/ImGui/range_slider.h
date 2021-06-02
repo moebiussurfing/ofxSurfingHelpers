@@ -68,7 +68,7 @@ namespace ImGui
 
 
 	template<typename TYPE, typename SIGNEDTYPE>
-	TYPE ImGui::RoundScalarWithFormatT(const char* format, ImGuiDataType data_type, TYPE v)
+	TYPE /*ImGui::*/RoundScalarWithFormatT(const char* format, ImGuiDataType data_type, TYPE v)
 	{
 		const char* fmt_start = ImParseFormatFindStart(format);
 		if (fmt_start[0] != '%' || fmt_start[1] == '%') // Don't apply if the value is not visible in the format string

@@ -13,3 +13,36 @@
 #include "ImGui/range_slider.h"
 
 //using ofxSurfingHelpers = ofxSurfingHelpers::ImGui;
+
+/*
+
+	//---------
+	// SNIPPETS
+	//---------
+
+	//-
+
+	// 01. get window position for advanced layout paired position
+
+	//.h
+	//standalone window not handled by .ini layout
+	//but for the app settings
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui Layout Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
+
+	//.cpp
+	//get window position for advanced layout paired position
+	auto posx = ImGui::GetWindowPos().x;
+	auto posy = ImGui::GetWindowPos().y;
+	widthGuiLayout = ImGui::GetWindowWidth();
+	heightGuiLayout = ImGui::GetWindowHeight();
+	positionGuiLayout = glm::vec2(posx, posy);
+
+	//-
+
+*/
