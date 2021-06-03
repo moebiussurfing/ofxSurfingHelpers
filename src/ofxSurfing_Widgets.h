@@ -5,9 +5,9 @@
 namespace ofxSurfingHelpers {
 
 	/*
-	
+
 	 WIDGETS
-	
+
 	*/
 
 	//--
@@ -77,13 +77,13 @@ namespace ofxSurfingHelpers {
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
 #define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
+	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5)
 	{
 		x += 25;
 		y += 33;
 
-		int _pad = 50;
-		float _round = 5;
+		//int _pad = 50;
+		//float _round = 5;
 
 		ofPushStyle();
 
@@ -141,9 +141,9 @@ namespace ofxSurfingHelpers {
 		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
 		return sh;
 	}
+	
+	//--------------------------------------------------------------
 
-
-	//--
 
 
 	//--------------------------------------------------------------
