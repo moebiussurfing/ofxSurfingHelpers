@@ -23,7 +23,7 @@ public:
 	};
 
 private:
-	DoubleClicker clicker;
+	DoubleClicker doubleClicker;
 
 	BOX_LAYOUT layout = FREE_LAYOUT;
 
@@ -63,11 +63,13 @@ public:
 	//--------------------------------------------------------------
 	TextBoxWidget() {
 		std::string str;
+
 		sizeTTF = 11;
 		str = "telegrama_render.otf";
 		//sizeTTF = 10;
 		////str = "overpass-mono-bold.otf";
 		//str = "telegrama_render.otf";
+
 		myTTF = "assets/fonts/" + str;
 		bool bLoaded = myFont.load(myTTF, sizeTTF, true, true);
 		if (!bLoaded) bLoaded = myFont.load(OF_TTF_SANS, sizeTTF, true, true);
@@ -76,8 +78,8 @@ public:
 
 		setTheme(bThemeDarkOrLight);
 
-		clicker.set(0, 0, ofGetWidth(), ofGetHeight());//full screen
-		clicker.setDebug(false);
+		doubleClicker.set(0, 0, ofGetWidth(), ofGetHeight());//full screen
+		doubleClicker.setDebug(false);
 	}
 
 	//--------------------------------------------------------------
@@ -90,7 +92,7 @@ public:
 		rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 		rect_HelpTextBox.setLockResize(true);
 	}
-	
+
 	//--------------------------------------------------------------
 	void draw() {
 		ofPushStyle();
@@ -214,23 +216,28 @@ public:
 			}
 		}
 
-		clicker.set(_xx, _yy, _ww, _hh);
+		doubleClicker.set(_xx, _yy, _ww, _hh);
 	}
 
+private:
 	//--------------------------------------------------------------
 	void drawDoubleClickDebug() {
 
 		// double click swap edit mode
-		if (clicker.isMouseDoubleClick()) {
+		if (doubleClicker.isMouseTripleClick()) {
 			bState1 = !bState1;
 
 			setEdit(bState1);
 
+			// workflow
+			if (bState1) {
+				if (layout != FREE_LAYOUT) layout = FREE_LAYOUT;
+			}
 			//layout = FREE_LAYOUT;
 		}
 
 		// triple clicks swap layout mode
-		if (clicker.isMouseTripleClick()) {
+		if (doubleClicker.isMouseDoubleClick()) {
 			bState2 = !bState2;
 
 			int i = layout;
@@ -253,19 +260,20 @@ public:
 		//stringstream s;
 		//s << "DoubleClick changes color." << endl;
 		//s << "TripleClick changes RGB/Black&White." << endl;
-		//s << "number Clicks: " << clicker.clickCounter << endl;
+		//s << "number Clicks: " << doubleClicker.clickCounter << endl;
 		////NOTE:can't check these easycallbakcs twice on same frame
 		////s << "doubleClicked: " << "[" << (obj.isMouseDoubleClick() ? "x" : " ") << "]" << endl;
 		////s << "tripleClicked: " << "[" << (obj.isMouseTripleClick() ? "x" : " ") << "]" << endl;
 		//s << endl;
-		//s << "isMouseOver: " << clicker.isMouseOver() << endl;
-		//s << "isMousePressed(0): " << clicker.isMousePressed(0) << endl;
-		//s << "isMousePressed(1): " << clicker.isMousePressed(1) << endl;
-		//s << "isMousePressed(2): " << clicker.isMousePressed(2) << endl;
-		//s << "getStateChangeMillis(): " << clicker.getStateChangeMillis();
+		//s << "isMouseOver: " << doubleClicker.isMouseOver() << endl;
+		//s << "isMousePressed(0): " << doubleClicker.isMousePressed(0) << endl;
+		//s << "isMousePressed(1): " << doubleClicker.isMousePressed(1) << endl;
+		//s << "isMousePressed(2): " << doubleClicker.isMousePressed(2) << endl;
+		//s << "getStateChangeMillis(): " << doubleClicker.getStateChangeMillis();
 		//ofDrawBitmapStringHighlight(s.str(), 10, 30);
 	}
 
+public:
 	//--------------------------------------------------------------
 	void setEdit(bool bEdit)
 	{
@@ -303,6 +311,7 @@ public:
 		}
 	}
 
+public:
 	//--------------------------------------------------------------
 	void setText(string text) {
 		textInfo = text;
