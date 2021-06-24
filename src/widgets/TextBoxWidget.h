@@ -224,7 +224,9 @@ private:
 	void drawDoubleClickDebug() {
 
 		// double click swap edit mode
-		if (doubleClicker.isMouseTripleClick()) {
+		if (doubleClicker.isMouseDoubleClick())
+		//if (doubleClicker.isMouseTripleClick()) 
+		{
 			bState1 = !bState1;
 
 			setEdit(bState1);
@@ -237,7 +239,9 @@ private:
 		}
 
 		// triple clicks swap layout mode
-		if (doubleClicker.isMouseDoubleClick()) {
+		if (doubleClicker.isMouseTripleClick()) 
+		//if (doubleClicker.isMouseDoubleClick())
+		{
 			bState2 = !bState2;
 
 			int i = layout;

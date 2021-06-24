@@ -10,9 +10,9 @@
 
 #include "ofxSurfingConstants.h"
 
-#ifdef USE_IM_GUI
-#include "ofxSurfing_ImGui.h"
-#endif
+//#ifdef USE_IM_GUI
+//#include "ofxSurfing_ImGui.h"
+//#endif
 
 #ifdef USE_ofxGui
 #include "ofxSurfing_ofxGui.h"
