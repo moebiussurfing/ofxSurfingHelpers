@@ -2,13 +2,13 @@ ofxSurfingHelpers
 =============================
 
 ## Overview
-**ofxSurfingHelpers** is a (WIP) personal collection of some useful:  
+**ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff:  
 OF-Utils / Classes / Snippets / Helpers / Serializers / Native UI Widgets ...etc.
 
 ---------------
 
 ## Features
-- Look into the classes into **/src**
+- Look to the classes into **OF_ADDON/src**
 
 ## Other MISC OF-Util Add-ons / Resources
 https://github.com/FilikaDesign/ofxFilika (some classes included here)  
@@ -24,10 +24,9 @@ https://github.com/perevalovds/ofxKu/tree/master/src
 https://github.com/ofTheo/ofxFileHelper  
 
 ## All the ImGui stuff is now moved to:  
-* ImGui Widgets/Layout/Helpers
-[ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)
+[ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) [ImGui Widgets/Layout/Helpers]  
 
-## Tested systems
+## Tested Systems
 - **Windows10** / **VS2017** / **OF ~0.11**
 - **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
 
