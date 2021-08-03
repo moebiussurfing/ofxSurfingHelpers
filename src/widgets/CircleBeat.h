@@ -108,18 +108,23 @@ public:
 		animCounter = 0.0f;//anim from 0.0 to 1.0
 	}
 
+	void update()
+	{
+		animRunning = animCounter <= 1.0f;
+		if (animRunning)
+			animCounter += speedRatio * animSpeed * dt;
+	}
+
 	void draw()
 	{
+		//update();
+
 		ofPushStyle();
 		
 		//background dark
 		ofFill();
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
-
-		animRunning = animCounter <= 1.0f;
-		if (animRunning)
-			animCounter += speedRatio * animSpeed * dt;
 
 		if (animRunning)
 		{

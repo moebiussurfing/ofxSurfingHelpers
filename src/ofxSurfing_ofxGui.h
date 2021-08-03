@@ -14,13 +14,17 @@
 //#include "ofxSurfing_ofxGui.h"
 //ofxSurfingHelpers::setThemeDark_ofxGui();
 
+//#define FONT_PATH_DEFAULT "assets/fonts/overpass-mono-bold.otf"
+//#define FONT_SIZE_DEFAULT 9
+#define FONT_PATH_DEFAULT "assets/fonts/telegrama_render.otf"
+#define FONT_SIZE_DEFAULT 8
+
 namespace ofxSurfingHelpers {
-	//using namespace ofxSurfingHelpers;
 
 	//--------------------------------------------------------------
 	// ofxGui theme
 	//--------------------------------------------------------------
-	inline void setThemeDark_ofxGui(std::string pathFont = "assets/fonts/overpass-mono-bold.otf", int size = 9)
+	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT)
 	{
 		ofFile file(pathFont);
 		if (file.exists())
@@ -30,12 +34,33 @@ namespace ofxSurfingHelpers {
 		else {
 			ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
 		}
-		ofxGuiSetDefaultHeight(20);
-		ofxGuiSetBorderColor(32);
-		ofxGuiSetFillColor(ofColor(24));
-		ofxGuiSetTextColor(ofColor::white);
-		ofxGuiSetHeaderColor(ofColor(12));
-		ofxGuiSetBackgroundColor(ofColor::black);
+
+		//-
+
+		//ofxGuiSetDefaultHeight(20);
+		//ofxGuiSetBorderColor(32);
+		//ofxGuiSetFillColor(ofColor(24));
+		//ofxGuiSetTextColor(ofColor::white);
+		//ofxGuiSetHeaderColor(ofColor(12));
+		//ofxGuiSetBackgroundColor(ofColor::black);
+
+		//-
+
+		// based on: ImGui_ThemeMoebiusSurfingV2()
+
+		ofFloatColor cHead = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
+		ofFloatColor cBg = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
+		ofFloatColor cBorder = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
+		ofFloatColor cBut = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
+		ofFloatColor cSlider = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
+		ofFloatColor cText = ImVec4(0.76f, 0.76f, 0.76f, 0.94f);
+
+		ofxGuiSetDefaultHeight(18);
+		ofxGuiSetHeaderColor(cHead);
+		ofxGuiSetBackgroundColor(cBg);
+		ofxGuiSetBorderColor(cBg);
+		ofxGuiSetFillColor(cSlider);
+		ofxGuiSetTextColor(cText);
 	}
 
 };// ofxSurfingHelpers
