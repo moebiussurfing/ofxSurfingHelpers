@@ -16,7 +16,6 @@ using namespace std;
 //namespace ofxImGuiSurfing
 namespace ofxSurfingHelpers 
 {
-
 	//------------------------------------------------------------------------------
 	//animator functions taken from 
 	//https://github.com/tcoppex/ofxFontSampler/blob/main/example/src/ofApp.cpp
