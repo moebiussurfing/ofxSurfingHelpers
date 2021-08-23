@@ -16,6 +16,7 @@
 
 //#define FONT_PATH_DEFAULT "assets/fonts/overpass-mono-bold.otf"
 //#define FONT_SIZE_DEFAULT 9
+
 #define FONT_PATH_DEFAULT "assets/fonts/telegrama_render.otf"
 #define FONT_SIZE_DEFAULT 8
 
@@ -48,12 +49,12 @@ namespace ofxSurfingHelpers {
 
 		// based on: ImGui_ThemeMoebiusSurfingV2()
 
-		ofFloatColor cHead = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
-		ofFloatColor cBg = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
-		ofFloatColor cBorder = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
-		ofFloatColor cBut = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
-		ofFloatColor cSlider = ImVec4(0.26f, 0.26f, 0.26f, 1.00f);
-		ofFloatColor cText = ImVec4(0.76f, 0.76f, 0.76f, 0.94f);
+		ofFloatColor cHead = ofFloatColor(0.16f, 0.16f, 0.16f, 1.00f);
+		ofFloatColor cBg = ofFloatColor(0.16f, 0.16f, 0.16f, 1.00f);
+		ofFloatColor cBorder = ofFloatColor(0.00f, 0.00f, 0.00f, 0.50f);
+		ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
+		ofFloatColor cSlider = ofFloatColor(0.26f, 0.26f, 0.26f, 1.00f);
+		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
 
 		ofxGuiSetDefaultHeight(18);
 		ofxGuiSetHeaderColor(cHead);
