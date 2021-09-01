@@ -23,6 +23,10 @@ public:
 	float getBpm() {
 		return bpm.get();
 	}
+	int getDurationBar() {
+		int d = 60 / bpm.get() * 1000.f;
+		return d;
+	}
 	bool isUpdatedBpm() {
 		if (bUpdatedBpm) {
 			bUpdatedBpm = false;
@@ -102,7 +106,7 @@ public:
 
 		//custom callback for done load
 		listener_BangTapTempo = BangTapTempo.newListener([this](bool &)
-			{this->Changed_BangTapTempo();});
+		{this->Changed_BangTapTempo(); });
 	}
 
 	//--------------------------------------------------------------
@@ -140,8 +144,10 @@ public:
 		ofLogNotice(__FUNCTION__) << "> TAP < : " << tapCount;
 
 		if (ENABLE_SoundTapTempo) {
-			if (tapCount != 4) tapTac.play();
-			else tapBell.play();
+			if (tapBell.isLoaded() && tapTac.isLoaded() && tapTic.isLoaded()) {
+				if (tapCount != 4) tapTac.play();
+				else tapBell.play();
+			}
 		}
 
 		tapIntervals.push_back(time - lastTime);

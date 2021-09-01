@@ -23,7 +23,7 @@
 namespace ofxSurfingHelpers {
 
 	//--------------------------------------------------------------
-	// ofxGui theme
+	// my ofxGui Dark Theme
 	//--------------------------------------------------------------
 	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT)
 	{
@@ -50,27 +50,30 @@ namespace ofxSurfingHelpers {
 		// based on: ImGui_ThemeMoebiusSurfingV2()
 
 		ofFloatColor cHead = ofFloatColor(0.08f, 0.08f, 0.08f, 1.00f);
-		ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.90f);
-		//ofFloatColor cBg = ofFloatColor(0.16f, 0.16f, 0.16f, 1.00f);
-		ofFloatColor cBorder = ofFloatColor(0.00f, 0.00f, 0.00f, 0.750f);
-		ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
-		ofFloatColor cSlider = ofFloatColor(0.f, 0.f, 0.f, 1.00f);
-		//ofFloatColor cSlider = ofFloatColor(0.26f, 0.26f, 0.26f, 1.00f);
+		ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
+		ofFloatColor cBorder = ofFloatColor(0.00f, 0.00f, 0.00f, 0.850f);
+		ofFloatColor cSlider = ofFloatColor(0.04f, 0.04f, 0.04f, 0.9f);
 		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
+		//ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
 
-		ofxGuiSetDefaultHeight(20);
 		ofxGuiSetHeaderColor(cHead);
 		ofxGuiSetBackgroundColor(cBg);
 		ofxGuiSetBorderColor(cBg);
 		ofxGuiSetFillColor(cSlider);
 		ofxGuiSetTextColor(cText);
+
+		ofxGuiSetDefaultHeight(21);//18
+		//ofxGuiSetDefaultHeight(22);//18
+		ofxGuiSetTextPadding(14);//4
 	}
 
-};// ofxSurfingHelpers
+}; // ofxSurfingHelpers
 
 
+//--
 
-// customize but using master branch
+// App code to live customize styles,
+// but using master branch
 //
 //public:
 //	ofxPanel gui2;
@@ -136,7 +139,7 @@ namespace ofxSurfingHelpers {
 //	//}
 //}
 //
-//
+// Setup
 //gui2.setup();
 //gui2.add(spacing);
 //gui2.add(spacingNext);
