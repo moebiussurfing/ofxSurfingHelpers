@@ -23,10 +23,16 @@
 namespace ofxSurfingHelpers {
 
 	//--------------------------------------------------------------
-	// my ofxGui Dark Theme
+	// My ofxGui Dark Theme
 	//--------------------------------------------------------------
-	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT)
+
+	//--------------------------------------------------------------
+	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
 	{
+		if (bMini) {
+			size = 7;
+		}
+
 		ofFile file(pathFont);
 		if (file.exists())
 		{
@@ -51,20 +57,34 @@ namespace ofxSurfingHelpers {
 
 		ofFloatColor cHead = ofFloatColor(0.08f, 0.08f, 0.08f, 1.00f);
 		ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
-		ofFloatColor cBorder = ofFloatColor(0.00f, 0.00f, 0.00f, 0.850f);
-		ofFloatColor cSlider = ofFloatColor(0.04f, 0.04f, 0.04f, 0.9f);
+		ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.8f);
+		ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.9f);
 		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
 		//ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
 
 		ofxGuiSetHeaderColor(cHead);
 		ofxGuiSetBackgroundColor(cBg);
-		ofxGuiSetBorderColor(cBg);
+		ofxGuiSetBorderColor(cBorder);
 		ofxGuiSetFillColor(cSlider);
 		ofxGuiSetTextColor(cText);
 
-		ofxGuiSetDefaultHeight(21);//18
-		//ofxGuiSetDefaultHeight(22);//18
-		ofxGuiSetTextPadding(14);//4
+		// default
+		//ofxGuiSetTextPadding(4);
+		//ofxGuiSetDefaultHeight(18);
+
+		if (bMini) {
+			ofxGuiSetDefaultHeight(17);
+			ofxGuiSetTextPadding(8);
+		}
+		else {
+			ofxGuiSetDefaultHeight(21);
+			ofxGuiSetTextPadding(14);
+		}
+	}
+
+	//--------------------------------------------------------------
+	inline void setThemeDarkMini_ofxGui() {
+		setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
 	}
 
 }; // ofxSurfingHelpers

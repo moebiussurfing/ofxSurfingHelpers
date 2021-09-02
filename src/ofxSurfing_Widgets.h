@@ -86,40 +86,47 @@ namespace ofxSurfingHelpers {
 		//float _round = 5;
 
 		ofPushStyle();
-
-		//float fontSize = font.getSize();
-
-		if (!font.isLoaded())
 		{
-			ofDrawBitmapStringHighlight(text, x, y);
-		}
-		else
-		{
-			// bbox
-			ofSetColor(colorBackground);
-			ofFill();
+			//float fontSize = font.getSize();
 
-			ofRectangle _r(font.getStringBoundingBox(text, x, y));
-			_r.setWidth(_r.getWidth() + _pad);
-			_r.setHeight(_r.getHeight() + _pad);
-			_r.setX(_r.getPosition().x - _pad / 2.);
-			_r.setY(_r.getPosition().y - _pad / 2.);
-
-			ofDrawRectRounded(_r, _round);
-			//ofDrawRectangle(_r);
-
-			// text shadow
-			if (useShadow)
+			//TODO:
+			// force load a default font
+			if (!font.isLoaded())
 			{
-				ofSetColor(colorShadow);
-				font.drawString(text, x + 1, y + 1);
+				font.load(OF_TTF_MONO, 10, true, true, true);
 			}
 
-			// text
-			ofSetColor(font0_Color);
-			font.drawString(text, x, y);
-		}
+			if (!font.isLoaded())
+			{
+				ofDrawBitmapStringHighlight(text, x, y);
+			}
+			else if (font.isLoaded())
+			{
+				// bbox
+				ofSetColor(colorBackground);
+				ofFill();
 
+				ofRectangle _r(font.getStringBoundingBox(text, x, y));
+				_r.setWidth(_r.getWidth() + _pad);
+				_r.setHeight(_r.getHeight() + _pad);
+				_r.setX(_r.getPosition().x - _pad / 2.);
+				_r.setY(_r.getPosition().y - _pad / 2.);
+
+				ofDrawRectRounded(_r, _round);
+				//ofDrawRectangle(_r);
+
+				// text shadow
+				if (useShadow)
+				{
+					ofSetColor(colorShadow);
+					font.drawString(text, x + 1, y + 1);
+				}
+
+				// text
+				ofSetColor(font0_Color);
+				font.drawString(text, x, y);
+			}
+		}
 		ofPopStyle();
 	}
 
