@@ -53,12 +53,11 @@ namespace ofxSurfingHelpers {
 
 		//-
 
-		// based on: ImGui_ThemeMoebiusSurfingV2()
 
-		ofFloatColor cHead = ofFloatColor(0.08f, 0.08f, 0.08f, 1.00f);
+		ofFloatColor cHead = ofFloatColor(0.05f, 0.05f, 0.05f, 0.90f);
 		ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
-		ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.8f);
-		ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.9f);
+		ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.7f);
+		ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.8f);
 		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
 		//ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
 
@@ -69,12 +68,14 @@ namespace ofxSurfingHelpers {
 		ofxGuiSetTextColor(cText);
 
 		// default
-		//ofxGuiSetTextPadding(4);
 		//ofxGuiSetDefaultHeight(18);
+		//ofxGuiSetTextPadding(4);
 
 		if (bMini) {
-			ofxGuiSetDefaultHeight(17);
-			ofxGuiSetTextPadding(8);
+			ofxGuiSetDefaultHeight(18);
+			ofxGuiSetTextPadding(4);
+			//ofxGuiSetDefaultHeight(17);
+			//ofxGuiSetTextPadding(8);
 		}
 		else {
 			ofxGuiSetDefaultHeight(21);
