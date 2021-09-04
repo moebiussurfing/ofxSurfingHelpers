@@ -86,7 +86,7 @@ public:
 		BangTapTempo.set("Bang TapTempo", false);
 		BangTapTempo.setSerializable(false);
 		bpm.set("BPM", 120, 10, 400);
-		//bpm.set("BPM TapTempo", 120, 10, 400);
+		//bpm.set("bpmSpeed TapTempo", 120, 10, 400);
 		params.add(ENABLE_SoundTapTempo);
 		params.add(BangTapTempo);
 		params.add(bpm);
