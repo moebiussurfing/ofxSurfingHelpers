@@ -20,7 +20,8 @@
 #define FONT_PATH_DEFAULT "assets/fonts/telegrama_render.otf"
 #define FONT_SIZE_DEFAULT 8
 
-namespace ofxSurfingHelpers {
+namespace ofxSurfingHelpers
+{
 
 	//--------------------------------------------------------------
 	// My ofxGui Dark Theme

@@ -55,7 +55,7 @@ void ofxAutosaveGroupTimer::update()
 		
 		// bDISABLE_CALLBACKS = true;
 		// //get gui position before save
-		// Gui_Position = glm::vec2(gui_Control.getPosition());
+		// positionGui = glm::vec2(gui_Control.getPosition());
 		// saveParams(params_Control, path_GLOBAL + path_Params_Control);
 		// bDISABLE_CALLBACKS = false;
 
