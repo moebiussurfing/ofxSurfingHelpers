@@ -7,6 +7,7 @@
 
 class TextBoxWidget : public ofBaseApp
 {
+
 public:
 
 	enum BOX_LAYOUT
@@ -23,9 +24,48 @@ public:
 	};
 
 private:
+
 	DoubleClicker doubleClicker;
 
-	BOX_LAYOUT layout = FREE_LAYOUT;
+	BOX_LAYOUT modeLayout = FREE_LAYOUT;
+	string str_modeLayout = "";
+
+public:
+
+	//--------------------------------------------------------------
+	string getEditing() {
+		if (rect_HelpTextBox.isEditing()) return "Editing"; else return "Not Editing";
+	}
+
+	//--------------------------------------------------------------
+	string getTheme() {
+		if (bThemeDarkOrLight) return "Dark"; else return "Light";
+	}
+
+	//--------------------------------------------------------------
+	string getTextMode() {
+		if (bNoText) return "No Text"; else return "Text";
+	}
+
+	//--------------------------------------------------------------
+	string getMode() {
+		str_modeLayout = "UNKNOWN";
+		switch (modeLayout)
+		{
+		case 0: str_modeLayout = "FREE_LAYOUT"; break;
+		case 1: str_modeLayout = "BOTTOM_CENTER"; break;
+		case 2: str_modeLayout = "BOTTOM_LEFT"; break;
+		case 3: str_modeLayout = "BOTTOM_RIGHT"; break;
+		case 4: str_modeLayout = "TOP_CENTER"; break;
+		case 5: str_modeLayout = "TOP_LEFT"; break;
+		case 6: str_modeLayout = "TOP_RIGHT"; break;
+		case 7: str_modeLayout = "CENTER"; break;
+		default: break;
+		}
+		return str_modeLayout;
+	}
+
+private:
 
 	ofxInteractiveRect rect_HelpTextBox = { "Help_ofxPresetsManager" };
 	std::string path_RectHelpBox = "_HelpBox";
@@ -55,7 +95,32 @@ private:
 	float round = 5;
 	int marginBorders = 50;
 
+	bool bNoText = false;
+
 public:
+	//ofParameter<glm::vec2> shape{ "Shape", glm::vec2(1920 / 2, 1080 / 2), glm::vec2(0,0), glm::vec2(19200,1080) };
+	//--------------------------------------------------------------
+	void setTextMode(bool b) {
+		bNoText = !b;
+		rect_HelpTextBox.setLockResize(b);
+	}
+	//--------------------------------------------------------------
+	void setNoTextMode(bool b) {
+		bNoText = b;
+		rect_HelpTextBox.setLockResize(!b);
+	}
+	//--------------------------------------------------------------
+	void setToggleNoTextMode() {
+		bNoText = !bNoText;
+		rect_HelpTextBox.setLockResize(!bNoText);
+	}
+	//--------------------------------------------------------------
+	void setShape(ofRectangle shape) {
+		rect_HelpTextBox.setRect(shape.x, shape.y, shape.getWidth(), shape.getHeight());
+	}
+
+public:
+	//--------------------------------------------------------------
 	void setPath(string path) {
 		path_Global = path;
 	}
@@ -90,7 +155,9 @@ public:
 
 		// load settings
 		rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
-		rect_HelpTextBox.setLockResize(true);
+
+		//rect_HelpTextBox.setLockResize(true);
+		//rect_HelpTextBox.setLockResize(!bNoText);
 	}
 
 	//--------------------------------------------------------------
@@ -102,6 +169,7 @@ public:
 		//-
 
 		std::string ss = textInfo;
+
 		float _w = ofGetWidth();
 		float _h = ofGetHeight();
 
@@ -111,52 +179,62 @@ public:
 		int _xx;
 		int _yy;
 
-		float _ww = ofxSurfingHelpers::getWidthBBtextBoxed(myFont, ss);
-		float _hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
-		rect_HelpTextBox.setWidth(_ww);
-		rect_HelpTextBox.setHeight(_hh);
+		float _ww;
+		float _hh;
+
+		if (bNoText) {
+			_ww = rect_HelpTextBox.getWidth();
+			_hh = rect_HelpTextBox.getHeight();
+		}
+		else {
+			_ww = ofxSurfingHelpers::getWidthBBtextBoxed(myFont, ss);
+			_hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
+
+			rect_HelpTextBox.setWidth(_ww);
+			rect_HelpTextBox.setHeight(_hh);
+		}
 
 		//-
 
-		if (layout == FREE_LAYOUT) {
+		if (modeLayout == FREE_LAYOUT) {
 
 			_xx = rect_HelpTextBox.getX();
 			_yy = rect_HelpTextBox.getY();
 		}
 
-		else if (layout == BOTTOM_CENTER) {
+		else if (modeLayout == BOTTOM_CENTER) {
 
 			_xx = _w / 2 - _ww / 2 - _padx;
 			_yy = _h - _hh - _pady;
 		}
-		else if (layout == BOTTOM_LEFT) {
+		else if (modeLayout == BOTTOM_LEFT) {
 
 			_xx = _padx;
 			_yy = _h - _hh - _pady;
 		}
-		else if (layout == BOTTOM_RIGHT) {
+		else if (modeLayout == BOTTOM_RIGHT) {
 
 			_xx = _w - _ww - _padx;
 			_yy = _h - _hh - _pady;
 		}
 
-		else if (layout == TOP_CENTER) {
+		else if (modeLayout == TOP_CENTER) {
 
 			_xx = _w / 2 - _ww / 2 - _padx;
 			_yy = _pady;
 		}
-		else if (layout == TOP_LEFT) {
+		else if (modeLayout == TOP_LEFT) {
 
 			_xx = _padx;
 			_yy = _pady;
 		}
-		else if (layout == TOP_RIGHT) {
+		else if (modeLayout == TOP_RIGHT) {
 
 			_xx = _w - _ww - _padx;
 			_yy = _pady;
 		}
 
-		else if (layout == CENTER) {
+		else if (modeLayout == CENTER) {
 
 			_xx = _w / 2 - _ww / 2 - _padx;
 			_yy = _h / 2 - _hh / 2 - _pady;
@@ -166,9 +244,12 @@ public:
 
 		ofColor colorBg;
 
-		if (layout == FREE_LAYOUT) {
+		if (modeLayout == FREE_LAYOUT)
+		{
+			//_colorText, colorBg, _bUseShadow, _colorButton
 
-			if (rect_HelpTextBox.isEditing()) {
+			if (rect_HelpTextBox.isEditing())
+			{
 				float a = ofxSurfingHelpers::getFadeBlink();
 				ofColor c = ofColor(_colorBg, 255 * a);
 				rect_HelpTextBox.draw();
@@ -185,11 +266,13 @@ public:
 			colorBg = _colorBg;
 		}
 
-		ofPopStyle();
 
 		//-
 
-		ofxSurfingHelpers::drawTextBoxed(myFont, ss, _xx, _yy, _colorText, colorBg, _bUseShadow, _colorButton, marginBorders, round);
+		if (!bNoText)
+			ofxSurfingHelpers::drawTextBoxed(myFont, ss, _xx, _yy, _colorText, colorBg, _bUseShadow, _colorButton, marginBorders, round);
+
+		ofPopStyle();
 
 		//-
 
@@ -219,35 +302,39 @@ public:
 		doubleClicker.set(_xx, _yy, _ww, _hh);
 	}
 
-private:
-	//--------------------------------------------------------------
-	void drawDoubleClickDebug() {
+	//-
 
+private:
+
+	//--------------------------------------------------------------
+	void drawDoubleClickDebug()
+	{
 		// double click swap edit mode
-		if (doubleClicker.isMouseDoubleClick())
 		//if (doubleClicker.isMouseTripleClick()) 
+		if (doubleClicker.isMouseDoubleClick())
 		{
 			bState1 = !bState1;
 
 			setEdit(bState1);
 
 			// workflow
-			if (bState1) {
-				if (layout != FREE_LAYOUT) layout = FREE_LAYOUT;
+			if (bState1)
+			{
+				if (modeLayout != FREE_LAYOUT) modeLayout = FREE_LAYOUT;
 			}
-			//layout = FREE_LAYOUT;
+			//modeLayout = FREE_LAYOUT;
 		}
 
-		// triple clicks swap layout mode
-		if (doubleClicker.isMouseTripleClick()) 
+		// triple clicks swap modeLayout mode
 		//if (doubleClicker.isMouseDoubleClick())
+		if (doubleClicker.isMouseTripleClick())
 		{
 			bState2 = !bState2;
 
-			int i = layout;
+			int i = modeLayout;
 			i++;
-			if (i >= NUM_LAYOUTS) { layout = FREE_LAYOUT; }
-			else { layout = BOX_LAYOUT(i); }
+			if (i >= NUM_LAYOUTS) { modeLayout = FREE_LAYOUT; }
+			else { modeLayout = BOX_LAYOUT(i); }
 		}
 
 		//-
@@ -278,6 +365,7 @@ private:
 	}
 
 public:
+
 	//--------------------------------------------------------------
 	void setEdit(bool bEdit)
 	{
@@ -315,7 +403,21 @@ public:
 		}
 	}
 
+	//--------------------------------------------------------------
+	void setToggleTheme() {
+		bThemeDarkOrLight = !bThemeDarkOrLight;
+	}
+
+	//--------------------------------------------------------------
+	void setToggleMode() {
+		int i = BOX_LAYOUT(modeLayout);
+		i++;
+		i = i % NUM_LAYOUTS;
+		modeLayout = BOX_LAYOUT(i);
+	}
+
 public:
+
 	//--------------------------------------------------------------
 	void setText(string text) {
 		textInfo = text;
