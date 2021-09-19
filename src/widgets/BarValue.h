@@ -126,7 +126,7 @@ public:
 
 	~BarValue() {};
 
-	void draw(float val)
+	void draw(float val)//is updated here
 	{
 		value = val;
 

@@ -27,6 +27,13 @@ namespace ofxSurfingHelpers
 	// My ofxGui Dark Theme
 	//--------------------------------------------------------------
 
+	//// legacy. Now default is the mini version.
+	////--------------------------------------------------------------
+	//inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
+	//{
+	//	//setThemeDarkMini_ofxGui();
+	//	setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
+	//}
 	//--------------------------------------------------------------
 	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
 	{
@@ -56,7 +63,8 @@ namespace ofxSurfingHelpers
 
 
 		ofFloatColor cHead = ofFloatColor(0.05f, 0.05f, 0.05f, 0.90f);
-		ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
+		//ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
+		ofFloatColor cBg = ofFloatColor(0.16f, 0.16f, 0.16f, 0.8f);
 		ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.7f);
 		ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.8f);
 		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
