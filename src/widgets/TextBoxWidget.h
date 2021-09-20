@@ -5,6 +5,44 @@
 #include "ofxInteractiveRect.h"
 #include "DoubleClicker.h"
 
+/*
+
+This class draws a draggable text box with colored background.
+Auto stores and recall the box position between the app sessions.
+Doubleclick the box to allow move the position.
+
+Usage Example Snippet:
+
+// .h
+#include "TextBoxWidget.h"
+TextBoxWidget textBoxWidget;
+
+// Setup
+{
+	// Help
+	std::string helpInfo = "";
+	helpInfo += "HELP\n";
+	helpInfo += "KEY COMMANDS\n";
+	helpInfo += "\n";
+	helpInfo += "SPACE      : Randomize Parameters\n";
+	helpInfo += "Ctrl+SPACE : Randomize Index\n";
+	helpInfo += "RETURN     : Play timed randomizer\n";
+	helpInfo += "BACKSPACE  : Reset parameters\n";
+	helpInfo += "LEFT-RIGHT : Browse Index\n";
+	//helpInfo = ofToUpper(helpInfo);//make uppercase
+
+	textBoxWidget.setText(helpInfo);
+	textBoxWidget.setup();
+}
+
+// Draw
+{
+	textBoxWidget.draw();
+}
+
+*/
+
+
 class TextBoxWidget : public ofBaseApp
 {
 
@@ -129,11 +167,15 @@ public:
 	TextBoxWidget() {
 		std::string str;
 
-		sizeTTF = 11;
-		str = "telegrama_render.otf";
-		//sizeTTF = 10;
-		////str = "overpass-mono-bold.otf";
+		// default:
+
+		//sizeTTF = 11;
 		//str = "telegrama_render.otf";
+
+		//sizeTTF = 10;
+		sizeTTF = 10;
+		//str = "overpass-mono-bold.otf";
+		str = "telegrama_render.otf";
 
 		myTTF = "assets/fonts/" + str;
 		bool bLoaded = myFont.load(myTTF, sizeTTF, true, true);
@@ -145,6 +187,9 @@ public:
 
 		doubleClicker.set(0, 0, ofGetWidth(), ofGetHeight());//full screen
 		doubleClicker.setDebug(false);
+
+		// default position
+		rect_HelpTextBox.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
 	}
 
 	//--------------------------------------------------------------
