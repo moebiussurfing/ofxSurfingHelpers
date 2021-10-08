@@ -77,7 +77,7 @@ namespace ofxSurfingHelpers {
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
 #define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5)
+	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1)
 	{
 		x += 25;
 		y += 33;
@@ -108,21 +108,24 @@ namespace ofxSurfingHelpers {
 
 				ofRectangle _r(font.getStringBoundingBox(text, x, y));
 				_r.setWidth(_r.getWidth() + _pad);
-				_r.setHeight(_r.getHeight() + _pad);
 				_r.setX(_r.getPosition().x - _pad / 2.);
 				_r.setY(_r.getPosition().y - _pad / 2.);
 
-				ofDrawRectRounded(_r, _round);
-				//ofDrawRectangle(_r);
+				if(heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
+				else _r.setHeight(heighForced + _pad);
 
-				// text shadow
+				// Draw
+				if(_round<= 0) ofDrawRectangle(_r);
+				else ofDrawRectRounded(_r, _round);
+
+				// Text shadow
 				if (useShadow)
 				{
 					ofSetColor(colorShadow);
 					font.drawString(text, x + 1, y + 1);
 				}
 
-				// text
+				// Text
 				ofSetColor(font0_Color);
 				font.drawString(text, x, y);
 			}

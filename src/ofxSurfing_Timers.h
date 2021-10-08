@@ -20,8 +20,8 @@ namespace ofxSurfingHelpers
 	//animator functions taken from
 	//https://github.com/tcoppex/ofxFontSampler/blob/main/example/src/ofApp.cpp
 
-	namespace {
-
+	namespace 
+	{
 		/* Return a linear value in range [0,1] every delay (in seconds). */
 		float Tick(float delay = 1.0f) {
 			return fmodf(ofGetElapsedTimeMillis() / 1000.0f, delay) / delay;

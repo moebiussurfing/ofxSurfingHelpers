@@ -1,9 +1,21 @@
+
 #pragma once
+
 #include "ofMain.h"
 
 #include "ofxSurfingHelpers.h"
 #include "ofxInteractiveRect.h"
 #include "DoubleClicker.h"
+
+/*
+
+	TODO:
+	+ add store layout settings
+	+ move layout to drag rect class
+	+ sum padding from 0, not expanded from center..
+
+*/
+
 
 /*
 
@@ -13,38 +25,66 @@ Doubleclick the box to allow move the position.
 
 Usage Example Snippet:
 
-// .h
-#include "TextBoxWidget.h"
-TextBoxWidget textBoxWidget;
+	// .h
+	#include "TextBoxWidget.h"
+	TextBoxWidget textBoxWidget;
 
-// Setup
-{
-	// Help
-	std::string helpInfo = "";
-	helpInfo += "HELP\n";
-	helpInfo += "KEY COMMANDS\n";
-	helpInfo += "\n";
-	helpInfo += "SPACE      : Randomize Parameters\n";
-	helpInfo += "Ctrl+SPACE : Randomize Index\n";
-	helpInfo += "RETURN     : Play timed randomizer\n";
-	helpInfo += "BACKSPACE  : Reset parameters\n";
-	helpInfo += "LEFT-RIGHT : Browse Index\n";
-	//helpInfo = ofToUpper(helpInfo);//make uppercase
+	// Setup
+	{
+		// Help
+		std::string helpInfo = "";
+		helpInfo += "HELP\n";
+		helpInfo += "KEY COMMANDS\n";
+		helpInfo += "\n";
+		helpInfo += "SPACE      : Randomize Parameters\n";
+		helpInfo += "Ctrl+SPACE : Randomize Index\n";
+		helpInfo += "RETURN     : Play timed randomizer\n";
+		helpInfo += "BACKSPACE  : Reset parameters\n";
+		helpInfo += "LEFT-RIGHT : Browse Index\n";
+		//helpInfo = ofToUpper(helpInfo);//make uppercase
 
-	textBoxWidget.setText(helpInfo);
-	textBoxWidget.setup();
-}
+		textBoxWidget.setText(helpInfo);
+		textBoxWidget.setup();
+		textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
+		textBoxWidget.setTheme(true);//dark
+		//textBoxWidget.setTheme(false);//light
+	}
 
-// Draw
-{
-	textBoxWidget.draw();
-}
+	// Draw
+	{
+		textBoxWidget.draw();
+	}
 
 */
 
+//#define LOCK_EDIT_ON_NON_FREE_LAYOUT_MODE
 
 class TextBoxWidget : public ofBaseApp
 {
+
+public:
+
+	//--------------------------------------------------------------
+	TextBoxWidget()
+	{
+		// Default
+
+		size_TTF = 10;
+		name_TTF = "telegrama_render.otf";
+
+		//size_TTF = 11;
+		//name_TTF = "telegrama_render.otf";
+
+		//size_TTF = 10;
+		//name_TTF = "overpass-mono-bold.otf";
+	}
+
+	//--------------------------------------------------------------
+	~TextBoxWidget()
+	{
+	}
+
+	//-
 
 public:
 
@@ -98,7 +138,7 @@ public:
 		case 5: str_modeLayout = "TOP_LEFT"; break;
 		case 6: str_modeLayout = "TOP_RIGHT"; break;
 		case 7: str_modeLayout = "CENTER"; break;
-		default: break;
+		default: str_modeLayout = "UNKNOWN LAYOUT"; break;
 		}
 		return str_modeLayout;
 	}
@@ -112,8 +152,9 @@ private:
 
 	// font to label clicker boxes
 	ofTrueTypeFont myFont;
-	std::string myTTF;// gui font for all gui theme
-	int sizeTTF;
+	std::string path_TTF;
+	std::string name_TTF;
+	int size_TTF;
 
 	std::string textInfo = "empty content";// info text to display shortcuts or path settings
 
@@ -136,6 +177,7 @@ private:
 	bool bNoText = false;
 
 public:
+
 	//ofParameter<glm::vec2> shape{ "Shape", glm::vec2(1920 / 2, 1080 / 2), glm::vec2(0,0), glm::vec2(19200,1080) };
 	//--------------------------------------------------------------
 	void setTextMode(bool b) {
@@ -158,51 +200,49 @@ public:
 	}
 
 public:
+
 	//--------------------------------------------------------------
 	void setPath(string path) {
 		path_Global = path;
 	}
 
 	//--------------------------------------------------------------
-	TextBoxWidget() {
-		std::string str;
-
-		// default:
-
-		//sizeTTF = 11;
-		//str = "telegrama_render.otf";
-
-		//sizeTTF = 10;
-		sizeTTF = 10;
-		//str = "overpass-mono-bold.otf";
-		str = "telegrama_render.otf";
-
-		myTTF = "assets/fonts/" + str;
-		bool bLoaded = myFont.load(myTTF, sizeTTF, true, true);
-		if (!bLoaded) bLoaded = myFont.load(OF_TTF_SANS, sizeTTF, true, true);
-
-		_bUseShadow = true;
-
-		setTheme(bThemeDarkOrLight);
-
-		doubleClicker.set(0, 0, ofGetWidth(), ofGetHeight());//full screen
-		doubleClicker.setDebug(false);
-
-		// default position
-		rect_HelpTextBox.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
+	void setFontSize(int size = 10) {
+		size_TTF = size;
+	}
+	//--------------------------------------------------------------
+	void setFontName(string name = "telegrama_render.otf") {
+		name_TTF = name;
 	}
 
 	//--------------------------------------------------------------
 	void setup() {
 
-		ofxSurfingHelpers::CheckFolder(path_Global + "/" + path_Name + "/");
-		//ofxSurfingHelpers::CheckFolder(path_Global + "/" + path_Name + "/");
+		path_TTF = "assets/fonts/" + name_TTF;
+		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true);
+		if (!bLoaded) bLoaded = myFont.load(OF_TTF_SANS, size_TTF, true, true);
 
-		// load settings
+		_bUseShadow = true;
+
+		setTheme(bThemeDarkOrLight);
+
+		doubleClicker.set(0, 0, ofGetWidth(), ofGetHeight());// default full screen
+		doubleClicker.setDebug(false);
+
+		// Default position
+		rect_HelpTextBox.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
+
+		//----
+
+		ofxSurfingHelpers::CheckFolder(path_Global + "/" + path_Name + "/");
+
+		// Load settings
 		rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 
-		//rect_HelpTextBox.setLockResize(true);
+		// We dont need draggable borders and decoration.
+		rect_HelpTextBox.setLockResize(true);
 		//rect_HelpTextBox.setLockResize(!bNoText);
+		rect_HelpTextBox.setTransparent();
 	}
 
 	//--------------------------------------------------------------
@@ -227,16 +267,25 @@ public:
 		float _ww;
 		float _hh;
 
-		if (bNoText) {
+		if (bNoText)
+		{
 			_ww = rect_HelpTextBox.getWidth();
 			_hh = rect_HelpTextBox.getHeight();
 		}
-		else {
+		else
+		{
 			_ww = ofxSurfingHelpers::getWidthBBtextBoxed(myFont, ss);
 			_hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
 
-			rect_HelpTextBox.setWidth(_ww);
+			//if(!bFixedHeight) _hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
+			//else {
+			//	std::string _ss = "";
+			//	for (int i = 0; i <numLines; i++) _ss += "I \n";
+			//	_hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, _ss);
+			//}
+
 			rect_HelpTextBox.setHeight(_hh);
+			rect_HelpTextBox.setWidth(_ww);
 		}
 
 		//-
@@ -311,18 +360,21 @@ public:
 			colorBg = _colorBg;
 		}
 
-
 		//-
 
 		if (!bNoText)
-			ofxSurfingHelpers::drawTextBoxed(myFont, ss, _xx, _yy, _colorText, colorBg, _bUseShadow, _colorButton, marginBorders, round);
+		{
+			int h = (bFixedHeight ? hLocked : -1); // Unlocked to resize related to text size
+
+			ofxSurfingHelpers::drawTextBoxed(myFont, ss, _xx, _yy, _colorText, colorBg, _bUseShadow, _colorButton, marginBorders, round, h);
+		}
 
 		ofPopStyle();
 
 		//-
 
 		{
-			// fit iniside window
+			// Fit iniside window
 			float _xmax = _w - _ww - _padx;
 			float _ymax = _h - _hh - _pady;
 
@@ -354,25 +406,41 @@ private:
 	//--------------------------------------------------------------
 	void drawDoubleClickDebug()
 	{
-		// double click swap edit mode
-		//if (doubleClicker.isMouseTripleClick()) 
-		if (doubleClicker.isMouseDoubleClick())
+		//--
+
+		// 1. Double click swap edit mode
+
+		//-
+
+		// Allow edit onlly on free layout mode:
+#ifdef LOCK_EDIT_ON_NON_FREE_LAYOUT_MODE
+		if (modeLayout == FREE_LAYOUT)
+#endif
+			//-
+
 		{
-			bState1 = !bState1;
-
-			setEdit(bState1);
-
-			// workflow
-			if (bState1)
+			if (doubleClicker.isMouseDoubleClick())
+				//if (doubleClicker.isMouseTripleClick()) 
 			{
-				if (modeLayout != FREE_LAYOUT) modeLayout = FREE_LAYOUT;
+				bState1 = !bState1;
+
+				setEdit(bState1);
+
+				// workflow
+				if (bState1)
+				{
+					if (modeLayout != FREE_LAYOUT) modeLayout = FREE_LAYOUT;
+				}
+				//modeLayout = FREE_LAYOUT;
 			}
-			//modeLayout = FREE_LAYOUT;
 		}
 
-		// triple clicks swap modeLayout mode
-		//if (doubleClicker.isMouseDoubleClick())
+		//--
+
+		// 2. Triple clicks swap modeLayout mode
+
 		if (doubleClicker.isMouseTripleClick())
+			//if (doubleClicker.isMouseDoubleClick())
 		{
 			bState2 = !bState2;
 
@@ -382,9 +450,9 @@ private:
 			else { modeLayout = BOX_LAYOUT(i); }
 		}
 
-		//-
+		//--
 
-		////debug colors to bg
+		//// Debug colors to bg
 		////if (bState2) ofClear(bState1 ? ofColor::blue : ofColor::yellow);
 		////else ofClear(bState1 ? ofColor::black : ofColor::white);
 
@@ -422,7 +490,7 @@ public:
 		{
 			rect_HelpTextBox.disableEdit();
 
-			// all app settings
+			// All app settings
 			//save_ControlSettings();
 			rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 		}
@@ -432,14 +500,14 @@ public:
 	void setTheme(bool bTheme) {
 		bThemeDarkOrLight = bTheme;
 
-		// light theme
+		// Light theme (false = light)
 		if (!bThemeDarkOrLight)
 		{
 			_colorText = ofColor(0, 255);
 			_colorButton = ofColor(255, 64);
 			_colorBg = ofColor(225, 64);
 		}
-		// dark theme (white lines & black bg)
+		// Dark theme (white lines & black bg) (true = dark)
 		else
 		{
 			_colorText = ofColor(255, 150);
@@ -461,6 +529,11 @@ public:
 		modeLayout = BOX_LAYOUT(i);
 	}
 
+	//--------------------------------------------------------------
+	void setMode(BOX_LAYOUT mode) {
+		modeLayout = mode;
+	}
+
 public:
 
 	//--------------------------------------------------------------
@@ -469,6 +542,30 @@ public:
 	}
 
 	//--
+
+//	//TODO:
+//	// Should be added to the ofxSurfingHelpers::drawTextBoxed, adding a bool flag to force height..
+//	// A workaround to lock the box height to the amount of lines using a 'I' char, 
+//	// then it will not depends to the chars of the text. 
+//	// An using case could be an only oneline text and his box height will no being different depending on used chars..
+
+private:
+	bool bFixedHeight = false;
+	float hLocked = -1;
+	int numLines = -1;
+
+public:
+	//--------------------------------------------------------------
+	void setFixedHeight(int _numLines = 1) { // an small tweak to fix box size to an amount of lines
+		bFixedHeight = true;
+		numLines = _numLines;
+
+		std::string _ss = "";
+		for (int i = 0; i < numLines; i++) { _ss += "I" + (i == 0 && i < numLines - 1) ? "" : "\n"; }
+		//std::string _ss = "I";
+		hLocked = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, _ss);
+	}
+
 };
 
 //--
