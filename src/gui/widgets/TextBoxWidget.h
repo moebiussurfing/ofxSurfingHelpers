@@ -10,6 +10,8 @@
 /*
 
 	TODO:
+
+	+ use ctrl modifier bc thre clicks interferes with double..
 	+ add store layout settings
 	+ move layout to drag rect class
 	+ sum padding from 0, not expanded from center..
@@ -31,23 +33,30 @@ Usage Example Snippet:
 
 	// Setup
 	{
-		// Help
+		// font
+		textBoxWidget.setFontName("overpass-mono-bold.otf");
+		textBoxWidget.setFontSize(20);
+
+		//textBoxWidget.setFixedHeight(1); //TODO:
+
+		textBoxWidget.setup();
+		
+		//textBoxWidget.setMode(TextBoxWidget::FREE_LAYOUT);
+		textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
+		
+		// theme
+		textBoxWidget.setTheme(true);//dark
+		//textBoxWidget.setTheme(false);//light
+
+		// text
 		std::string helpInfo = "";
 		helpInfo += "HELP\n";
 		helpInfo += "KEY COMMANDS\n";
 		helpInfo += "\n";
 		helpInfo += "SPACE      : Randomize Parameters\n";
-		helpInfo += "Ctrl+SPACE : Randomize Index\n";
-		helpInfo += "RETURN     : Play timed randomizer\n";
-		helpInfo += "BACKSPACE  : Reset parameters\n";
-		helpInfo += "LEFT-RIGHT : Browse Index\n";
-		//helpInfo = ofToUpper(helpInfo);//make uppercase
-
+		//helpInfo = ofToUpper(helpInfo); // make uppercase
+		
 		textBoxWidget.setText(helpInfo);
-		textBoxWidget.setup();
-		textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
-		textBoxWidget.setTheme(true);//dark
-		//textBoxWidget.setTheme(false);//light
 	}
 
 	// Draw
@@ -373,26 +382,27 @@ public:
 
 		//-
 
+		// Force fit box iniside the window
 		{
-			// Fit iniside window
 			float _xmax = _w - _ww - _padx;
 			float _ymax = _h - _hh - _pady;
+			float _ymin = 3 * _pady;
 
-			if (rect_HelpTextBox.getY() > _ymax)
+			if (rect_HelpTextBox.getY() > _ymax)//bottom
 			{
 				rect_HelpTextBox.setY(_ymax);
 			}
-			else if (rect_HelpTextBox.getX() < _padx)
+			else if (rect_HelpTextBox.getX() < _padx)//left
 			{
 				rect_HelpTextBox.setX(_padx);
 			}
-			else if (rect_HelpTextBox.getX() > _xmax)
+			else if (rect_HelpTextBox.getX() > _xmax)//right
 			{
 				rect_HelpTextBox.setX(_xmax);
 			}
-			else if (rect_HelpTextBox.getY() < _pady)
+			else if (rect_HelpTextBox.getY() < _ymin)//top
 			{
-				rect_HelpTextBox.setY(_pady);
+				rect_HelpTextBox.setY(_ymin);
 			}
 		}
 

@@ -14,10 +14,10 @@ These functions can be used as simple signal generators, randomizers, fade blink
 using namespace std;
 
 //namespace ofxImGuiSurfing
-namespace ofxSurfingHelpers
+namespace ofxSurfingHelpers // -> collides between/if included ofxImGuiSurfing/ofxSurfingHelpers.h
 {
 	//------------------------------------------------------------------------------
-	//animator functions taken from
+	// Animator functions taken from
 	//https://github.com/tcoppex/ofxFontSampler/blob/main/example/src/ofApp.cpp
 
 	namespace 
@@ -61,11 +61,10 @@ namespace ofxSurfingHelpers
 		return distribution(mt);
 	}
 
+	//-
 
-	//
-
-	//get a blink faded to use as alpha on gui button when "active-listening-mode" enabled
-	//ie: blink when a new preset is editing
+	// Get a blink faded to use as alpha on gui button when "active-listening-mode" enabled
+	// ie: Blink when a new preset is editing
 	//--------------------------------------------------------------
 	inline float getFadeBlink(float min = 0.20, float max = 0.80, float freq = 0.15) {
 
@@ -74,12 +73,12 @@ namespace ofxSurfingHelpers
 		return a;
 	}
 
-	//-
+	//----
 
-	// simple smooth
+	// Simple Smooth
 	//--------------------------------------------------------------
 	template <typename T>
-	void ofxKuValueSmooth(T &value, T target, float smooth) {
+	inline void ofxKuValueSmooth(T &value, T target, float smooth) {
 		value += (target - value) * (1 - smooth);
 	}
 
