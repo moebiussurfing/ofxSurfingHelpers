@@ -67,6 +67,10 @@ public:
 	glmSplitter4() {};
 	~glmSplitter4() {};
 
+	//TODO:
+	bool bNormalized = false; // 0 to 1
+	bool bSigned = false; // -1 to +1
+
 private:
 	ofEventListener listenerParams;
 
@@ -105,7 +109,15 @@ public:
 	void setup(ofParameter<glm::vec4> &_v) {
 		vecRef.makeReferenceTo(_v);
 
-		params.setName(_v.getName());
+		std::string n = _v.getName();
+		x.setName(n + " x");
+		y.setName(n + " y");
+		z.setName(n + " z");
+		w.setName(n + " w");
+
+		set(_v);
+
+		params.setName(n);
 		params.add(vecRef);
 
 		params.add(x);
@@ -155,19 +167,19 @@ private:
 				}
 				else { return; }
 
-				if (name == "x")
+				if (name == x.getName())
 				{
 					vecRef.set(glm::vec4(x, y, z, w));
 				}
-				else if (name == "y")
+				else if (name == y.getName())
 				{
 					vecRef.set(glm::vec4(x, y, z, w));
 				}
-				else if (name == "z")
+				else if (name == z.getName())
 				{
 					vecRef.set(glm::vec4(x, y, z, w));
 				}
-				else if (name == "w")
+				else if (name == w.getName())
 				{
 					vecRef.set(glm::vec4(x, y, z, w));
 				}
@@ -220,7 +232,14 @@ public:
 	void setup(ofParameter<glm::vec3> &_v) {
 		vecRef.makeReferenceTo(_v);
 
-		params.setName(_v.getName());
+		std::string n = _v.getName();
+		x.setName(n + " x");
+		y.setName(n + " y");
+		z.setName(n + " z");
+
+		set(_v);
+
+		params.setName(n);
 		params.add(vecRef);
 
 		params.add(x);
@@ -266,15 +285,15 @@ private:
 				}
 				else { return; }
 
-				if (name == "x")
+				if (name == x.getName())
 				{
 					vecRef.set(glm::vec3(x, y, z));
 				}
-				else if (name == "y")
+				else if (name == y.getName())
 				{
 					vecRef.set(glm::vec3(x, y, z));
 				}
-				else if (name == "z")
+				else if (name == z.getName())
 				{
 					vecRef.set(glm::vec3(x, y, z));
 				}
@@ -307,7 +326,7 @@ private:
 
 public:
 	ofParameterGroup floats{ "Floats" };
-	
+
 	ofParameter<glm::vec2> vecRef{ "-1",glm::vec2(0.5),glm::vec2(0),glm::vec2(1) };
 
 public:
@@ -325,7 +344,13 @@ public:
 	void setup(ofParameter<glm::vec2> &_v) {
 		vecRef.makeReferenceTo(_v);
 
-		params.setName(_v.getName());
+		std::string n = _v.getName();
+		x.setName(n + " x");
+		y.setName(n + " y");
+
+		set(_v);
+
+		params.setName(n);
 		params.add(vecRef);
 
 		params.add(x);
@@ -368,15 +393,11 @@ private:
 				else { return; }
 
 				// get the values doing casting. we check the type first
-				if (name == "x")
+				if (name == x.getName())
 				{
 					vecRef.set(glm::vec2(x, y));
 				}
-				else if (name == "y")
-				{
-					vecRef.set(glm::vec2(x, y));
-				}
-				else if (name == "z")
+				else if (name == y.getName())
 				{
 					vecRef.set(glm::vec2(x, y));
 				}

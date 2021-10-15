@@ -90,7 +90,7 @@ namespace ofxSurfingHelpers {
 	inline bool loadGroup(ofParameterGroup &g, string path)
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "parameters: \n\n" << g.toString();
+		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 
 		ofXml settings;
 		bool b = settings.load(path);
@@ -107,7 +107,7 @@ namespace ofxSurfingHelpers {
 	inline bool saveGroup(ofParameterGroup &g, string path)
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "parameters: \n\n" << g.toString();
+		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 
 		//CheckFolder(path);
 
@@ -133,12 +133,12 @@ namespace ofxSurfingHelpers {
 		if (debug)
 		{
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice(__FUNCTION__) << "parameters: \n\n" << g.toString();
+			ofLogNotice(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 		else
 		{
 			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose(__FUNCTION__) << "parameters: \n\n" << g.toString();
+			ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 
 		ofJson settings;
@@ -169,12 +169,12 @@ namespace ofxSurfingHelpers {
 
 		if (debug) {
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice(__FUNCTION__) << "parameters: \n\n" << g.toString();
+			ofLogNotice(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 		else
 		{
 			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose(__FUNCTION__) << "parameters: \n\n" << g.toString();
+			ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 
 		//ofxSurfingHelpers::CheckFolder(path);
