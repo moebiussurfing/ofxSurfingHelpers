@@ -73,6 +73,9 @@ namespace ofxSurfingHelpers {
 	//ofBitmapFont f;
 	//ofRectangle strSize = f.getBoundingBox("No empty dock space, nowhere to draw for oF !", posX, posY);
 
+	//TODO:
+	//fix variations..
+
 	//--------------------------------------------------------------
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
@@ -112,6 +115,15 @@ namespace ofxSurfingHelpers {
 				_r.setY(_r.getPosition().y - _pad / 2.);
 
 				if(heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
+				////TODO:
+				//if (heighForced == -1) 
+				//{
+				//	float _h;
+				//	bool b = !ofIsStringInString(text, "\n");//if only one line. 
+				//	if(b) _h = font.getStringBoundingBox("I", 0, 0).getHeight();//hardcoded height
+				//	else _h = _r.getHeight();
+				//	_r.setHeight(_h + _pad);
+				//}
 				else _r.setHeight(heighForced + _pad);
 
 				// Draw
