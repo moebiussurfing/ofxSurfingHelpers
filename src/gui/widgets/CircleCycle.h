@@ -134,10 +134,19 @@ private:
 
 	bool bLabel = false;
 	bool bTitle = false;
+
 public:
 	void setEnableLabel(bool b) {
 		bLabel = b;
 	}
+
+	void setFont(string str, int size = 10) {
+		fontCycleSize = size;
+		std::string path = "assets/fonts/mono.ttf";
+		if (!fontCycle.loadFont(path, fontCycleSize))
+			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
+	}
+
 private:
 	ofTrueTypeFont fontCycle;
 	float fontCycleSize;

@@ -20,6 +20,13 @@ public:
 		bTitle = true;
 	}
 
+	void setFont(string str, int size = 10) {
+		fontCycleSize = size;
+		std::string path = "assets/fonts/mono.ttf";
+		if (!fontCycle.loadFont(path, fontCycleSize))
+			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
+	}
+
 public:
 	void setColor(ofColor _color)
 	{
