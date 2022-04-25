@@ -1,6 +1,8 @@
 ofxSurfingHelpers
 =============================
 
+v0.1
+
 ## Overview
 **ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff:  
 OF-Utils / Classes / Snippets / Helpers / Serializers / Native UI Widgets ...etc.
