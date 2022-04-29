@@ -9,7 +9,7 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 
 ## Features
 
-- Look to the available classes into **OF_ADDON/src/** for details.
+Look to the available classes into **OF_ADDON/src/** for details.
 
 ## Third Party add-ons bundled into **OF_ADDON/libs/**
 * [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect)  [ _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect) ]  
