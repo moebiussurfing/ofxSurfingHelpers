@@ -1,18 +1,19 @@
 ofxSurfingHelpers
 =============================
 
-v0.2
+# Overview
 
-## Overview
 **ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff form **openFrameworks**:  
+
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / Native UI Widgets ...etc.
 
 ## Features
+
 - Look to the available classes into **OF_ADDON/src/** for details.
 
 ## Third Party add-ons bundled into **OF_ADDON/libs/**
-[ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect)  [ _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect) ]  
-[ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject)   [ _FORK_ from [memo](https://github.com/memo/ofxMSAInteractiveObject) ]  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect)  [ _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect) ]  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject)   [ _FORK_ from [memo](https://github.com/memo/ofxMSAInteractiveObject) ]  
 
 <details>
   <summary>Other MISC OF-Util Add-ons / Resources</summary>
@@ -33,9 +34,6 @@ https://github.com/ofTheo/ofxFileHelper
 _Some of the bundled classes here may have been "stolen" from the above repositories!_
   </p>
 </details>
-
-## All the ImGui stuff is now moved to:  
-[ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) [ImGui Widgets/Layout/Helpers]  
 
 <details>
   <summary>Tested Systems</summary>
