@@ -4,17 +4,20 @@ ofxSurfingHelpers
 v0.2
 
 ## Overview
-**ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff:  
+**ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff form **openFrameworks**:  
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / Native UI Widgets ...etc.
 
 ## Features
 - Look to the available classes into **OF_ADDON/src/** for details.
 
 ## Third Party add-ons bundled into **OF_ADDON/libs/**
-https://github.com/moebiussurfing/ofxScaleDragRect  
-https://github.com/moebiussurfing/ofxMSAInteractiveObject  
+[ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect)  [ _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect) ]  
+[ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject)   [ _FORK_ from [memo](https://github.com/memo/ofxMSAInteractiveObject) ]  
 
-## Other MISC OF-Util Add-ons / Resources
+<details>
+  <summary>Other MISC OF-Util Add-ons / Resources</summary>
+  <p>
+
 https://github.com/FilikaDesign/ofxFilika   
 https://github.com/alptugan/ofxFilikaUtils  
 https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp  
@@ -28,16 +31,32 @@ https://github.com/perevalovds/ofxKu/tree/master/src
 https://github.com/ofTheo/ofxFileHelper  
 
 _Some of the bundled classes here may have been "stolen" from the above repositories!_
+  </p>
+</details>
 
 ## All the ImGui stuff is now moved to:  
 [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui) [ImGui Widgets/Layout/Helpers]  
 
-## Tested Systems
-- **Windows10** / **VS2017** / **OF ~0.11**
-- (partially tested) **macOS HighSierra** / **Xcode 9/10** / **OF ~0.11**
+<details>
+  <summary>Tested Systems</summary>
+  <p>
+
+  - **Windows 10** / **VS 2017** / **OF ~0.11**
+  </p>
+</details>
 
 ## Author
-moebiusSurfing (ManuMolina), _2020-2022._ 
+An addon by **@moebiusSurfing**  
+*( ManuMolina ) 2019-2022*  
 
-## License
-*MIT License.*
+### Contact / Tune
+<p>
+<a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
+<a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
+<a href="https://www.youtube.com/moebiusSurfing" rel="nofollow">YouTube</a> | 
+<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> | 
+<a href="https://github.com/moebiussurfing" target="_blank">GitHub</a> 
+</p>
+
+### License
+MIT License
