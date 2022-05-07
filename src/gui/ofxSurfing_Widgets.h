@@ -12,6 +12,32 @@ namespace ofxSurfingHelpers {
 
 	//--
 
+	/*
+	// A simple and animated scene using an image:
+
+	ofImage image;
+	ofParameter<bool>bDrawImage{ "Image", true };
+
+	// setup
+	image.loadImage("image.jpg");
+
+	//--------------------------------------------------------------
+	void drawScene() {
+		ofPushMatrix();
+		const float noiseAmnt = 0.07f;
+		ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+		float scale = ofMap(ofxSurfingHelpers::Bounce(), 0, 1, 1, 1.08f);
+		float noise = ofMap(ofxSurfingHelpers::Noise(), -1, 1, -noiseAmnt, noiseAmnt);
+		int xOffset = -noise * 500;
+		int vOffset = noise * 200;
+		ofScale(scale + noise);
+		image.draw(xOffset - ofGetWidth() / 2, vOffset - ofGetHeight() / 2, ofGetWidth(), ofGetHeight());
+		ofPopMatrix();
+	};
+	*/
+
+	//--
+
 
 	//--------------------------------------------------------------
 	// circular progress bar
@@ -80,10 +106,13 @@ namespace ofxSurfingHelpers {
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
 #define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1)
+	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
 	{
-		x += 25;
-		y += 33;
+		if (!noPadding)
+		{
+			x += 25;
+			y += 33;
+		}
 
 		//int _pad = 50;
 		//float _round = 5;
@@ -114,7 +143,7 @@ namespace ofxSurfingHelpers {
 				_r.setX(_r.getPosition().x - _pad / 2.);
 				_r.setY(_r.getPosition().y - _pad / 2.);
 
-				if(heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
+				if (heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
 				////TODO:
 				//if (heighForced == -1) 
 				//{
@@ -127,7 +156,7 @@ namespace ofxSurfingHelpers {
 				else _r.setHeight(heighForced + _pad);
 
 				// Draw
-				if(_round<= 0) ofDrawRectangle(_r);
+				if (_round <= 0) ofDrawRectangle(_r);
 				else ofDrawRectRounded(_r, _round);
 
 				// Text shadow
@@ -163,7 +192,7 @@ namespace ofxSurfingHelpers {
 		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
 		return sh;
 	}
-	
+
 	//--------------------------------------------------------------
 
 

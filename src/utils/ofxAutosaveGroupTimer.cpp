@@ -7,11 +7,11 @@ ofxAutosaveGroupTimer::ofxAutosaveGroupTimer()
 {
 	params.clear();
 
-	ENABLE_AutoSave.set("ENABLE_AutoSave", true);
+	bAutoSave.set("bAutoSave", true);
 	timeToAutosave.set("timeToAutosave", 5000, 100, 10000);
 	
 	paramsControl.setName("paramsControl");
-	paramsControl.add(ENABLE_AutoSave);
+	paramsControl.add(bAutoSave);
 	paramsControl.add(timeToAutosave);
 }
 
@@ -42,21 +42,21 @@ void ofxAutosaveGroupTimer::update()
 	//--
 
 	//autosave
-	//ENABLE_AutoSave = false;
+	//bAutoSave = false;
 
-	if (ENABLE_AutoSave && ofGetElapsedTimeMillis() - timerLast_Autosave > timeToAutosave)
+	if (bAutoSave && ofGetElapsedTimeMillis() - timerLast_Autosave > timeToAutosave)
 	{
 		//easy callback
 		bMustUptate = true;
 
 		saveAllGroups();
 
-		//saveParams(params_Control, path_GLOBAL + path_Params_Control);
+		//saveParams(params_AppsSettings, path_GLOBAL + path_Params_AppSettings);
 		
 		// bDISABLE_CALLBACKS = true;
 		// //get gui position before save
-		// positionGui = glm::vec2(gui_Control.getPosition());
-		// saveParams(params_Control, path_GLOBAL + path_Params_Control);
+		// positionGui = glm::vec2(gui_User.getPosition());
+		// saveParams(params_AppsSettings, path_GLOBAL + path_Params_AppSettings);
 		// bDISABLE_CALLBACKS = false;
 
 		//-

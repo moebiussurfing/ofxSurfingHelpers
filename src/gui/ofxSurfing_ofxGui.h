@@ -97,6 +97,42 @@ namespace ofxSurfingHelpers
 		setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
 	}
 
+
+	//--------------------------------------------------------------
+	inline void setThemeSurfing_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
+	{
+		if (bMini) {
+			size = 7;
+		}
+
+		ofFile file(pathFont);
+		if (file.exists())
+		{
+			ofxGuiSetFont(pathFont, size);
+		}
+		else {
+			ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
+		}
+
+		//-
+
+		ofxGuiSetBorderColor(32);
+		ofxGuiSetFillColor(ofColor(48));
+		ofxGuiSetTextColor(ofColor::white);
+		ofxGuiSetHeaderColor(ofColor(24));
+
+		if (bMini) {
+			ofxGuiSetDefaultHeight(17);
+			ofxGuiSetTextPadding(4);
+			//ofxGuiSetDefaultHeight(17);
+			//ofxGuiSetTextPadding(8);
+		}
+		else {
+			ofxGuiSetDefaultHeight(20);
+			//ofxGuiSetTextPadding(14);
+		}
+	}
+
 }; // ofxSurfingHelpers
 
 

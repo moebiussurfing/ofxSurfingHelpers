@@ -18,7 +18,7 @@ public:
 	void addGroup(ofParameterGroup g);
 
 	//autosave
-	ofParameter<bool> ENABLE_AutoSave;
+	ofParameter<bool> bAutoSave;
 	uint64_t timerLast_Autosave = 0;
 	ofParameter<int> timeToAutosave;
 
