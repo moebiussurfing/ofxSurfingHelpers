@@ -12,7 +12,7 @@
 
 	TODO:
 
-	+ use ctrl modifier bc thre clicks interferes with double..
+	+ use ctrl modifier bc thrEe clicks interferes with double..
 	+ add store layout settings
 	+ move layout to drag rect class
 	+ sum padding from 0, not expanded from center..
@@ -22,11 +22,13 @@
 
 /*
 
-This class draws a draggable text box with colored background.
-Auto stores and recall the box position between the app sessions.
-Doubleclick the box to allow move the position.
+	This class draws a draggable text box with colored background.
+	Auto stores and recall the box position between the app sessions.
+	DoubleClick the box to allow move the position.
 
-Usage Example Snippet:
+	Usage Example Snippet:
+
+	// * HelpBox *
 
 	// .h
 	#include "TextBoxWidget.h"
@@ -34,35 +36,37 @@ Usage Example Snippet:
 
 	// Setup
 	{
-		// font
-		textBoxWidget.setFontName("overpass-mono-bold.otf");
-		textBoxWidget.setFontSize(20);
+		//// font
+		//textBoxWidget.setFontName("overpass-mono-bold.otf");
+		//textBoxWidget.setFontSize(20);
+		////textBoxWidget.setFixedHeight(1); //TODO:
 
-		//textBoxWidget.setFixedHeight(1); //TODO:
-
+		textBoxWidget.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
 		textBoxWidget.setup();
-		
-		//textBoxWidget.setMode(TextBoxWidget::FREE_LAYOUT);
-		textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
-		
-		// theme
-		textBoxWidget.setTheme(true);//dark
-		//textBoxWidget.setTheme(false);//light
 
-		// text
-		std::string helpInfo = "";
-		helpInfo += "HELP\n";
-		helpInfo += "KEY COMMANDS\n";
-		helpInfo += "\n";
-		helpInfo += "SPACE      : Randomize Parameters\n";
-		//helpInfo = ofToUpper(helpInfo); // make uppercase
+		////textBoxWidget.setMode(TextBoxWidget::FREE_LAYOUT);
+		//textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
 		
+		//// theme
+		//textBoxWidget.setTheme(true);//dark
+		////textBoxWidget.setTheme(false);//light
+
+		std::string helpInfo = "";
+		helpInfo += "HELP NDI MANAGER \n";
+		helpInfo += "KEY COMMANDS \n\n";
+		helpInfo += "H          HELP \n";
+		helpInfo += "E          EDIT \n";
+		helpInfo += "SPACE      LIST NDI INPUT DEVICES \n";
+		helpInfo += "I          NEXT WEBCAM \n";
+		helpInfo += "D          DEBUG \n";
+		helpInfo += "Ctrl+K     KEYS \n";
+
 		textBoxWidget.setText(helpInfo);
 	}
 
 	// Draw
 	{
-		textBoxWidget.draw();
+		if (bHelp) textBoxWidget.draw();
 	}
 
 */
@@ -92,6 +96,9 @@ public:
 	//--------------------------------------------------------------
 	~TextBoxWidget()
 	{
+		// All app settings
+		ofxSurfingHelpers::CheckFolder(path_Global + "/");
+		rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 	}
 
 	//-
@@ -212,7 +219,7 @@ public:
 public:
 
 	//--------------------------------------------------------------
-	void setPath(string path) {
+	void setPath(string path) {//call before setup. Will set path to save settings into.
 		path_Global = path;
 	}
 
@@ -221,7 +228,7 @@ public:
 		size_TTF = size;
 	}
 	//--------------------------------------------------------------
-	void setFontName(string name = "telegrama_render.otf") {
+	void setFontName(string name = "telegrama_render.otf") {//set the name only. path is /assets/fonts/*name*
 		name_TTF = name;
 	}
 
