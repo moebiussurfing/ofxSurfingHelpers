@@ -11,29 +11,7 @@
 
 //--
 
-/*
 // A simple and animated scene using an image:
-
-ofImage image;
-ofParameter<bool>bDrawImage{ "Image", true };
-
-// setup
-image.loadImage("image.jpg");
-
-//--------------------------------------------------------------
-void drawScene() {
-	ofPushMatrix();
-	const float noiseAmnt = 0.07f;
-	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-	float scale = ofMap(ofxSurfingHelpers::Bounce(), 0, 1, 1, 1.08f);
-	float noise = ofMap(ofxSurfingHelpers::Noise(), -1, 1, -noiseAmnt, noiseAmnt);
-	int xOffset = -noise * 500;
-	int vOffset = noise * 200;
-	ofScale(scale + noise);
-	image.draw(xOffset - ofGetWidth() / 2, vOffset - ofGetHeight() / 2, ofGetWidth(), ofGetHeight());
-	ofPopMatrix();
-};
-*/
 
 //--------------------------------------------------------------
 class ImageAnimated : public ofBaseApp

@@ -31,7 +31,7 @@
 
 
 namespace ofxSurfingHelpers {
-	
+
 	//----
 
 	// SERIALIZERS
@@ -151,12 +151,11 @@ namespace ofxSurfingHelpers {
 		ofDeserializeSilent(settings, g);
 #endif
 
-		bool b = !settings.is_null();//TODO:
-		//bool b = true;//TODO:
-
-		//bool b = settings.is_null;
-		//if (b) ofLogVerbose(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
-		//else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
+		// returns false if no file preset yet.
+		ofFile f;
+		bool b = f.doesFileExist(path);
+		if (b) ofLogNotice(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
+		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path << " Not found!";
 
 		return b;//returns true if its ok
 	}
