@@ -92,14 +92,14 @@ public:
 		//DOUBLE3_COLOR = ofColor(ofColor::blue, alpha);
 		//DOUBLE4_COLOR = ofColor(ofColor::black, alpha);
 
-		ofLogVerbose(__FUNCTION__) << "hello!\n";
+		if (bDebug) ofLogVerbose(__FUNCTION__) << "hello!\n";
 		enableMouseEvents();
 		enableKeyEvents();
 	}
 
 
 	void exit() {
-		ofLogVerbose(__FUNCTION__) << "goodbye!\n";
+		if (bDebug) ofLogVerbose(__FUNCTION__) << "goodbye!\n";
 	}
 
 
@@ -157,27 +157,27 @@ public:
 	}
 
 	virtual void onRollOver(int x, int y) {
-		ofLogVerbose(__FUNCTION__) << x << y;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y;
 	}
 
 	virtual void onRollOut() {
-		ofLogVerbose(__FUNCTION__);
+		if (bDebug) ofLogVerbose(__FUNCTION__);
 	}
 
 	virtual void onMouseMove(int x, int y) {
-		ofLogVerbose(__FUNCTION__) << x << y;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y;
 	}
 
 	virtual void onDragOver(int x, int y, int button) {
-		ofLogVerbose(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y << button;
 	}
 
 	virtual void onDragOutside(int x, int y, int button) {
-		ofLogVerbose(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y << button;
 	}
 
 	virtual void onPress(int x, int y, int button) {
-		ofLogVerbose(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y << button;
 
 		auto t = ofGetElapsedTimeMillis();
 		timerClick = t;
@@ -201,19 +201,19 @@ public:
 	}
 
 	virtual void onRelease(int x, int y, int button) {
-		ofLogVerbose(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y << button;
 	}
 
 	virtual void onReleaseOutside(int x, int y, int button) {
-		ofLogVerbose(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << x << y << button;
 	}
 
 	virtual void keyPressed(int key) {
-		ofLogVerbose(__FUNCTION__) << key;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << key;
 	}
 
 	virtual void keyReleased(int key) {
-		ofLogVerbose(__FUNCTION__) << key;
+		if (bDebug) ofLogVerbose(__FUNCTION__) << key;
 	}
 
 };

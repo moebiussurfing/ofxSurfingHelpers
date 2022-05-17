@@ -34,6 +34,8 @@
 	#include "TextBoxWidget.h"
 	TextBoxWidget textBoxWidget;
 
+	ofParameter<bool> bHelp{ "Help", enable };
+
 	// Setup
 	{
 		//// font
@@ -46,7 +48,7 @@
 
 		////textBoxWidget.setMode(TextBoxWidget::FREE_LAYOUT);
 		//textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
-		
+
 		//// theme
 		//textBoxWidget.setTheme(true);//dark
 		////textBoxWidget.setTheme(false);//light
@@ -115,6 +117,7 @@ public:
 		TOP_LEFT,
 		TOP_RIGHT,
 		CENTER,
+		//LOCKED,
 		NUM_LAYOUTS
 	};
 
@@ -124,6 +127,7 @@ private:
 
 	BOX_LAYOUT modeLayout = FREE_LAYOUT;
 	string str_modeLayout = "";
+	bool bLocked = false;
 
 public:
 
@@ -155,6 +159,7 @@ public:
 		case 5: str_modeLayout = "TOP_LEFT"; break;
 		case 6: str_modeLayout = "TOP_RIGHT"; break;
 		case 7: str_modeLayout = "CENTER"; break;
+		//case 8: str_modeLayout = "LOCKED"; break;
 		default: str_modeLayout = "UNKNOWN LAYOUT"; break;
 		}
 		return str_modeLayout;
@@ -224,7 +229,7 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	void setFontSize(int size = 10) {
+	void setFontSize(int size = 10) { // Call before setup. Default it's 10
 		size_TTF = size;
 	}
 	//--------------------------------------------------------------
@@ -260,6 +265,11 @@ public:
 		rect_HelpTextBox.setLockResize(true);
 		//rect_HelpTextBox.setLockResize(!bNoText);
 		rect_HelpTextBox.setTransparent();
+	}
+	//--------------------------------------------------------------
+	void draw(string text) {
+		setText(text);
+		draw();
 	}
 
 	//--------------------------------------------------------------
@@ -332,17 +342,17 @@ public:
 		else if (modeLayout == TOP_CENTER) {
 
 			_xx = _w / 2 - _ww / 2 - _padx;
-			_yy = _pady;
+			_yy = 2 * _pady;
 		}
 		else if (modeLayout == TOP_LEFT) {
 
 			_xx = _padx;
-			_yy = _pady;
+			_yy = 2 * _pady;
 		}
 		else if (modeLayout == TOP_RIGHT) {
 
 			_xx = _w - _ww - _padx;
-			_yy = _pady;
+			_yy = 2 * _pady;
 		}
 
 		else if (modeLayout == CENTER) {
@@ -550,6 +560,13 @@ public:
 	//--------------------------------------------------------------
 	void setMode(BOX_LAYOUT mode) {
 		modeLayout = mode;
+	}
+
+	//--------------------------------------------------------------
+	void setLocked(bool b) {
+		bLocked = b;
+		if (b) doubleClicker.disableAllEvents();
+		else doubleClicker.enableAllEvents();
 	}
 
 public:
