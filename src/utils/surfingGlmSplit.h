@@ -2,12 +2,22 @@
 
 #include "ofMain.h"
 
+
+/*
+
+TODO:
+
+make a template
+make 2, 3 and 4 dims
+
+*/
+
 /*
 	This classes can split a glm:vec (2, 3 and 4 dims) ofParameter to the float elements ofParams.
 	And the multidim glm params will be auto linked to the float parts.
 	All is autoupdated and is public exposed to be populated into a gui,
 	with the elements separated.
-	Surely is a dirty approach, ald could be better done.
+	Surely is a dirty approach, and could be better done.
 	by moebiusSurfing.
 
 */
@@ -539,3 +549,175 @@ private:
 	};
 };
 */
+
+
+
+
+//--------------------------------------------------------------
+
+class surfingGlmSplitter2
+{
+public:
+	surfingGlmSplitter2() {};
+	~surfingGlmSplitter2() {};
+
+	bool bNamesShort = false;
+	bool bNormalized = false; // 0, 1
+	bool bSigned = false; // -1, 1
+
+private:
+	ofEventListener listenerParams;
+
+public:
+	ofParameter<float> x{ "x", 0, 0, 1 };
+	ofParameter<float> y{ "y", 0, 0, 1 };
+
+private:
+	ofParameterGroup params{ "params" };
+
+public:
+	ofParameterGroup floats{ "Floats" };
+
+	ofParameter<glm::vec2> vecRef{ "-1",glm::vec2(0.5),glm::vec2(0),glm::vec2(1) };
+
+private:
+	void set(ofParameter<glm::vec2> _v) {
+		x.set(_v.get().x);
+		y.set(_v.get().y);
+
+		// limits
+		if (!bNormalized) {
+			x.setMin(_v.getMin().x);
+			y.setMin(_v.getMin().y);
+			x.setMax(_v.getMax().x);
+			y.setMax(_v.getMax().y);
+		}
+		else if (bNormalized && !bSigned) {
+			x.setMin(0.f);
+			y.setMin(0.f);
+			x.setMax(1.0f);
+			y.setMax(1.0f);
+		}
+		else //if (bNormalized && bSigned) 
+		{
+			x.setMin(-1.f);
+			y.setMin(-1.f);
+			x.setMax(1.0f);
+			y.setMax(1.0f);
+		}
+	}
+
+public:
+	void setup(ofParameter<glm::vec2>& _v) {
+		vecRef.makeReferenceTo(_v);
+
+		std::string n = _v.getName();
+		x.setName(bNamesShort ? "x" : n + " x");
+		y.setName(bNamesShort ? "y" : n + " y");
+
+		set(_v);
+
+		params.setName(n);
+		params.add(vecRef);
+
+		params.add(x);
+		params.add(y);
+
+		floats.setName(_v.getName());
+		floats.add(x);
+		floats.add(y);
+
+		setup();
+	}
+
+private:
+	void setup() {
+
+		listenerParams = params.parameterChangedE().newListener([&](ofAbstractParameter& p) {
+			string name = p.getName();
+
+			static bool bdisable = false;
+
+			if (name == "-1")
+			{
+				return;
+			}
+
+			// Some coord of VEC changed:
+			if (name == vecRef.getName()) {
+				if (!bNormalized)
+				{
+					x.setWithoutEventNotifications(vecRef.get().x);
+					y.setWithoutEventNotifications(vecRef.get().y);
+				}
+				else if (bNormalized && !bSigned)
+				{
+					x.setWithoutEventNotifications(ofMap(vecRef.get().x, vecRef.getMin().x, vecRef.getMax().x, 0, 1));
+					y.setWithoutEventNotifications(ofMap(vecRef.get().y, vecRef.getMin().y, vecRef.getMax().y, 0, 1));
+				}
+				else //if (bNormalized && bSigned)
+				{
+					x.setWithoutEventNotifications(ofMap(vecRef.get().x, vecRef.getMin().x, vecRef.getMax().x, -1, 1));
+					y.setWithoutEventNotifications(ofMap(vecRef.get().y, vecRef.getMin().y, vecRef.getMax().y, -1, 1));
+				}
+
+				x = x;
+				y = y;
+			}
+
+			// Some splitted coord changed:
+			else {
+				if (p.type() == typeid(ofParameter<float>).name())
+				{
+					ofParameter<float> pm = p.cast<float>();
+					ofLogNotice() << "glmSplitter : " << name << " : " << pm.get();
+				}
+				else { return; }
+
+				if (!bNormalized)
+				{
+					if (name == x.getName())
+					{
+						vecRef.set(glm::vec2(x, y));
+					}
+					else if (name == y.getName())
+					{
+						vecRef.set(glm::vec2(x, y));
+					}
+				}
+				else if (bNormalized && !bSigned)
+				{
+					if (name == x.getName())
+					{
+						vecRef.set(glm::vec2(
+							ofMap(x, 0, 1, vecRef.getMin().x, vecRef.getMax().x),
+							ofMap(y, 0, 1, vecRef.getMin().y, vecRef.getMax().y)));
+					}
+					else if (name == y.getName())
+					{
+						vecRef.set(glm::vec2(
+							ofMap(x, 0, 1, vecRef.getMin().x, vecRef.getMax().x),
+							ofMap(y, 0, 1, vecRef.getMin().y, vecRef.getMax().y)));
+					}
+				}
+				else //if (bNormalized && bSigned) 
+				{
+					if (name == x.getName())
+					{
+						vecRef.set(glm::vec2(
+							ofMap(x, -1, 1, vecRef.getMin().x, vecRef.getMax().x),
+							ofMap(y, -1, 1, vecRef.getMin().y, vecRef.getMax().y)));
+					}
+					else if (name == y.getName())
+					{
+						vecRef.set(glm::vec2(
+							ofMap(x, -1, 1, vecRef.getMin().x, vecRef.getMax().x),
+							ofMap(y, -1, 1, vecRef.getMin().y, vecRef.getMax().y)));
+					}
+				}
+			}
+			});
+
+		ofLogNotice() << __FUNCTION__;
+	};
+};

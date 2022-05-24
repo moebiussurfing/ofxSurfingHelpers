@@ -13,6 +13,12 @@
 
 // A simple and animated scene using an image:
 
+//TODO:
+//// Draw image
+//ofRectangle r(0, 0, image.getWidth(), image.getHeight());
+//r.scaleTo(ofGetWindowRect());
+//image.draw(r.x, r.y, r.width, r.height);
+
 //--------------------------------------------------------------
 class ImageAnimated : public ofBaseApp
 {
@@ -20,7 +26,32 @@ private:
 
 	ofImage img;
 
+	int xOffset;
+	int vOffset;
+
 public:
+
+	ofParameter<bool> bAnimate{ "Animate", true };
+
+	//--------------------------------------------------------------
+	void beginAnimate()
+	{
+		ofPushMatrix();
+
+		const float noiseAmnt = 0.07f;
+		float scale = ofMap(ofxSurfingHelpers::Bounce(), 0, 1, 1, 1.08f);
+		float noise = ofMap(ofxSurfingHelpers::Noise(), -1, 1, -noiseAmnt, noiseAmnt);
+		xOffset = noise * 500;
+		vOffset = noise * 300;
+
+		ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+		ofScale(scale + noise);
+	}
+	//--------------------------------------------------------------
+	void endAnimate()
+	{
+		ofPopMatrix();
+	}
 
 	//--------------------------------------------------------------
 	ImageAnimated()
@@ -41,20 +72,22 @@ public:
 	void draw() {
 		if (!img.isAllocated()) return;
 
-		ofPushMatrix();
-		const float noiseAmnt = 0.07f;
-		ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-		float scale = ofMap(ofxSurfingHelpers::Bounce(), 0, 1, 1, 1.08f);
-		float noise = ofMap(ofxSurfingHelpers::Noise(), -1, 1, -noiseAmnt, noiseAmnt);
-		int xOffset = noise * 500;
-		int vOffset = noise * 300;
-		ofScale(scale + noise);
-		img.draw(xOffset - ofGetWidth() / 2, vOffset - ofGetHeight() / 2, ofGetWidth(), ofGetHeight());
-		ofPopMatrix();
+		if (!bAnimate)
+		{
+			img.draw(0, 0, ofGetWidth(), ofGetHeight());
+		}
+		else
+		{
+			beginAnimate();
+
+			img.draw(xOffset - ofGetWidth() / 2, vOffset - ofGetHeight() / 2, ofGetWidth(), ofGetHeight());
+
+			endAnimate();
+		}
 	}
 };
 
-//--
+//----
 
 namespace ofxSurfingHelpers
 {
@@ -98,7 +131,7 @@ namespace ofxSurfingHelpers
 		polyline1.lineTo(point1.x, point1.y + radius * ratio);
 		polyline1.lineTo(point1.x, point1.y + radius);
 		polyline1.arc(point1, radius, radius, startAngle, spanAngle);
-		polyline1.arc(point1, radius*ratio, radius*ratio, startAngle, spanAngle);
+		polyline1.arc(point1, radius * ratio, radius * ratio, startAngle, spanAngle);
 		//polyline1.lineTo(0, point1.y + radius * ratio);
 		//polyline1.lineTo(0, point1.y + radius);
 		ofSetColor(ofColor::blue);
@@ -126,7 +159,7 @@ namespace ofxSurfingHelpers
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
 #define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont &font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
+	inline void drawTextBoxed(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
 	{
 		if (!noPadding)
 		{
@@ -198,17 +231,17 @@ namespace ofxSurfingHelpers
 	// get box width
 	//--------------------------------------------------------------
 
-	inline float getWidthBBtextBoxed(ofTrueTypeFont &font, string text) {
+	inline float getWidthBBtextBoxed(ofTrueTypeFont& font, string text) {
 		int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
 	}
 
-	inline float getHeightBBtextBoxed(ofTrueTypeFont &font, string text) {
+	inline float getHeightBBtextBoxed(ofTrueTypeFont& font, string text) {
 		int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
 	}
 
-	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont &font, string text) {
+	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont& font, string text) {
 		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
 		return sh;
 	}

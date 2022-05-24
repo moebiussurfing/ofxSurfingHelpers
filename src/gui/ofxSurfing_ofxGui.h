@@ -93,7 +93,7 @@ namespace ofxSurfingHelpers
 	}
 
 	//--------------------------------------------------------------
-	inline void setThemeDarkMini_ofxGui() {
+	inline void setThemeDarkMini_ofxGui() {//call before gui.setup()!
 		setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
 	}
 

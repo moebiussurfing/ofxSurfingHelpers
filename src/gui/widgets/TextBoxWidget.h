@@ -100,7 +100,8 @@ public:
 	{
 		// All app settings
 		ofxSurfingHelpers::CheckFolder(path_Global + "/");
-		rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
+		rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/", false);
+		//rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 	}
 
 	//-
@@ -170,7 +171,7 @@ private:
 	ofxInteractiveRect rect_HelpTextBox = { "Help_ofxPresetsManager" };
 	std::string path_RectHelpBox = "_HelpBox";
 	std::string path_Global = "TextBoxWidget/";// can be setted before setup
-	std::string path_Name = "appSettings";// subfolder for app session settings
+	//std::string path_Name = "appSettings";// subfolder for app session settings
 
 	// font to label clicker boxes
 	ofTrueTypeFont myFont;
@@ -256,10 +257,12 @@ public:
 
 		//----
 
-		ofxSurfingHelpers::CheckFolder(path_Global + "/" + path_Name + "/");
+		ofxSurfingHelpers::CheckFolder(path_Global + "/");
+		//ofxSurfingHelpers::CheckFolder(path_Global + "/" + path_Name + "/");
 
 		// Load settings
-		rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
+		rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/", false);
+		//rect_HelpTextBox.loadSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 
 		// We dont need draggable borders and decoration.
 		rect_HelpTextBox.setLockResize(true);
@@ -520,7 +523,8 @@ public:
 
 			// All app settings
 			//save_ControlSettings();
-			rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
+			rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/", false);
+			//rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/" + path_Name + "/", false);
 		}
 	}
 
