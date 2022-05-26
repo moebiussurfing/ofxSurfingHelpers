@@ -48,7 +48,7 @@ namespace
 	 with value equal 0 at boundaries, and 1 at delay / 2. */
 	 //--------------------------------------------------------------
 	float Bounce(float delay = 1.0f) {
-		return 0.5f*(1.0 + glm::sin(Tick(delay) * glm::two_pi<float>()));
+		return 0.5f * (1.0 + glm::sin(Tick(delay) * glm::two_pi<float>()));
 	}
 } // namespace
 
@@ -71,7 +71,7 @@ public:
 	}
 private:
 	ofParameter<ofRectangle> rectParam{ "recetParam", ofRectangle(), ofRectangle(), ofRectangle() };
-	void Changed_Rect(ofRectangle & r);
+	void Changed_Rect(ofRectangle& r);
 
 	// Rounded
 	bool bRounded = false;
@@ -90,7 +90,7 @@ private:
 	bool bLockY = false;
 	bool bLockW = false;
 	bool bLockH = false;
-	
+
 	bool bTransparent = false;
 
 public:
@@ -108,7 +108,10 @@ public:
 	//--------------------------------------------------------------
 	void setLockAspectRatio(bool b) {
 		bLockAspectRatio = b;
+		if (bLockAspectRatio)
+			aspectRatio = getWidth() / getHeight();
 	}
+	float aspectRatio = 16 / 9.f;
 
 	//--------------------------------------------------------------
 	void setLockResize(bool b) {
@@ -122,7 +125,7 @@ public:
 	void setTransparent() {
 		bTransparent = true;
 		setColorEditingHover(ofColor(0, 0));
-		setColorEditingMoving(ofColor(0, 0)); 
+		setColorEditingMoving(ofColor(0, 0));
 	}
 
 	//--------------------------------------------------------------
@@ -188,15 +191,15 @@ public:
 	}
 
 public:
-//private:
-	void mouseMoved(ofMouseEventArgs & mouse);
-	void mousePressed(ofMouseEventArgs & mouse);
-	void mouseDragged(ofMouseEventArgs & mouse);
-	void mouseReleased(ofMouseEventArgs & mouse);
+	//private:
+	void mouseMoved(ofMouseEventArgs& mouse);
+	void mousePressed(ofMouseEventArgs& mouse);
+	void mouseDragged(ofMouseEventArgs& mouse);
+	void mouseReleased(ofMouseEventArgs& mouse);
 
-	void mouseScrolled(ofMouseEventArgs & mouse);
-	void mouseEntered(ofMouseEventArgs & mouse);
-	void mouseExited(ofMouseEventArgs & mouse);
+	void mouseScrolled(ofMouseEventArgs& mouse);
+	void mouseEntered(ofMouseEventArgs& mouse);
+	void mouseExited(ofMouseEventArgs& mouse);
 
 public:
 	float getRectX() { return x; }
@@ -228,7 +231,7 @@ private:
 
 public:
 	ofParameter<bool> bEditMode{ "EDIT BOX", false };
-	void Changed_EditMode(bool & b);
+	void Changed_EditMode(bool& b);
 
 protected:
 	bool bIsEditing;

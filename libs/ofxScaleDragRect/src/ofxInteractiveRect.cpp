@@ -323,7 +323,7 @@ void ofxInteractiveRect::draw()
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseMoved(ofMouseEventArgs & mouse)
+void ofxInteractiveRect::mouseMoved(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
 
@@ -373,7 +373,7 @@ void ofxInteractiveRect::mouseMoved(ofMouseEventArgs & mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mousePressed(ofMouseEventArgs & mouse)
+void ofxInteractiveRect::mousePressed(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
 
@@ -423,7 +423,7 @@ void ofxInteractiveRect::mousePressed(ofMouseEventArgs & mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseDragged(ofMouseEventArgs & mouse)
+void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
 
@@ -433,19 +433,28 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs & mouse)
 		{
 			y += mouse.y - mousePrev.y;
 			height += mousePrev.y - mouse.y;
+
+			if (bLockAspectRatio) width = aspectRatio * height;
+
 		}
 		else if (bDown && !bLockY)
 		{
 			height += mouse.y - mousePrev.y;
+
+			if (bLockAspectRatio) width = aspectRatio * height;
 		}
 		if (bLeft && !bLockW)
 		{
 			x += mouse.x - mousePrev.x;
 			width += mousePrev.x - mouse.x;
+
+			if (bLockAspectRatio) height = width / aspectRatio;
 		}
 		else if (bRight && !bLockH)
 		{
 			width += mouse.x - mousePrev.x;
+
+			if (bLockAspectRatio) height = width / aspectRatio;
 		}
 	}
 
@@ -459,7 +468,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs & mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseReleased(ofMouseEventArgs & mouse)
+void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
 
@@ -482,7 +491,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs & mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::Changed_EditMode(bool & b)
+void ofxInteractiveRect::Changed_EditMode(bool& b)
 {
 	ofLogNotice(__FUNCTION__) << b;
 
@@ -490,7 +499,7 @@ void ofxInteractiveRect::Changed_EditMode(bool & b)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::Changed_Rect(ofRectangle & r)
+void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 {
 	ofLogNotice(__FUNCTION__) << r;
 
@@ -498,6 +507,15 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle & r)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs & mouse) {}
-void ofxInteractiveRect::mouseEntered(ofMouseEventArgs & mouse) {}
-void ofxInteractiveRect::mouseExited(ofMouseEventArgs & mouse) {}
+void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
+
+	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
+
+	float d = 0.1f;
+	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
+	this->scaleFromCenter(s);
+	if (bLockAspectRatio) height = width / aspectRatio;
+}
+
+void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
+void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}

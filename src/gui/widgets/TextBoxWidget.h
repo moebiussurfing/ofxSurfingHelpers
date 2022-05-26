@@ -179,7 +179,7 @@ private:
 	std::string name_TTF;
 	int size_TTF;
 
-	std::string textInfo = "empty content";// info text to display shortcuts or path settings
+	std::string textInfo = "TextBoxWidget\nempty content";// info text to display shortcuts or path settings
 
 	ofColor _colorText;// lines and text color
 	ofColor _colorButton;// bg selected button
@@ -374,8 +374,10 @@ public:
 
 			if (rect_HelpTextBox.isEditing())
 			{
-				float a = ofxSurfingHelpers::getFadeBlink();
-				ofColor c = ofColor(_colorBg, 255 * a);
+				float a = ofxSurfingHelpers::getFadeBlink(0.6f, 1.f);
+				//float a = ofxSurfingHelpers::getFadeBlink();
+
+				ofColor c = ofColor(_colorBg, _colorBg.a * a);
 				rect_HelpTextBox.draw();
 
 				colorBg = c;
@@ -403,7 +405,7 @@ public:
 
 		//-
 
-		// Force fit box iniside the window
+		// Force fit box inside the window
 		{
 			float _xmax = _w - _ww - _padx;
 			float _ymax = _h - _hh - _pady;
@@ -443,7 +445,7 @@ private:
 
 		//-
 
-		// Allow edit onlly on free layout mode:
+		// Allow edit only on free layout mode:
 #ifdef LOCK_EDIT_ON_NON_FREE_LAYOUT_MODE
 		if (modeLayout == FREE_LAYOUT)
 #endif
@@ -544,7 +546,7 @@ public:
 		{
 			_colorText = ofColor(255, 150);
 			_colorButton = ofColor(16, 225);
-			_colorBg = ofColor(0, 128);
+			_colorBg = ofColor(0, 200);
 		}
 	}
 
