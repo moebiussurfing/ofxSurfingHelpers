@@ -508,7 +508,9 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 
 //--------------------------------------------------------------
 void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
+	if (!this->isMouseOver()) return;
 
+	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
 	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
 
 	float d = 0.1f;
