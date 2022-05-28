@@ -26,7 +26,7 @@
 //---------
 
 
-#include "ofxSurfing_Timers.h"
+#include "surfingTimers.h"
 #include "ofxSurfing_Widgets.h"
 
 
