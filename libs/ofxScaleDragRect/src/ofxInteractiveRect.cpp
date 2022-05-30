@@ -89,6 +89,8 @@ ofRectangle ofxInteractiveRect::getRect()
 //--------------------------------------------------------------
 void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 {
+	ofLogNotice(__FUNCTION__);
+
 	if (name != "")
 	{
 		this->name = name;
@@ -115,6 +117,8 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 
 ofJson ofxInteractiveRect::toJson()
 {
+	ofLogNotice(__FUNCTION__);
+
 	ofJson j;//("interactiveRect");
 
 	j["x"] = this->ofRectangle::x;
@@ -129,6 +133,8 @@ ofJson ofxInteractiveRect::toJson()
 
 void ofxInteractiveRect::fromJson(const ofJson& j)
 {
+	ofLogNotice(__FUNCTION__);
+
 	if (j == nullptr) return;//TODO: crash
 
 	j["x"].get_to(this->ofRectangle::x);

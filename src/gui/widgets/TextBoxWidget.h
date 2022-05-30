@@ -10,9 +10,13 @@
 
 /*
 
+	NOTE
+	This class is deprecated and moved to continue into ofxSurfingBox. 
+	No removed bc legacy with old projects.
+
 	TODO:
 
-	+ use ctrl modifier bc thrEe clicks interferes with double..
+	+ use ctrl modifier bc three clicks interferes with double..
 	+ add store layout settings
 	+ move layout to drag rect class
 	+ sum padding from 0, not expanded from center..
