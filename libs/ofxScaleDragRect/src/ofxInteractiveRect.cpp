@@ -8,6 +8,7 @@
 //	Updated by moebiusSurfing 2021
 
 #include "ofxInteractiveRect.h"
+#include "ofxSurfingHelpers.h"
 
 //--------------------------------------------------------------
 ofxInteractiveRect::ofxInteractiveRect(string name, string path)
@@ -266,9 +267,11 @@ void ofxInteractiveRect::draw()
 		ofPushStyle();
 
 		// Hover
+
 		if (bIsOver)
 		{
 			// Border
+
 			ofNoFill();
 			if (!bPressed)
 			{
@@ -286,13 +289,18 @@ void ofxInteractiveRect::draw()
 		}
 
 		// Border
+		
 		//else 
 		{
 			drawBorder(); // will blink
 		}
 
+		//--
+		
 		// Fill
+
 		ofFill();
+
 		if (bMove) // when moving
 		{
 			ofSetColor(colorEditingMoving);
@@ -514,6 +522,8 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 
 //--------------------------------------------------------------
 void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
+	if (!bEnableMouseWheel) return;
+
 	if (!this->isMouseOver()) return;
 
 	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);

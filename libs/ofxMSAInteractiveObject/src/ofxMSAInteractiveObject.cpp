@@ -43,7 +43,6 @@ void ofxMSAInteractiveObject::disableAllEvents() {
 	disableAppEvents();
 }
 
-
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::enableMouseEvents() {
 	ofAddListener(ofEvents().mousePressed, this, &ofxMSAInteractiveObject::_mousePressed);
@@ -88,7 +87,6 @@ void ofxMSAInteractiveObject::disableAppEvents() {
 	ofRemoveListener(ofEvents().exit, this, &ofxMSAInteractiveObject::_exit);
 }
 
-
 //--------------------------------------------------------------
 //void ofxMSAInteractiveObject::setPosition(float _x, float _y) {
 //	x = _x;
@@ -118,7 +116,6 @@ bool ofxMSAInteractiveObject::isMousePressed(int mouseButton) const {
 	return _isMousePressed.at(mouseButton);
 }
 
-
 //--------------------------------------------------------------
 int ofxMSAInteractiveObject::getMouseX() const {
 	return ofGetMouseX();
@@ -138,8 +135,6 @@ unsigned long ofxMSAInteractiveObject::getStateChangeMillis() const {
 bool ofxMSAInteractiveObject::hitTest(int tx, int ty) const {
 	return ((tx > x) && (tx < x + width) && (ty > y) && (ty < y + height));
 }
-
-
 
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::_setup(ofEventArgs &e) {
@@ -177,7 +172,6 @@ void ofxMSAInteractiveObject::_exit(ofEventArgs &e) {
 	exit();
 }
 
-
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::_mouseMoved(ofMouseEventArgs &e) {
 	int x = e.x;
@@ -205,7 +199,6 @@ void ofxMSAInteractiveObject::_mouseMoved(ofMouseEventArgs &e) {
 
 	mouseMoved(x, y);
 }
-
 
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::_mousePressed(ofMouseEventArgs &e) {
@@ -296,7 +289,6 @@ void ofxMSAInteractiveObject::_mouseReleased(ofMouseEventArgs &e) {
 	mouseReleased(x, y, button);
 }
 
-
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::_keyPressed(ofKeyEventArgs &e) {
 	int key = e.key;
@@ -305,7 +297,6 @@ void ofxMSAInteractiveObject::_keyPressed(ofKeyEventArgs &e) {
 	if (isMouseOver()) onKeyPress(key);
 	keyPressed(key);
 }
-
 
 //--------------------------------------------------------------
 void ofxMSAInteractiveObject::_keyReleased(ofKeyEventArgs &e) {

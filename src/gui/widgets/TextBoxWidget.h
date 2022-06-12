@@ -137,7 +137,7 @@ private:
 public:
 
 	//--------------------------------------------------------------
-	string getEditing() {
+	string getEditingString() {
 		if (rect_HelpTextBox.isEditing()) return "Editing"; else return "Not Editing";
 	}
 
@@ -283,7 +283,7 @@ public:
 	void draw() {
 		ofPushStyle();
 
-		drawDoubleClickDebug();
+		drawDebugDoubleClick();
 
 		//-
 
@@ -441,7 +441,7 @@ public:
 private:
 
 	//--------------------------------------------------------------
-	void drawDoubleClickDebug()
+	void drawDebugDoubleClick()
 	{
 		//--
 

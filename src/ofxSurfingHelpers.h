@@ -1,3 +1,7 @@
+//TODO:
+// Get some utils from here
+//https://github.com/d3cod3/ofxMosaicPlugin/blob/master/src/utils.h
+//
 
 #pragma once
 

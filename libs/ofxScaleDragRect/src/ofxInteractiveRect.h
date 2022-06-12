@@ -11,20 +11,20 @@
 
 /*
 
-TODO:
+	TODO:
 
-+ blink on editing
-+ add border drawer, edit... on param group ready to add to a gui
-+ multiple positions left-rigth..etc
-+ double click to enable edit mode. Using MSAInteractive
-+ aspect ratio like camera mode,
-+ add helpers to rect fit, expand etc..
-+ fix rare from center scaling on text box widget
-+ add mouse scroll drag and scale ctrl / alt
-+ add mouse drag scale from center (get from ofxSCENE-SVG)
-+ lock x, y, w, h upper/bottom drag borders
-+ lock min/max size for the rect and avoid flipping..
-+ path setteable
+	+ blink on editing
+	+ add border drawer, edit... on param group ready to add to a gui
+	+ multiple positions left-rigth..etc
+	+ double click to enable edit mode. Using MSAInteractive
+	+ aspect ratio like camera mode,
+	+ add helpers to rect fit, expand etc..
+	+ fix rare from center scaling on text box widget
+	+ add mouse scroll drag and scale ctrl / alt
+	+ add mouse drag scale from center (get from ofxSCENE-SVG)
+	+ lock x, y, w, h upper/bottom drag borders
+	+ lock min/max size for the rect and avoid flipping..
+	+ path setteable
 
 */
 
@@ -34,6 +34,8 @@ TODO:
 #include "ofMain.h"
 
 #define BORDER_DRAG_SIZE 11
+
+//--
 
 // Timing tools
 namespace
@@ -52,31 +54,54 @@ namespace
 	}
 } // namespace
 
+//--
+
 //--------------------------------------------------------------
 class ofxInteractiveRect : public ofRectangle
 {
 
 private:
+
+	bool bEnableMouseWheel = true;
+
+public:
+
+	void setEnableMouseWheel(bool b) { bEnableMouseWheel = b; }
+
+private:
+
 	ofColor colorBorderDraggable = { ofColor::yellow }; // Draggable borders
+	ofColor colorEditingMoving{ ofColor(127, 127) }; // Borders. fill color when hover and moving the rectangle
+	
 	ofColor colorEditingHover{ ofColor(50, 20) }; // Rect fill when editing
 	ofColor colorEditingPressedBorder{ ofColor(50, 200) }; // Borders
-	ofColor colorEditingMoving{ ofColor(127, 127) }; // Borders. fill color when hover and moving the rectangle
+	
+	// debug colors
+	//ofColor colorEditingHover = { ofColor(ofColor::red, 200)}; // Draggable borders
+	//ofColor colorEditingPressedBorder = { ofColor(ofColor::blue, 200)};
+	
+	//--
 
 	bool bDrawBroder = true;
 
 public:
+
 	//--------------------------------------------------------------
 	ofParameter<ofRectangle>& getParameter() {
 		return rectParam;
 	}
+
 private:
+
 	ofParameter<ofRectangle> rectParam{ "recetParam", ofRectangle(), ofRectangle(), ofRectangle() };
 	void Changed_Rect(ofRectangle& r);
 
 	// Rounded
 	bool bRounded = false;
 	float rounded = 5.0;
+
 public:
+
 	//--------------------------------------------------------------
 	void setRounded(float r) {
 		if (r > 0) bRounded = true;
@@ -85,7 +110,9 @@ public:
 	}
 
 	//TODO:
+
 private:
+
 	bool bLockX = false;
 	bool bLockY = false;
 	bool bLockW = false;
@@ -94,12 +121,14 @@ private:
 	bool bTransparent = false;
 
 public:
+
 	void setLockX(bool b) { bLockX = b; };
 	void setLockY(bool b) { bLockY = b; };
 	void setLockW(bool b) { bLockW = b; };
 	void setLockH(bool b) { bLockH = b; };
 
 public:
+
 	ofParameter<bool> bLockResize{ "Lock Resize", false };
 	ofParameter<bool> bLock{ "Lock", false };
 
@@ -151,10 +180,13 @@ public:
 
 		return b;
 	}
+
 private:
+
 	bool bAllScreenMouse = false;
 
 public:
+
 	//--------------------------------------------------------------
 	void setAllScreenMouse(bool b) {
 		bAllScreenMouse = b;
@@ -166,7 +198,13 @@ public:
 	void enableEdit(bool enable = true);
 	void disableEdit();
 	void toggleEdit();
-	bool isEditing() { return bIsEditing; }
+
+	//bool isEditing() { return bIsEditing; }
+	bool isEditing() 
+	{ 
+		if (bIsEditing) return true;
+		else return bIsEditing; 
+	}
 
 	void draw();
 	void drawBorder();
@@ -175,11 +213,14 @@ public:
 	void saveSettings(string name = "", string path = "", bool saveJson = false);
 
 	//TODO:
-	//store name and path to allow autosave..
+	//store name and path to allow auto save..
+
 private:
+
 	bool bAutoSave = true;
 
 public:
+
 	//--------------------------------------------------------------
 	void setAutoSave(bool b = true) {
 		bAutoSave = b;
@@ -192,6 +233,7 @@ public:
 
 public:
 	//private:
+
 	void mouseMoved(ofMouseEventArgs& mouse);
 	void mousePressed(ofMouseEventArgs& mouse);
 	void mouseDragged(ofMouseEventArgs& mouse);
@@ -202,17 +244,21 @@ public:
 	void mouseExited(ofMouseEventArgs& mouse);
 
 public:
+
 	float getRectX() { return x; }
 	float getRectY() { return y; }
 	float getRectWidth() { return width; }
 	float getRectHeight() { return height; }
 
 private:
+
 	string name;
 	string path;
 
 public:
+
 	ofRectangle getRect();
+
 	//--------------------------------------------------------------
 	void setRect(float x, float y, float width, float height)
 	{
@@ -223,6 +269,7 @@ public:
 	}
 
 private:
+
 	ofJson toJson();
 	void fromJson(const ofJson& j);
 
@@ -230,10 +277,12 @@ private:
 	bool fromXml(const ofXml& x);
 
 public:
+
 	ofParameter<bool> bEditMode{ "EDIT BOX", false };
 	void Changed_EditMode(bool& b);
 
 protected:
+
 	bool bIsEditing;
 	bool bMove;
 	bool bIsOver;
@@ -241,12 +290,16 @@ protected:
 	bool bPressed;
 	glm::vec2 mousePrev;
 
-	std::string prefixName = "Rectangle_";
+	//TODO:
+	std::string prefixName = "";
+	//std::string prefixName = "Rectangle_";
 
 	//--
 
 	// Restore/reset position and shape
+
 public:
+
 	//--------------------------------------------------------------
 	void setCentered()
 	{
