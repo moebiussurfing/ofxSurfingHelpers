@@ -67,6 +67,10 @@ public:
 	void setup(string path) {
 		img.load(path);
 	}
+	//--------------------------------------------------------------
+	void load(string path) {
+		img.load(path);
+	}
 
 	//--------------------------------------------------------------
 	void draw() {
@@ -81,6 +85,24 @@ public:
 			beginAnimate();
 
 			img.draw(xOffset - ofGetWidth() / 2, vOffset - ofGetHeight() / 2, ofGetWidth(), ofGetHeight());
+
+			endAnimate();
+		}
+	}
+
+	//--------------------------------------------------------------
+	void draw(int x, int y, int w, int h) {
+		if (!img.isAllocated()) return;
+
+		if (!bAnimate)
+		{
+			img.draw(x, y, w, h);
+		}
+		else
+		{
+			beginAnimate();
+
+			img.draw(xOffset - w / 2, vOffset - h / 2, w, h);
 
 			endAnimate();
 		}

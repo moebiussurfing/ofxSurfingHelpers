@@ -8,13 +8,17 @@
 #include "ofMain.h"
 
 //---------
-//
+
+
 // OPTIONAL
 
 //#define USE_FAST_SERIALIZER // test improve serialize performance..
 
 #include "ofxSurfingConstants.h"
 
+//#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
+//#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers
+ 
 //#ifdef USE_IM_GUI
 //#include "ofxSurfing_ImGui.h"
 //#endif
@@ -23,10 +27,7 @@
 #include "ofxSurfing_ofxGui.h"
 #endif
 
-//
-//#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
-//#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers
-//
+
 //---------
 
 
@@ -89,7 +90,9 @@ namespace ofxSurfingHelpers {
 	//---
 
 	// xml
+
 #ifndef USE_JSON
+
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path)
 	{
@@ -123,11 +126,13 @@ namespace ofxSurfingHelpers {
 		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 		return b;
 	}
+
 #endif
 
 	//----
 
 #ifdef USE_JSON
+
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup &g, string path = "", bool debug = true)
 	{
@@ -191,7 +196,20 @@ namespace ofxSurfingHelpers {
 
 		return b;
 	}
+
 #endif
+
+	//--------------------------------------------------------------
+	inline bool load(ofParameterGroup& g)
+	{
+		loadGroup(g);
+	}
+
+	//--------------------------------------------------------------
+	inline bool save(ofParameterGroup& g)
+	{
+		saveGroup(g);
+	}
 
 	//-
 
