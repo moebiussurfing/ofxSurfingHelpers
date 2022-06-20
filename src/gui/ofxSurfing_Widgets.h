@@ -180,14 +180,18 @@ namespace ofxSurfingHelpers
 	//--------------------------------------------------------------
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
-#define BOX_PADDING 50
+//#define BOX_PADDING 50
 	inline void drawTextBoxed(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
 	{
+		int BOX_PADDING = _pad;
 		if (!noPadding)
 		{
 			x += 25;
 			y += 33;
 		}
+
+		//int _padx = _pad/2;
+		//int _pady = _pad/2;
 
 		//int _pad = 50;
 		//float _round = 5;
@@ -209,6 +213,10 @@ namespace ofxSurfingHelpers
 			}
 			else if (font.isLoaded())
 			{
+				//--
+
+				// 1. Bg Box
+				
 				// bbox
 				ofSetColor(colorBackground);
 				ofFill();
@@ -234,6 +242,10 @@ namespace ofxSurfingHelpers
 				if (_round <= 0) ofDrawRectangle(_r);
 				else ofDrawRectRounded(_r, _round);
 
+				//--
+				 
+				// 2. Text
+
 				// Text shadow
 				if (useShadow)
 				{
@@ -253,18 +265,18 @@ namespace ofxSurfingHelpers
 	// get box width
 	//--------------------------------------------------------------
 
-	inline float getWidthBBtextBoxed(ofTrueTypeFont& font, string text) {
-		int _pad = BOX_PADDING;
+	inline float getWidthBBtextBoxed(ofTrueTypeFont& font, string text, int _pad = 50) {
+		//int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
 	}
 
-	inline float getHeightBBtextBoxed(ofTrueTypeFont& font, string text) {
-		int _pad = BOX_PADDING;
+	inline float getHeightBBtextBoxed(ofTrueTypeFont& font, string text, int _pad = 50) {
+		//int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
 	}
 
-	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont& font, string text) {
-		glm::vec2 sh(getWidthBBtextBoxed(font, text), getHeightBBtextBoxed(font, text));
+	inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont& font, string text, int _pad = 50) {
+		glm::vec2 sh(getWidthBBtextBoxed(font, text, _pad), getHeightBBtextBoxed(font, text, _pad));
 		return sh;
 	}
 
@@ -273,7 +285,7 @@ namespace ofxSurfingHelpers
 
 
 	//--------------------------------------------------------------
-	//to debug/show mouse position and x,y coordinates to draw points into layouts
+	// to debug/show mouse position and x,y coordinates to draw points into layouts
 	//--------------------------------------------------------------
 	inline void draw_Anchor(int x, int y)
 	{

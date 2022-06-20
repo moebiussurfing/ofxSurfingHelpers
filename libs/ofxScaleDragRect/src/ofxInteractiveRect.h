@@ -291,7 +291,7 @@ protected:
 	glm::vec2 mousePrev;
 
 	//TODO:
-	std::string prefixName = "";
+	std::string prefixName = "Rect";
 	//std::string prefixName = "Rectangle_";
 
 	//--
