@@ -89,8 +89,11 @@ public:
 	{
 		// Default
 
-		size_TTF = 10;
-		name_TTF = "telegrama_render.otf";
+		size_TTF = 11;
+		name_TTF = "JetBrainsMonoNL-ExtraBold.Ttf";
+		
+		//size_TTF = 10;
+		//name_TTF = "telegrama_render.otf";
 
 		//size_TTF = 11;
 		//name_TTF = "telegrama_render.otf";
