@@ -42,30 +42,15 @@
 
 	// Setup
 	{
-		//// font
-		//textBoxWidget.setFontName("overpass-mono-bold.otf");
-		//textBoxWidget.setFontSize(20);
-		////textBoxWidget.setFixedHeight(1); //TODO:
-
-		textBoxWidget.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
+		//textBoxWidget.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
 		textBoxWidget.setup();
-
-		////textBoxWidget.setMode(TextBoxWidget::FREE_LAYOUT);
-		//textBoxWidget.setMode(TextBoxWidget::BOTTOM_CENTER);
-
-		//// theme
-		//textBoxWidget.setTheme(true);//dark
-		////textBoxWidget.setTheme(false);//light
 
 		std::string helpInfo = "";
 		helpInfo += "HELP NDI MANAGER \n";
 		helpInfo += "KEY COMMANDS \n\n";
 		helpInfo += "H          HELP \n";
 		helpInfo += "E          EDIT \n";
-		helpInfo += "SPACE      LIST NDI INPUT DEVICES \n";
-		helpInfo += "I          NEXT WEBCAM \n";
 		helpInfo += "D          DEBUG \n";
-		helpInfo += "Ctrl+K     KEYS \n";
 
 		textBoxWidget.setText(helpInfo);
 	}
