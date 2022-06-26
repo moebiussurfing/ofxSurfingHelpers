@@ -11,7 +11,7 @@
 /*
 
 	NOTE
-	This class is deprecated and moved to continue into ofxSurfingBox. 
+	This class is deprecated and moved to continue into ofxSurfingBox.
 	No removed bc legacy with old projects.
 
 	TODO:
@@ -76,7 +76,7 @@ public:
 
 		size_TTF = 11;
 		name_TTF = "JetBrainsMonoNL-ExtraBold.Ttf";
-		
+
 		//size_TTF = 10;
 		//name_TTF = "telegrama_render.otf";
 
@@ -103,13 +103,13 @@ public:
 	enum BOX_LAYOUT
 	{
 		FREE_LAYOUT = 0,
-		BOTTOM_CENTER,
-		BOTTOM_LEFT,
-		BOTTOM_RIGHT,
-		TOP_CENTER,
-		TOP_LEFT,
-		TOP_RIGHT,
 		CENTER,
+		TOP_LEFT,
+		TOP_CENTER,
+		TOP_RIGHT,
+		BOTTOM_LEFT,
+		BOTTOM_CENTER,
+		BOTTOM_RIGHT,
 		//LOCKED,
 		NUM_LAYOUTS
 	};
@@ -152,7 +152,7 @@ public:
 		case 5: str_modeLayout = "TOP_LEFT"; break;
 		case 6: str_modeLayout = "TOP_RIGHT"; break;
 		case 7: str_modeLayout = "CENTER"; break;
-		//case 8: str_modeLayout = "LOCKED"; break;
+			//case 8: str_modeLayout = "LOCKED"; break;
 		default: str_modeLayout = "UNKNOWN LAYOUT"; break;
 		}
 		return str_modeLayout;
@@ -187,9 +187,42 @@ private:
 	bool bState2 = false;
 
 	float round = 5;
-	int marginBorders = 50;
+	int marginBorders = 25;
+	//int marginBorders = 50;
 
 	bool bNoText = false;
+
+	// Fit Marks
+	int xcenter;
+	int ycenter;
+	int xleft;
+	int xright;
+	int ytop;
+	int ybottom;
+
+	//--------------------------------------------------------------
+	void doForceFitOnWindow()
+	{
+		if (rect_HelpTextBox.getY() > ybottom) // bottom
+		{
+			rect_HelpTextBox.setY(ybottom);
+		}
+		else if (rect_HelpTextBox.getX() < xleft) // left
+		{
+			rect_HelpTextBox.setX(xleft);
+		}
+		else if (rect_HelpTextBox.getX() > xright) // right
+		{
+			rect_HelpTextBox.setX(xright);
+		}
+		else if (rect_HelpTextBox.getY() < ytop) // top
+		{
+			rect_HelpTextBox.setY(ytop);
+		}
+	};
+
+	//float round = 5;
+	//int padBorders = 50;
 
 public:
 
@@ -299,61 +332,79 @@ public:
 			_ww = ofxSurfingHelpers::getWidthBBtextBoxed(myFont, ss);
 			_hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
 
-			//if(!bFixedHeight) _hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, ss);
-			//else {
-			//	std::string _ss = "";
-			//	for (int i = 0; i <numLines; i++) _ss += "I \n";
-			//	_hh = ofxSurfingHelpers::getHeightBBtextBoxed(myFont, _ss);
-			//}
-
 			rect_HelpTextBox.setHeight(_hh);
 			rect_HelpTextBox.setWidth(_ww);
 		}
 
-		//-
+		//--
 
-		if (modeLayout == FREE_LAYOUT) {
+		// Fit Marks
+		
+		//TODO: must fix some offset!
+		
+		xleft = _padx + marginBorders / 2;
+		xcenter = _w / 2 - _ww / 2 + marginBorders / 2 - _padx;
+		xright = _w - _ww - marginBorders / 2 - _padx;
+		
+		ycenter = _h / 2 - _hh / 2 + marginBorders / 2;
+		ytop = _pady + marginBorders / 2;
+		ybottom = _h - _hh - _pady - marginBorders / 2;
 
+		// Force fit box inside the window
+		doForceFitOnWindow();
+
+		//--
+
+		// Free
+
+		if (modeLayout == FREE_LAYOUT)
+		{
 			_xx = rect_HelpTextBox.getX();
 			_yy = rect_HelpTextBox.getY();
 		}
 
-		else if (modeLayout == BOTTOM_CENTER) {
+		//-
 
-			_xx = _w / 2 - _ww / 2 - _padx;
-			_yy = _h - _hh - _pady;
-		}
-		else if (modeLayout == BOTTOM_LEFT) {
+		// Top 
 
-			_xx = _padx;
-			_yy = _h - _hh - _pady;
-		}
-		else if (modeLayout == BOTTOM_RIGHT) {
-
-			_xx = _w - _ww - _padx;
-			_yy = _h - _hh - _pady;
-		}
-
-		else if (modeLayout == TOP_CENTER) {
-
-			_xx = _w / 2 - _ww / 2 - _padx;
-			_yy = 2 * _pady;
-		}
 		else if (modeLayout == TOP_LEFT) {
-
-			_xx = _padx;
-			_yy = 2 * _pady;
+			_xx = xleft;
+			_yy = ytop;
+		}
+		else if (modeLayout == TOP_CENTER) {
+			_xx = xcenter;
+			_yy = ytop;
 		}
 		else if (modeLayout == TOP_RIGHT) {
-
-			_xx = _w - _ww - _padx;
-			_yy = 2 * _pady;
+			_xx = xright;
+			_yy = ytop;
 		}
+
+		//-
+
+		// Center 
 
 		else if (modeLayout == CENTER) {
 
-			_xx = _w / 2 - _ww / 2 - _padx;
-			_yy = _h / 2 - _hh / 2 - _pady;
+			_xx = xcenter;
+			_yy = ycenter;
+		}
+
+		//-
+
+		// Bottom
+
+		else if (modeLayout == BOTTOM_LEFT) {
+			_xx = xleft;
+			_yy = ybottom;
+		}
+		else if (modeLayout == BOTTOM_CENTER) {
+			_xx = xcenter;
+			_yy = ybottom;
+		}
+		else if (modeLayout == BOTTOM_RIGHT) {
+			_xx = xright;
+			_yy = ybottom;
 		}
 
 		//-
@@ -362,12 +413,9 @@ public:
 
 		if (modeLayout == FREE_LAYOUT)
 		{
-			//_colorText, colorBg, _bUseShadow, _colorButton
-
 			if (rect_HelpTextBox.isEditing())
 			{
 				float a = ofxSurfingHelpers::getFadeBlink(0.6f, 1.f);
-				//float a = ofxSurfingHelpers::getFadeBlink();
 
 				ofColor c = ofColor(_colorBg, _colorBg.a * a);
 				rect_HelpTextBox.draw();
@@ -395,31 +443,8 @@ public:
 
 		ofPopStyle();
 
-		//-
-
 		// Force fit box inside the window
-		{
-			float _xmax = _w - _ww - _padx;
-			float _ymax = _h - _hh - _pady;
-			float _ymin = 3 * _pady;
-
-			if (rect_HelpTextBox.getY() > _ymax)//bottom
-			{
-				rect_HelpTextBox.setY(_ymax);
-			}
-			else if (rect_HelpTextBox.getX() < _padx)//left
-			{
-				rect_HelpTextBox.setX(_padx);
-			}
-			else if (rect_HelpTextBox.getX() > _xmax)//right
-			{
-				rect_HelpTextBox.setX(_xmax);
-			}
-			else if (rect_HelpTextBox.getY() < _ymin)//top
-			{
-				rect_HelpTextBox.setY(_ymin);
-			}
-		}
+		doForceFitOnWindow();
 
 		doubleClicker.set(_xx, _yy, _ww, _hh);
 	}
