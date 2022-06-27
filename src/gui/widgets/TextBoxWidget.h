@@ -183,7 +183,7 @@ private:
 	bool bLeftPosition = false;
 	bool bThemeDarkOrLight = true;
 
-	bool bState1 = false;
+	bool bStateEdit = false;
 	bool bState2 = false;
 
 	float round = 5;
@@ -222,7 +222,7 @@ private:
 	};
 
 	//float round = 5;
-	//int padBorders = 50;
+	//int padding = 50;
 
 public:
 
@@ -304,7 +304,7 @@ public:
 	void draw() {
 		ofPushStyle();
 
-		drawDebugDoubleClick();
+		updateDoubleClicker();
 
 		//-
 
@@ -454,7 +454,7 @@ public:
 private:
 
 	//--------------------------------------------------------------
-	void drawDebugDoubleClick()
+	void updateDoubleClicker()
 	{
 		//--
 
@@ -472,12 +472,12 @@ private:
 			if (doubleClicker.isMouseDoubleClick())
 				//if (doubleClicker.isMouseTripleClick()) 
 			{
-				bState1 = !bState1;
+				bStateEdit = !bStateEdit;
 
-				setEdit(bState1);
+				setEdit(bStateEdit);
 
 				// workflow
-				if (bState1)
+				if (bStateEdit)
 				{
 					if (modeLayout != FREE_LAYOUT) modeLayout = FREE_LAYOUT;
 				}
@@ -503,8 +503,8 @@ private:
 		//--
 
 		//// Debug colors to bg
-		////if (bState2) ofClear(bState1 ? ofColor::blue : ofColor::yellow);
-		////else ofClear(bState1 ? ofColor::black : ofColor::white);
+		////if (bState2) ofClear(bStateEdit ? ofColor::blue : ofColor::yellow);
+		////else ofClear(bStateEdit ? ofColor::black : ofColor::white);
 
 		//bool bDebug = false;
 		//if (!bDebug) return;

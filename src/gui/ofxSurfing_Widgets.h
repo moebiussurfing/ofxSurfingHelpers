@@ -211,7 +211,7 @@ namespace ofxSurfingHelpers
 			{
 				ofDrawBitmapStringHighlight(text, x, y);
 			}
-			else if (font.isLoaded())
+			else //if (font.isLoaded())
 			{
 				//--
 

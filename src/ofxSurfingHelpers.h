@@ -18,7 +18,7 @@
 
 //#define USE_JSON		// uncomment to use default xml instead json for ofParameterGroup de/serializers
 //#define USE_XML		// uncomment to use default xml instead json for ofParameterGroup de/serializers
- 
+
 //#ifdef USE_IM_GUI
 //#include "ofxSurfing_ImGui.h"
 //#endif
@@ -47,15 +47,16 @@ namespace ofxSurfingHelpers {
 	//public:
 	//private:
 
-	inline void ofDeserializeSilent(const ofJson & json, ofAbstractParameter & parameter) {
+	//--------------------------------------------------------------
+	inline void ofDeserializeSilent(const ofJson& json, ofAbstractParameter& parameter) {
 		if (!parameter.isSerializable()) {
 			return;
 		}
 		std::string name = parameter.getEscapedName();
 		if (json.find(name) != json.end()) {
 			if (parameter.type() == typeid(ofParameterGroup).name()) {
-				ofParameterGroup & group = static_cast <ofParameterGroup &>(parameter);
-				for (auto & p : group) {
+				ofParameterGroup& group = static_cast <ofParameterGroup&>(parameter);
+				for (auto& p : group) {
 					ofDeserializeSilent(json[name], *p);
 				}
 			}
@@ -94,7 +95,7 @@ namespace ofxSurfingHelpers {
 #ifndef USE_JSON
 
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup &g, string path)
+	inline bool loadGroup(ofParameterGroup& g, string path)
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
@@ -111,7 +112,7 @@ namespace ofxSurfingHelpers {
 	}
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup &g, string path)
+	inline bool saveGroup(ofParameterGroup& g, string path)
 	{
 		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
 		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
@@ -134,7 +135,7 @@ namespace ofxSurfingHelpers {
 #ifdef USE_JSON
 
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup &g, string path = "", bool debug = true)
+	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
 		if (path == "") path = g.getName() + "_Settings.json";
 		//if (path == "") path = "settings.json";
@@ -170,7 +171,7 @@ namespace ofxSurfingHelpers {
 	}
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup &g, string path = "", bool debug = true)
+	inline bool saveGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
 		//if (path == "") path = "settings.json";
 		if (path == "") path = g.getName() + "_Settings.json";
@@ -199,19 +200,20 @@ namespace ofxSurfingHelpers {
 
 #endif
 
+	// Short versions:
 	//--------------------------------------------------------------
 	inline bool load(ofParameterGroup& g)
 	{
-		loadGroup(g);
+		return loadGroup(g);
 	}
 
 	//--------------------------------------------------------------
 	inline bool save(ofParameterGroup& g)
 	{
-		saveGroup(g);
+		return saveGroup(g);
 	}
 
-	//-
+	//--
 
 	// 3. FILES
 
@@ -355,6 +357,9 @@ namespace ofxSurfingHelpers {
 			return (mins + ":" + secs);
 	}
 
+};
+//namespace
+// ofxSurfingHelpers
 
 	//----
 
@@ -404,9 +409,6 @@ namespace ofxSurfingHelpers {
 //    ofSetColor(rgb[0],rgb[1],rgb[2],a);
 //}
 
-};
-//namespace
-// ofxSurfingHelpers
 
 //--
 
