@@ -267,7 +267,9 @@ public:
 	void setup() {
 
 		path_TTF = "assets/fonts/" + name_TTF;
-		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true);
+		string path_TTF_LEGACY = "assets/fonts/telegrama_render.otf"; // some add-ons are setted with this font.
+		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true); // try before assign an oF bundled font!
+		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY, size_TTF, true, true);
 		if (!bLoaded) bLoaded = myFont.load(OF_TTF_SANS, size_TTF, true, true);
 
 		_bUseShadow = true;
