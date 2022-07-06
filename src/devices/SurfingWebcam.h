@@ -9,29 +9,31 @@ public:
 	SurfingWebcam() { setup(); }
 	~SurfingWebcam() { exitWebcam(); }
 
-	void setup() { setupWebcamDevice(); }
-
 private:
+	
+	void setup() { setupWebcamDevice(); }
+	void setupWebcamDevice();
+	void exitWebcam();
 	
 	ofVideoGrabber webcamGrab;
 	ofParameter <std::string> webcamDeviceName{ "WEBCAM_DEVICE_NAME", "" };
 	int _deviceIndex;
 	ofTrueTypeFont font;
-	
-	void setupWebcamDevice();
-	void exitWebcam();
-
+	string webcamDevicesNames;
 	string path;
+
+	void update() { webcamGrab.update(); };
 
 public:
 	
-	void update() { webcamGrab.update(); };
 	void drawWebcam();
 	
 	void doNextWebcam();
 	void doRestartWebcam();
 	
-	bool bDrawWebcamInfo = false;
 	void drawInfo();
+
+	bool bDrawWebcamInfo = false;
+	ofParameter <bool>bKeys{ "Keys", false };
 };
 
