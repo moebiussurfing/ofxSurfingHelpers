@@ -87,7 +87,7 @@ private:
 public:
 
 	//--------------------------------------------------------------
-	ofParameter<ofRectangle>& getParameter() {
+	ofParameter<ofRectangle>& getParameterRectangle() {
 		return rectParam;
 	}
 

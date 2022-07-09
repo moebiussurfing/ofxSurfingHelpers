@@ -225,7 +225,7 @@ namespace ofxSurfingHelpers {
 	{
 		//ofLogNotice(__FUNCTION__) << _path;
 
-		//// workaround to avoid error when folders are folder/subfolder
+		//// Workaround to avoid error when folders are folder/subfolder
 		//auto _fullPath = ofSplitString(_path, "/");
 		//for (int i = 0; i < _fullPath.size(); i++) {
 		//	ofLogNotice(__FUNCTION__) << ofToString(i) << " " << _fullPath[i];
@@ -233,17 +233,17 @@ namespace ofxSurfingHelpers {
 
 		ofDirectory dataDirectory(ofToDataPath(_path, true));// /bin/data/
 
-		// check if folder path exist
+		// Check if folder path exist
 		if (!dataDirectory.isDirectory())
 		{
 			ofLogError(__FUNCTION__) << "FOLDER NOT FOUND! TRYING TO CREATE...";
 
-			// try to create folder
+			// Try to create folder
 			//bool b = dataDirectory.createDirectory(ofToDataPath(_path, true));
 			bool b = dataDirectory.createDirectory(ofToDataPath(_path, true), false, true);
-			// added enable recursive to allow create nested subfolders if required
+			// Added enable recursive to allow create nested subfolders if required
 
-			// debug if creation has been succeded
+			// Debug if creation has been succeded
 			if (b) ofLogNotice(__FUNCTION__) << "CREATED '" << _path << "' SUCCESSFULLY!";
 			else ofLogError(__FUNCTION__) << "UNABLE TO CREATE '" << _path << "' FOLDER!";
 		}
@@ -313,8 +313,8 @@ namespace ofxSurfingHelpers {
 
 	//---
 
-	// original code copied from
-	// ofxFilikaUtils.h
+	// Original code taken from ofxFilikaUtils.h
+
 #define SECS_PER_MIN 60
 #define SECS_PER_HOUR 3600
 	//--------------------------------------------------------------
@@ -382,7 +382,7 @@ namespace ofxSurfingHelpers {
 
 	//----
 
-////https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp
+//// https://github.com/companje/ofxExtras/blob/master/src/ofxExtras.cpp
 //	void ofxSetColorHSB(int h, int s, int b, int a) {
 //    unsigned char hsv[] = {(unsigned char)h,(unsigned char)s,(unsigned char)b};
 //    unsigned char rgb[] = {0,0,0};
