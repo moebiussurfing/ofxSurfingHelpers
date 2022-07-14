@@ -12,8 +12,9 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 Look to the available classes into **OF_ADDON/src/** for details.
 
 ## Third Party add-ons bundled into **OF_ADDON/libs/**
-* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect)  [ _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect) ]  
-* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject)   [ _FORK_ from [memo](https://github.com/memo/ofxMSAInteractiveObject) ]  
+Already added to `OFX_ADDON/libs/`. No need to add into **PROJECT GENERATOR**.  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) /_Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
 
 <details>
   <summary>Other MISC OF-Util Add-ons / Resources</summary>
@@ -52,8 +53,7 @@ An addon by **@moebiusSurfing**
 <a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
 <a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
 <a href="https://www.youtube.com/moebiusSurfing" rel="nofollow">YouTube</a> | 
-<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> | 
-<a href="https://github.com/moebiussurfing" target="_blank">GitHub</a> 
+<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> 
 </p>
 
 ### License
