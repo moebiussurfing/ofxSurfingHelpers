@@ -12,8 +12,8 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 Look to the available classes into **OF_ADDON/src/** for details.
 
 ## Third Party add-ons bundled into **OF_ADDON/libs/**
-Already added to `OFX_ADDON/libs/`. No need to add into **PROJECT GENERATOR**.  
-* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) /_Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
+Already added to `OFX_ADDON/libs/`. No need to clone nor add into **PROJECT GENERATOR**.  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
 * [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
 
 <details>
