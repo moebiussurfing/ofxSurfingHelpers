@@ -38,7 +38,7 @@
 	#include "TextBoxWidget.h"
 	TextBoxWidget textBoxWidget;
 
-	ofParameter<bool> bHelp{ "Help", enable };
+	ofParameter<bool> bHelp{ "Help", true };
 
 	// Setup
 	{
@@ -74,8 +74,8 @@ public:
 	{
 		// Default
 
-		size_TTF = 11;
-		name_TTF = "JetBrainsMonoNL-ExtraBold.Ttf";
+		size_TTF = 9;
+		name_TTF = "JetBrainsMono-Bold.ttf";
 
 		//size_TTF = 10;
 		//name_TTF = "telegrama_render.otf";
@@ -111,6 +111,7 @@ public:
 		BOTTOM_CENTER,
 		BOTTOM_RIGHT,
 		//LOCKED,
+
 		NUM_LAYOUTS
 	};
 
@@ -259,18 +260,21 @@ public:
 		size_TTF = size;
 	}
 	//--------------------------------------------------------------
-	void setFontName(string name = "telegrama_render.otf") {//set the name only. path is /assets/fonts/*name*
+	void setFontName(string name = "JetBrainsMono-Bold.ttf") {//set the name only. path is /assets/fonts/*name*
 		name_TTF = name;
 	}
 
 	//--------------------------------------------------------------
 	void setup() {
+		
+		//workflow
+		rect_HelpTextBox.enableEdit();
 
 		path_TTF = "assets/fonts/" + name_TTF;
 		string path_TTF_LEGACY = "assets/fonts/telegrama_render.otf"; // some add-ons are setted with this font.
 		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true); // try before assign an oF bundled font!
 		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY, size_TTF, true, true);
-		if (!bLoaded) bLoaded = myFont.load(OF_TTF_SANS, size_TTF, true, true);
+		if (!bLoaded) bLoaded = myFont.load(OF_TTF_MONO, size_TTF, true, true);
 
 		_bUseShadow = true;
 
@@ -280,7 +284,8 @@ public:
 		doubleClicker.setDebug(false);
 
 		// Default position
-		rect_HelpTextBox.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
+		rect_HelpTextBox.setPosition(30, 30);
+		//rect_HelpTextBox.setPosition(ofGetWidth() / 2, ofGetHeight() / 2);
 
 		//----
 
@@ -531,6 +536,12 @@ private:
 
 public:
 
+	//--------------------------------------------------------------
+	void setPosition(int x, int y)
+	{
+		rect_HelpTextBox.setPosition(glm::vec3(x, y,0));
+	}
+	
 	//--------------------------------------------------------------
 	void setEdit(bool bEdit)
 	{
