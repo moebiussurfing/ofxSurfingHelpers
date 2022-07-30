@@ -139,6 +139,11 @@ public:
 	string getTextMode() {
 		if (bNoText) return "No Text"; else return "Text";
 	}
+	
+	//--------------------------------------------------------------
+	bool isEditing() {
+		return rect_HelpTextBox.isEditing();
+	}
 
 	//--------------------------------------------------------------
 	string getMode() {
@@ -161,7 +166,8 @@ public:
 
 private:
 
-	ofxInteractiveRect rect_HelpTextBox = { "Help_ofxPresetsManager" };
+	ofxInteractiveRect rect_HelpTextBox = { "Help_ofxPresetsManager" };//main object
+
 	std::string path_RectHelpBox = "_HelpBox";
 	std::string path_Global = "TextBoxWidget/";// can be setted before setup
 	//std::string path_Name = "appSettings";// subfolder for app session settings
