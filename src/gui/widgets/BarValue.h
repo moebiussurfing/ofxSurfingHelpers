@@ -22,7 +22,9 @@ public:
 
 	void setFont(string str, int size = 10) {
 		fontCycleSize = size;
-		std::string path = "assets/fonts/mono.ttf";
+		std::string path = str;
+		//std::string path = "assets/fonts/JetBrainsMono-Bold.ttf";
+		//std::string path = "assets/fonts/mono.ttf";
 		if (!fontCycle.loadFont(path, fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	}
@@ -127,7 +129,9 @@ public:
 
 		label = "";
 		fontCycleSize = 10;
-		if (!fontCycle.loadFont("assets/fonts/mono.ttf", fontCycleSize))
+
+		//if (!fontCycle.loadFont("assets/fonts/mono.ttf", fontCycleSize))
+		if (!fontCycle.loadFont("assets/fonts/JetBrainsMono-Bold.ttf", fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};
 

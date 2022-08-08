@@ -117,7 +117,7 @@ public:
 
 	void draw()
 	{
-		//update();
+		update();
 
 		ofPushStyle();
 		
