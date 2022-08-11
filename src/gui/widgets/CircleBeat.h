@@ -129,9 +129,9 @@ public:
 		animCounter = 0.0f;//anim from 0.0 to 1.0
 	}
 
-private:
+//private:
 
-	void update()
+	void update()//not required if called draw!
 	{
 		animRunning = animCounter <= 1.0f;
 		if (animRunning)
