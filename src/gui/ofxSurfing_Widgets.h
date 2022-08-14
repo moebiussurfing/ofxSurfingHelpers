@@ -216,7 +216,7 @@ namespace ofxSurfingHelpers
 				//--
 
 				// 1. Bg Box
-				
+
 				// bbox
 				ofSetColor(colorBackground);
 				ofFill();
@@ -243,7 +243,7 @@ namespace ofxSurfingHelpers
 				else ofDrawRectRounded(_r, _round);
 
 				//--
-				 
+
 				// 2. Text
 
 				// Text shadow
@@ -266,12 +266,10 @@ namespace ofxSurfingHelpers
 	//--------------------------------------------------------------
 
 	inline float getWidthBBtextBoxed(ofTrueTypeFont& font, string text, int _pad = 50) {
-		//int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + _pad;
 	}
 
 	inline float getHeightBBtextBoxed(ofTrueTypeFont& font, string text, int _pad = 50) {
-		//int _pad = BOX_PADDING;
 		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + _pad;
 	}
 
@@ -280,6 +278,37 @@ namespace ofxSurfingHelpers
 		return sh;
 	}
 
+	//--
+
+
+	// A mini version without paddings
+	// bg box aligned to text letters
+
+#define PAD_MINI 12
+//#define PAD_MINI 8
+
+	inline void drawTextBoxedMini(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor font0_Color = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
+	{
+		float _round = 0;
+		int heighForced = -1;
+		bool noPadding = true;
+
+		//fix
+		x += PAD_MINI / 2;
+		y -= ((PAD_MINI / 2) - 1);
+
+		drawTextBoxed(font, text, x, y, font0_Color, colorBackground, useShadow, colorShadow, (int)PAD_MINI, _round, heighForced, noPadding);
+	}
+	inline float getWidthBBtextBoxedMini(ofTrueTypeFont& font, string text) {
+		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + (int)PAD_MINI;
+	}
+	inline float getHeightBBtextBoxedMini(ofTrueTypeFont& font, string text) {
+		return (font.getStringBoundingBox(text, 0, 0)).getHeight() + (int)PAD_MINI;
+	}
+	inline glm::vec2 getShapeBBtextBoxedMini(ofTrueTypeFont& font, string text) {
+		glm::vec2 sh(getWidthBBtextBoxed(font, text, (int)PAD_MINI), getHeightBBtextBoxed(font, text, (int)PAD_MINI));
+		return sh;
+	}
 	//--------------------------------------------------------------
 
 

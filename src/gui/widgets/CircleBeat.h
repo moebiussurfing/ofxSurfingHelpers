@@ -4,12 +4,50 @@
 
 class CircleBeat
 {
+private:
+
+	float dtBpm = 0.f;
+	bool bBpmMode = false;
+
+public:
+
+	ofParameterGroup params{ "CircleBeat" };
+	ofParameter<float> radiusMax{ "Radius", 100, 10, 1920 };
+	ofParameter<float> bpm{ "Bpm", -1, 60.f, 240.f };
+	ofParameter<float> speed{ "Speed", 0.5f, 0.01f, 1 };
+	ofParameter<int> div{ "Bpm Div", 2, 1, 4 };
+	ofParameter<glm::vec2> position{ "Position", glm::vec2(100,100), glm::vec2(0,0), glm::vec2(1920,1080) };
+	ofParameter<bool> bGui{ "bGui", true };
+	ofParameter<bool> bLock{ "bLock", false };
+
+	void setLocked(bool b) {
+		bLock = b;
+	}
+
+	void setBpm(float _bpm, float _fps = 60)
+	{
+		bBpmMode = true;
+		dt = 1.0f / _fps;
+
+		if (bpm != _bpm)
+			bpm = _bpm;
+
+		int barDur = 60000 / bpm;// one bar duration in ms
+		dtBpm = ((barDur * div) / 1000.f) * dt;
+
+		//animCounter goes from 0 to 1
+		//if (animRunning) animCounter += speedRatio * speed * dt;
+	}
+
 public:
 
 	void setFps(float _fps)
 	{
 		dt = 1.0f / _fps;
 		speedRatio = _fps / 10.0f;
+	}
+	ofColor getColor() const {
+		return color;
 	}
 	void setColor(ofColor _color)
 	{
@@ -29,8 +67,9 @@ public:
 	}
 	void setSpeed(float _speed)
 	{
+		bBpmMode = false;
 		ofClamp(_speed, 0.01f, 1.0f);
-		animSpeed = _speed;
+		speed = _speed;
 	}
 	void setRadius(float _size)
 	{
@@ -41,8 +80,8 @@ public:
 	{
 		position = glm::vec2(_pos);
 
-		x = position.x;
-		y = position.y;
+		x = position.get().x;
+		y = position.get().y;
 	}
 	void setEnableBorder(bool b)
 	{
@@ -62,16 +101,33 @@ public:
 		return position;
 	}
 
+	void setName(string n, int fontSize = 20) { //call before setup
+		bNamed = true;
+		name = n;
+		bGui.setName(name);
+		params.setName(name);
+
+		std::string _path = "assets/fonts/"; // assets folder
+		string f = "JetBrainsMono-Bold.ttf";
+		_path += f;
+		bool b = font.load(_path, fontSize);
+		if (!b) font.load(OF_TTF_MONO, fontSize);
+	}
+
 private:
 
-	ofParameter<float> animSpeed;
+	ofTrueTypeFont font;
+
+	string name = "";
+	bool bNamed = false;
+
 	ofColor color;
 	ofColor colorBg;
-	float radiusMax;
+	//float radiusMax;
 	float radiusMin;
 
-	glm::vec2 position;
-	float		x, y;
+	//glm::vec2 position;
+	float x, y;
 
 	int alphaMax;
 	bool bBorder = true;
@@ -111,37 +167,86 @@ public:
 		dt = 1.0f / 60.f;
 		alpha = 0.0f;
 		position = glm::vec2(200, 200);
-		x = position.x;
-		y = position.y;
+		x = position.get().x;
+		y = position.get().y;
 
-		animSpeed.set("animSpeed", 0.5f, 0.01f, 1.f);
+		speed.set("Speed", 0.5f, 0.01f, 1.f);
 
 		radiusMax = 100;
 		radiusMin = radiusMax * 0.8;
 
 		line = 2.0f;
+
+		// params that can handle settings serialization from parent scope
+		params.add(bGui);
+		params.add(radiusMax);
+		params.add(speed);
+		params.add(div);
+		params.add(bLock);
+		params.add(position);
+
+		ofAddListener(params.parameterChangedE(), this, &CircleBeat::Changed);
 	};
 
-	~CircleBeat() {};
+	~CircleBeat() {
+		ofRemoveListener(ofEvents().mouseScrolled, this, &CircleBeat::mouseScrolled);
+		ofRemoveListener(params.parameterChangedE(), this, &CircleBeat::Changed);
+	};
+
+	//--------------------------------------------------------------
+	void Changed(ofAbstractParameter& e)
+	{
+		string n = e.getName();
+
+		if (n == radiusMax.getName())
+		{
+			radiusMin = radiusMax * 0.2;
+		}
+		else if (n == position.getName())
+		{
+			x = position.get().x;
+			y = position.get().y;
+		}
+		else if (n == speed.getName())
+		{
+			setSpeed(speed);
+		}
+		else if (n == bpm.getName())
+		{
+			setBpm(bpm);
+		}
+		else if (n == div.getName())
+		{
+			setBpm(bpm);
+		}
+	}
 
 	void bang()
 	{
 		animCounter = 0.0f;//anim from 0.0 to 1.0
 	}
 
-//private:
+	//private:
 
 	void update()//not required if called draw!
 	{
-		animRunning = animCounter <= 1.0f;
+		if (!bGui) return;
+
+		animRunning = animCounter <= 1.0f;//goes from 0 to 1 (finished)
+
 		if (animRunning)
-			animCounter += speedRatio * animSpeed * dt;
+		{
+			if (!bBpmMode) animCounter += speedRatio * speed * dt;
+			else animCounter += dtBpm;
+		}
 	}
 
 public:
 
 	void draw()
 	{
+		if (!bGui) return;
+
 		update();
 
 		ofPushStyle();
@@ -151,16 +256,18 @@ public:
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
 
+		// inner radium
 		if (animRunning)
 		{
 			ofFill();
-			alpha = ofMap(animCounter, 0, 1, alphaMax, 0);
-			float _radius = ofMap(animCounter, 0, 1, radiusMax, radiusMin);
+			alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
+			float _radius = ofMap(animCounter, 0, 1, radiusMax, radiusMin, true);
 
 			ofSetColor(color.r, color.g, color.b, alpha);//faded alpha
 			ofDrawCircle(position, _radius);
 		}
 
+		// outer radium
 		if (bBorder)
 		{
 			ofNoFill();
@@ -177,7 +284,7 @@ public:
 
 		// draggable
 
-		if (bDraggable)
+		if (bDraggable && !bLock)
 		{
 			position = glm::vec2(x, y);
 
@@ -220,13 +327,32 @@ public:
 			mousePressedPrev = ofGetMousePressed();
 		}
 
+
+		if (bNamed) {
+			ofSetColor(255, 200);
+			ofRectangle r = font.getStringBoundingBox(name, 0, 0);
+			int pad = r.getHeight();
+			int _x, _y;
+			//_x = position.get().x;
+			//_y = position.get().y;
+
+			//center
+			_x = position.get().x - r.getWidth() / 2;
+			_y = position.get().y + r.getHeight() / 2;
+
+			//bottom
+			//_y = position.get().y + radiusMax - 2 * pad;
+
+			font.drawString(name, _x, _y);
+		}
+
 		ofPopStyle();
 	}
 
 	void draw(glm::vec2 pos, float size) {
 		position = pos;
-		x = position.x;
-		y = position.y;
+		x = position.get().x;
+		y = position.get().y;
 
 		radiusMax = size;
 		radiusMin = radiusMax * 0.8;
@@ -236,8 +362,8 @@ public:
 
 	void draw(glm::vec2 pos) {
 		position = pos;
-		x = position.x;
-		y = position.y;
+		x = position.get().x;
+		y = position.get().y;
 
 		draw();
 	}
@@ -245,10 +371,13 @@ public:
 private:
 
 	void mouseScrolled(ofMouseEventArgs& mouse) {
-		ofLogNotice(__FUNCTION__) << mouse.scrollY;
+		if (!bGui)return;
+		if (bLock)return;
 
 		if (!bDraggable) return;
 		if (!hovered) return;
+
+		ofLogNotice("CircleBeat") << mouse.scrollY;
 
 		float d = 0.1f;
 		float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);

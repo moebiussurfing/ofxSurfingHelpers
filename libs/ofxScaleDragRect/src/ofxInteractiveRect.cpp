@@ -90,8 +90,6 @@ ofRectangle ofxInteractiveRect::getRect()
 //--------------------------------------------------------------
 void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 {
-	ofLogNotice(__FUNCTION__);
-
 	if (name != "")
 	{
 		this->name = name;
@@ -113,7 +111,7 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 		toXml().save(filename);
 	}
 
-	ofLogVerbose(__FUNCTION__) << filename;
+	ofLogNotice(__FUNCTION__) << filename;
 }
 
 ofJson ofxInteractiveRect::toJson()
@@ -390,6 +388,8 @@ void ofxInteractiveRect::mouseMoved(ofMouseEventArgs& mouse)
 void ofxInteractiveRect::mousePressed(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
+	if (!bEditMode) return;
+	if (!this->isMouseOver()) return;
 
 	mousePrev = mouse;
 	bPressed = true;
@@ -440,7 +440,9 @@ void ofxInteractiveRect::mousePressed(ofMouseEventArgs& mouse)
 void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
-
+	if (!bEditMode) return;
+	//if (!this->isMouseOver()) return;
+	
 	//if (!bLockResize) 
 	{
 		if (bUp && !bLockX)
@@ -485,6 +487,8 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
+	if (!bEditMode) return;
+	//if (!this->isMouseOver()) return;
 
 	//if (!bLockResize) 
 	{
@@ -501,7 +505,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	width = ofClamp(width, _min, ofGetWidth());
 	height = ofClamp(height, _min, ofGetHeight());
 
-	rectParam.set(this->getRect());
+	rectParam.setWithoutEventNotifications(this->getRect());
 }
 
 //--------------------------------------------------------------
@@ -523,7 +527,7 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 //--------------------------------------------------------------
 void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	if (!bEnableMouseWheel) return;
-
+	if (!bEditMode) return;
 	if (!this->isMouseOver()) return;
 
 	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);

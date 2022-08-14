@@ -25,7 +25,7 @@ private:
 	ofParameterGroup params{ "params" };//the external parameters or targets
 	ofParameterGroup params_EditorGroups{ "editorGroups" };//the range limits to randomize each param
 	ofParameterGroup params_EditorEnablers{ "editorEnablers" };//the enabled params to randomize
-	vector<ofParameter<bool>> enablersForParams;
+	vector<ofParameter<bool>> editorEnablers;
 
 public:
 
@@ -113,7 +113,7 @@ public:
 				//-
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -144,7 +144,7 @@ public:
 				//-
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -177,7 +177,7 @@ public:
 				//-
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -205,16 +205,16 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				//ofParameter<bool> b0{ _name, true};//-> The global toggle for all the coords
 				//ofParameter<bool> b0_x{ _name + " X", false };
 				//ofParameter<bool> b0_y{ _name + " Y", false };
-				//enablersForParams.push_back(b0);
+				//editorEnablers.push_back(b0);
 				//params_EditorEnablers.add(b0);
-				//enablersForParams.push_back(b0_x);
-				//enablersForParams.push_back(b0_y);
+				//editorEnablers.push_back(b0_x);
+				//editorEnablers.push_back(b0_y);
 				//params_EditorEnablers.add(b0_x);
 				//params_EditorEnablers.add(b0_y);
 
@@ -241,18 +241,18 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				//ofParameter<bool> b0{ _name, true};
 				//ofParameter<bool> b0_x{ _name + " X", false };
 				//ofParameter<bool> b0_y{ _name + " Y", false };
 				//ofParameter<bool> b0_z{ _name + " Z", false };
-				//enablersForParams.push_back(b0);
+				//editorEnablers.push_back(b0);
 				//params_EditorEnablers.add(b0);
-				//enablersForParams.push_back(b0_x);
-				//enablersForParams.push_back(b0_y);
-				//enablersForParams.push_back(b0_z);
+				//editorEnablers.push_back(b0_x);
+				//editorEnablers.push_back(b0_y);
+				//editorEnablers.push_back(b0_z);
 				//params_EditorEnablers.add(b0_x);
 				//params_EditorEnablers.add(b0_y);
 				//params_EditorEnablers.add(b0_z);
@@ -280,7 +280,7 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true };
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				//ofParameter<bool> b0{ _name, true};
@@ -288,12 +288,12 @@ public:
 				//ofParameter<bool> b0_y{ _name + " Y", false };
 				//ofParameter<bool> b0_z{ _name + " Z", false };
 				//ofParameter<bool> b0_w{ _name + " W", false };
-				//enablersForParams.push_back(b0);
+				//editorEnablers.push_back(b0);
 				//params_EditorEnablers.add(b0);
-				//enablersForParams.push_back(b0_x);
-				//enablersForParams.push_back(b0_y);
-				//enablersForParams.push_back(b0_z);
-				//enablersForParams.push_back(b0_w);
+				//editorEnablers.push_back(b0_x);
+				//editorEnablers.push_back(b0_y);
+				//editorEnablers.push_back(b0_z);
+				//editorEnablers.push_back(b0_w);
 				//params_EditorEnablers.add(b0_x);
 				//params_EditorEnablers.add(b0_y);
 				//params_EditorEnablers.add(b0_z);
@@ -327,7 +327,7 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true};
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -353,7 +353,7 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true};
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -379,7 +379,7 @@ public:
 				params_EditorGroups.add(_g);
 
 				ofParameter<bool> b0{ _name, true};
-				enablersForParams.push_back(b0);
+				editorEnablers.push_back(b0);
 				params_EditorEnablers.add(b0);
 
 				continue;
@@ -395,7 +395,7 @@ public:
 
 		//TODO:
 		//// create an enabler bool/toggle for each parameter
-		//for (auto pb : enablersForParams)
+		//for (auto pb : editorEnablers)
 		//{
 		//	params_EditorEnablers.add(pb);
 		//}
@@ -410,10 +410,10 @@ private:
 		ofLogNotice(__FUNCTION__);
 
 
-		for (int i = 0; i < enablersForParams.size(); i++)
-			//for (auto p : enablersForParams)
+		for (int i = 0; i < editorEnablers.size(); i++)
+			//for (auto p : editorEnablers)
 		{
-			auto p = enablersForParams[i];
+			auto p = editorEnablers[i];
 			if (!p.get()) continue;//only reset this iterated param if it's enabled
 
 			//-
@@ -599,7 +599,7 @@ private:
 	void doResetRangesFull() {
 		ofLogNotice(__FUNCTION__);
 
-		for (auto p : enablersForParams)
+		for (auto p : editorEnablers)
 		{
 			if (!p.get()) continue;//only reset this param if it's enabled
 
@@ -682,7 +682,7 @@ private:
 		static int count = 0;
 		ofLogNotice(__FUNCTION__) << count++;
 
-		for (int i = 0; i < enablersForParams.size(); i++)
+		for (int i = 0; i < editorEnablers.size(); i++)
 		{
 			doRandomize(i, false);
 		}
@@ -694,10 +694,10 @@ private:
 
 		int i = index;
 
-		//for (auto p : enablersForParams)
-		//for (int i = 0; i<enablersForParams.size(); i++)
+		//for (auto p : editorEnablers)
+		//for (int i = 0; i<editorEnablers.size(); i++)
 		{
-			auto p = enablersForParams[i];
+			auto p = editorEnablers[i];
 
 			if (!bForce)
 				if (!p.get()) return;//only reset this param if it's enabled
@@ -757,8 +757,8 @@ private:
 				float y = (float)ofRandom(pvmin.y, pvmax.y);
 				//float x = p0.get().x;
 				//float y = p0.get().y;
-				//if (enablersForParams[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
-				//if (enablersForParams[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
+				//if (editorEnablers[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
+				//if (editorEnablers[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
 				p0.set(glm::vec2(x, y));
 			}
 			else if (isVec3)
@@ -773,9 +773,9 @@ private:
 				//float x = p0.get().x;
 				//float y = p0.get().y;
 				//float z = p0.get().z;
-				//if (enablersForParams[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
-				//if (enablersForParams[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
-				//if (enablersForParams[i + 2]) z = (float)ofRandom(pvmin.z, pvmax.z);
+				//if (editorEnablers[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
+				//if (editorEnablers[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
+				//if (editorEnablers[i + 2]) z = (float)ofRandom(pvmin.z, pvmax.z);
 				p0.set(glm::vec3(x, y, z));
 			}
 			else if (isVec4)
@@ -793,10 +793,10 @@ private:
 				//float y = p0.get().y;
 				//float z = p0.get().z;
 				//float w = p0.get().w;
-				//if (enablersForParams[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
-				//if (enablersForParams[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
-				//if (enablersForParams[i + 2]) z = (float)ofRandom(pvmin.z, pvmax.z);
-				//if (enablersForParams[i + 3]) w = (float)ofRandom(pvmin.w, pvmax.w);
+				//if (editorEnablers[i]) x = (float)ofRandom(pvmin.x, pvmax.x);
+				//if (editorEnablers[i + 1]) y = (float)ofRandom(pvmin.y, pvmax.y);
+				//if (editorEnablers[i + 2]) z = (float)ofRandom(pvmin.z, pvmax.z);
+				//if (editorEnablers[i + 3]) w = (float)ofRandom(pvmin.w, pvmax.w);
 				p0.set(glm::vec4(x, y, z, w));
 			}
 
