@@ -36,14 +36,14 @@
 
 	// .h
 	#include "TextBoxWidget.h"
-	TextBoxWidget textBoxWidget;
+	TextBoxWidget boxHelpInfo;
 
 	ofParameter<bool> bHelp{ "Help", true };
 
 	// Setup
 	{
-		//textBoxWidget.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
-		textBoxWidget.setup();
+		//boxHelpInfo.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
+		boxHelpInfo.setup();
 
 		std::string helpInfo = "";
 		helpInfo += "HELP NDI MANAGER \n";
@@ -52,12 +52,12 @@
 		helpInfo += "E          EDIT \n";
 		helpInfo += "D          DEBUG \n";
 
-		textBoxWidget.setText(helpInfo);
+		boxHelpInfo.setText(helpInfo);
 	}
 
 	// Draw
 	{
-		if (bHelp) textBoxWidget.draw();
+		if (bHelp) boxHelpInfo.draw();
 	}
 
 */
