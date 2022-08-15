@@ -175,6 +175,7 @@ namespace ofxSurfingHelpers {
 	{
 		//if (path == "") path = "settings.json";
 		if (path == "") path = g.getName() + "_Settings.json";
+			ofLogWarning(__FUNCTION__) << "Path is empty! Using a default instead!";
 
 		if (debug) {
 			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
