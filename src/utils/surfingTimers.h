@@ -132,24 +132,24 @@ namespace ofxSurfingHelpers
 				switch (g) {
 
 					// square 
-				case 0: generators[g] = (bGenMode1 ? 0.1 : (bGenMode2 ? 0.8 : 0.4));
+				case 0: generators[g] = (bGenMode1 ? 0.f : (bGenMode2 ? 0.8 : 0.4));
 					break;
 
 					// saw
-				case 1: generators[g] = (bGenMode2 ? 1.f : 0.5f) * ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.1, 0.6);
+				case 1: generators[g] = (bGenMode2 ? 1.f : 0.25f) * ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.1, 0.6);
 					break;
 
 					// noise slow1
-				case 2: generators[g] = (bGenMode2 ? 1.f : 0.5f) * ofMap(ofxSurfingHelpers::Noise(ofPoint((!bGenMode2 ? 1 : 0.001), 1)), 0, 1, 0, 1);
+				case 2: generators[g] = (bGenMode2 ? 1.f : 0.25f) * ofMap(ofxSurfingHelpers::Noise(ofPoint((!bGenMode2 ? 1 : 0.001), 1)), 0, 1, 0, 1);
 					break;
 
 					// noise slow2
-				case 3: generators[g] = bGenMode1 ? 0.5 : ofxSurfingHelpers::Noise(ofPoint((!bGenMode2 ? 1 : 0.00001), (!bGenMode2 ? 0.3 : 0.03)));
+				case 3: generators[g] = bGenMode1 ? 0.25 : ofxSurfingHelpers::Noise(ofPoint((!bGenMode2 ? 1 : 0.00001), (!bGenMode2 ? 0.3 : 0.03)));
 					break;
 
 					// noise fast1
 				case 4: generators[g] = (ofxSurfingHelpers::Noise()) *
-					(!bGenMode1 ? 0.26 : ofClamp(ofxSurfingHelpers::NextGaussian(0.25, 1), 0, 0.65));
+					(!bGenMode1 ? 0.25 : ofClamp(ofxSurfingHelpers::NextGaussian(0.25, 1), 0, 0.65));
 					break;
 
 					// noise fast2
@@ -176,7 +176,7 @@ namespace ofxSurfingHelpers
 
 	private:
 
-		vector<float> generators;//testing signals
+		vector<float> generators;
 
 		bool bGenMode1 = false; 
 		bool bGenMode2 = false; 
