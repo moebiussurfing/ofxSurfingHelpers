@@ -6,14 +6,14 @@ class CircleBeat
 {
 private:
 
-	float dtBpm = 0.f;
+	float dt_Bpm = 0.f;
 	bool bBpmMode = false;
 
 public:
 
 	ofParameterGroup params{ "CircleBeat" };
 	ofParameter<float> radiusMax{ "Radius", 100, 10, 1920 };
-	ofParameter<float> bpm{ "Bpm", -1, 60.f, 240.f };
+	ofParameter<float> bpm{ "Bpm", -1, 40.f, 240.f };
 	ofParameter<float> speed{ "Speed", 0.5f, 0.01f, 1 };
 	ofParameter<int> div{ "Bpm Div", 2, 1, 4 };
 	ofParameter<glm::vec2> position{ "Position", glm::vec2(100,100), glm::vec2(0,0), glm::vec2(1920,1080) };
@@ -33,7 +33,7 @@ public:
 			bpm = _bpm;
 
 		int barDur = 60000 / bpm;// one bar duration in ms
-		dtBpm = ((barDur * div) / 1000.f) * dt;
+		dt_Bpm = ((barDur * div) / 1000.f) * dt;
 
 		//animCounter goes from 0 to 1
 		//if (animRunning) animCounter += speedRatio * speed * dt;
@@ -83,6 +83,13 @@ public:
 		x = position.get().x;
 		y = position.get().y;
 	}
+	void setPosition(int x, int y)
+	{
+		x = position.get().x;
+		y = position.get().y;
+
+		position = glm::vec2(x, y);
+	}
 	void setEnableBorder(bool b)
 	{
 		bBorder = b;
@@ -101,12 +108,15 @@ public:
 		return position;
 	}
 
-	void setName(string n, int fontSize = 20) { //call before setup
+	void setName(string n) { //call before setup
 		bNamed = true;
 		name = n;
+
 		bGui.setName(name);
 		params.setName(name);
 
+		if (font.isLoaded()) return;
+		//fontSize = sz;
 		std::string _path = "assets/fonts/"; // assets folder
 		string f = "JetBrainsMono-Bold.ttf";
 		_path += f;
@@ -114,12 +124,36 @@ public:
 		if (!b) font.load(OF_TTF_MONO, fontSize);
 	}
 
+	void setSubLabel(string n) { //call before setup
+		bNamed2 = true;
+		name2 = n;
+
+		if (font2.isLoaded()) return;
+		//fontSize2 = sz;
+		std::string _path = "assets/fonts/"; // assets folder
+		string f = "JetBrainsMono-Bold.ttf";
+		_path += f;
+		bool b = font2.load(_path, fontSize2);
+		if (!b) font2.load(OF_TTF_MONO, fontSize2);
+	}
+	void setSubLabelBlinking(bool b) { bool blinking = b; }
+
 private:
 
 	ofTrueTypeFont font;
+	ofTrueTypeFont font2;
 
+	int fontSize = 20;
+	int fontSize2 = 12;
+
+	//name
 	string name = "";
 	bool bNamed = false;
+	//sublabel
+
+	string name2 = "";
+	bool bNamed2 = false;
+	bool bSubLabelBlinkind = false;
 
 	ofColor color;
 	ofColor colorBg;
@@ -186,6 +220,8 @@ public:
 		params.add(position);
 
 		ofAddListener(params.parameterChangedE(), this, &CircleBeat::Changed);
+
+		stop();
 	};
 
 	~CircleBeat() {
@@ -226,18 +262,23 @@ public:
 		animCounter = 0.0f;//anim from 0.0 to 1.0
 	}
 
+	void stop()//force
+	{
+		animCounter = 1.0f;//anim from 0.0 to 1.0
+	}
+
 	//private:
 
 	void update()//not required if called draw!
 	{
 		if (!bGui) return;
 
-		animRunning = animCounter <= 1.0f;//goes from 0 to 1 (finished)
+		animRunning = (animCounter <= 1.0f);//goes from 0 to 1 (finished)
 
 		if (animRunning)
 		{
-			if (!bBpmMode) animCounter += speedRatio * speed * dt;
-			else animCounter += dtBpm;
+			if (!bBpmMode) animCounter += (dt * speedRatio * speed);
+			else animCounter += dt_Bpm;
 		}
 	}
 
@@ -327,7 +368,7 @@ public:
 			mousePressedPrev = ofGetMousePressed();
 		}
 
-
+		// name
 		if (bNamed) {
 			ofSetColor(255, 200);
 			ofRectangle r = font.getStringBoundingBox(name, 0, 0);
@@ -344,6 +385,32 @@ public:
 			//_y = position.get().y + radiusMax - 2 * pad;
 
 			font.drawString(name, _x, _y);
+		}
+
+		// sub label
+		if (bNamed2) {
+			if (bSubLabelBlinkind) {
+				ofSetColor(255, 200 * ofxSurfingHelpers::Bounce());
+			}
+			else
+				ofSetColor(255, 200);
+
+			ofRectangle r = font2.getStringBoundingBox(name2, 0, 0);
+			int pad = r.getHeight();
+			int _x, _y;
+			//_x = position.get().x;
+			//_y = position.get().y;
+
+			//center
+			_x = position.get().x - r.getWidth() / 2;
+			_y = position.get().y + r.getHeight() / 2;
+
+			//bottom
+			//_y = position.get().y + radiusMax - 2 * pad;
+
+			_y += fontSize;//space for name
+
+			font2.drawString(name2, _x, _y);
 		}
 
 		ofPopStyle();

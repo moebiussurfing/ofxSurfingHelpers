@@ -102,7 +102,7 @@ namespace ofxSurfingHelpers
 #define NUM_SURF_GENERATORS 6
 
 	public:
-		
+
 		SurfGenerators()
 		{
 			generators.resize(NUM_SURF_GENERATORS);
@@ -132,11 +132,13 @@ namespace ofxSurfingHelpers
 				switch (g) {
 
 					// square 
-				case 0: generators[g] = (bGenMode1 ? 0.f : (bGenMode2 ? 0.8 : 0.4));
+				case 0: generators[g] = bGenMode1 ? 0.0 : 0.8;//simple
+					//case 0: generators[g] = (bGenMode1 ? 0.f : (bGenMode2 ? 0.8 : 0.4));
 					break;
 
 					// saw
-				case 1: generators[g] = (bGenMode2 ? 1.f : 0.25f) * ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.1, 0.6);
+				case 1: generators[g] =  ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.0, 0.8);//simple
+					//case 1: generators[g] = (bGenMode2 ? 1.f : 0.25f) * ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.1, 0.6);
 					break;
 
 					// noise slow1
@@ -178,8 +180,8 @@ namespace ofxSurfingHelpers
 
 		vector<float> generators;
 
-		bool bGenMode1 = false; 
-		bool bGenMode2 = false; 
+		bool bGenMode1 = false;
+		bool bGenMode2 = false;
 	};
 };
 
