@@ -24,7 +24,7 @@ public:
 		bLock = b;
 	}
 
-	void setBpm(float _bpm, float _fps = 60)
+	void setBpm(float _bpm, float _fps = 60.f)
 	{
 		bBpmMode = true;
 		dt = 1.0f / _fps;
@@ -129,6 +129,7 @@ public:
 		name2 = n;
 
 		if (font2.isLoaded()) return;
+
 		//fontSize2 = sz;
 		std::string _path = "assets/fonts/"; // assets folder
 		string f = "JetBrainsMono-Bold.ttf";
