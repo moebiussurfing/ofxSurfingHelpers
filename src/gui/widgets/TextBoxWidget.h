@@ -139,7 +139,7 @@ public:
 	string getTextMode() {
 		if (bNoText) return "No Text"; else return "Text";
 	}
-	
+
 	//--------------------------------------------------------------
 	bool isEditing() {
 		return rect_HelpTextBox.isEditing();
@@ -163,6 +163,8 @@ public:
 		}
 		return str_modeLayout;
 	}
+
+	ofParameter<bool> bGui{ "Show TextBox", true };
 
 private:
 
@@ -272,14 +274,17 @@ public:
 
 	//--------------------------------------------------------------
 	void setup() {
-		
+
 		//workflow
 		rect_HelpTextBox.enableEdit();
+		rect_HelpTextBox.setEnableMouseWheel(false);
 
 		path_TTF = "assets/fonts/" + name_TTF;
-		string path_TTF_LEGACY = "assets/fonts/telegrama_render.otf"; // some add-ons are settled with this font.
+		string path_TTF_LEGACY = "assets/fonts/JetBrainsMono-Bold.ttf"; // some add-ons are settled with this font.
+		string path_TTF_LEGACY2 = "assets/fonts/telegrama_render.otf"; // some add-ons are settled with this font.
 		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true); // try before assign an oF bundled font!
 		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY, size_TTF, true, true);
+		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY2, size_TTF, true, true);
 		if (!bLoaded) bLoaded = myFont.load(OF_TTF_MONO, size_TTF, true, true);
 
 		_bUseShadow = true;
@@ -315,6 +320,8 @@ public:
 
 	//--------------------------------------------------------------
 	void draw() {
+		if (!bGui) return;
+
 		ofPushStyle();
 
 		updateDoubleClicker();
@@ -352,13 +359,13 @@ public:
 		//--
 
 		// Fit Marks
-		
+
 		//TODO: must fix some offset!
-		
+
 		xleft = _padx + marginBorders / 2;
 		xcenter = _w / 2 - _ww / 2 + marginBorders / 2 - _padx;
 		xright = _w - _ww - marginBorders / 2 - _padx;
-		
+
 		ycenter = _h / 2 - _hh / 2 + marginBorders / 2;
 		ytop = _pady + marginBorders / 2;
 		ybottom = _h - _hh - _pady - marginBorders / 2;
@@ -466,9 +473,15 @@ public:
 
 private:
 
+	//bool bMousePressed0;
+	//bool bMousePressed1;
+
 	//--------------------------------------------------------------
 	void updateDoubleClicker()
 	{
+		//bMousePressed0 = ofGetMousePressed(0);
+		//bMousePressed1 = ofGetMousePressed(2);
+
 		//--
 
 		// 1. Double click swap edit mode
@@ -515,6 +528,14 @@ private:
 
 		//--
 
+		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick()) {
+			//if (doubleClicker.isMouseRightPressedThenPressedLeft()) {
+			ofLogWarning("TextBoxWidget") << (__FUNCTION__);
+			bGui = false;
+		}
+
+		//--
+
 		//// Debug colors to bg
 		////if (bState2) ofClear(bStateEdit ? ofColor::blue : ofColor::yellow);
 		////else ofClear(bStateEdit ? ofColor::black : ofColor::white);
@@ -545,9 +566,9 @@ public:
 	//--------------------------------------------------------------
 	void setPosition(int x, int y)
 	{
-		rect_HelpTextBox.setPosition(glm::vec3(x, y,0));
+		rect_HelpTextBox.setPosition(glm::vec3(x, y, 0));
 	}
-	
+
 	//--------------------------------------------------------------
 	void setEdit(bool bEdit)
 	{
@@ -614,8 +635,10 @@ public:
 public:
 
 	//--------------------------------------------------------------
-	void setText(string text) {
-		textInfo = text;
+	void setText(string _text) {
+		ofLogVerbose("TextBoxWidget") << "\n" << (__FUNCTION__);
+
+		textInfo = _text;
 	}
 
 	//--
