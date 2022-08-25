@@ -312,7 +312,7 @@ public:
 
 			// shadowed border
 			ofNoFill();
-			static const float thickness = 4.f;
+			static const float thickness = 4.5f;
 			static const int a = 64;
 			float r = 1 + _radius - (thickness / 2.f);
 			ofSetLineWidth(thickness);
