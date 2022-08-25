@@ -74,7 +74,7 @@ public:
 	void setRadius(float _size)
 	{
 		radiusMax = _size;
-		radiusMin = radiusMax * 0.2;
+		radiusMin = radiusMax * 0.2f;
 	}
 	void setPosition(glm::vec2 _pos)
 	{
@@ -208,7 +208,7 @@ public:
 		speed.set("Speed", 0.5f, 0.01f, 1.f);
 
 		radiusMax = 100;
-		radiusMin = radiusMax * 0.8;
+		radiusMin = radiusMax * 0.8f;
 
 		line = 2.0f;
 
@@ -237,7 +237,7 @@ public:
 
 		if (n == radiusMax.getName())
 		{
-			radiusMin = radiusMax * 0.2;
+			radiusMin = radiusMax * 0.2f;
 		}
 		else if (n == position.getName())
 		{
@@ -301,12 +301,24 @@ public:
 		// inner radium
 		if (animRunning)
 		{
+			static const int gap = 3;
+
 			ofFill();
 			alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
-			float _radius = ofMap(animCounter, 0, 1, radiusMax, radiusMin, true);
+			float _radius = ofMap(animCounter, 0, 1, radiusMax - gap, radiusMin, true);
 
-			ofSetColor(color.r, color.g, color.b, alpha);//faded alpha
+			ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
 			ofDrawCircle(position, _radius);
+
+			// shadowed border
+			ofNoFill();
+			static const float thickness = 4.f;
+			static const int a = 64;
+			float r = 1 + _radius - (thickness / 2.f);
+			ofSetLineWidth(thickness);
+			ofSetColor(colorBg, a);
+			ofDrawCircle(position, r);
+
 		}
 
 		// outer radium

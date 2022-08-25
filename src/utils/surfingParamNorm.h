@@ -123,7 +123,7 @@ private:
 	{
 		float _v = cameraPresetTo.camDistance.get();
 		float _Min = MIN_CAMERA_DISTANCE;
-		float _Max = 2 * R_DISTANCE * MAX_CAMERA_DISTANCE;
+		float _Max = 2 * R_DISTANCE * MAX_DISTANCE;
 		static float _vn;
 		_vn = ofMap(_v, _Min, _Max, -1.f, 1.f, true);
 		if (ImGui::SliderFloat("Dist", &_vn, -1.f, 1.f))

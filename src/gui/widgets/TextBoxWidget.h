@@ -528,6 +528,7 @@ private:
 
 		//--
 
+		// 3. left pressed + right click : close box!
 		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick()) {
 			//if (doubleClicker.isMouseRightPressedThenPressedLeft()) {
 			ofLogWarning("TextBoxWidget") << (__FUNCTION__);
