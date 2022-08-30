@@ -34,6 +34,10 @@ public:
 	{
 		color.set(_color);
 	}
+	void setColorBackground(ofColor _color)
+	{
+		colorBg.set(_color);
+	}
 	void setHeightMax(float _size)
 	{
 		heightMax = _size;
@@ -84,6 +88,7 @@ public:
 	}
 
 private:
+
 	float value;
 	float valueMin;
 	float valueMax;
@@ -106,10 +111,15 @@ private:
 	bool bBorder = true;
 
 	float line;
-
+	float rounded = 0.f;
 	//-
 
 public:
+
+	void setRounded(float r) {
+		rounded = r;
+	};
+
 	BarValue() {
 		color.set(255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
@@ -142,60 +152,68 @@ public:
 		value = val;
 
 		ofPushStyle();
-
-		//background dark
-		ofFill();
-		ofSetColor(colorBg);
-		if (bOrientation) {
-			ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
-		}
-
-		//alpha = ofMap(value, 0, 1, 0, 255);
-		alpha = ofMap(value, valueMin, valueMax, 0, 255);
-
-		//border
-		if (bBorder)
 		{
-			ofNoFill();
-			ofSetLineWidth(line);
-			ofSetColor(color, alphaMax * 0.1f *  + alpha * 0.9f);
-			ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
+			//background dark
+			ofFill();
+			ofSetColor(colorBg);
+			if (bOrientation)
+			{
+				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
+				else ofDrawRectRounded(position.x, position.y, widthMax, -heightMax, rounded);
+			}
+
+			//alpha = ofMap(value, 0, 1, 0, 255);
+			alpha = ofMap(value, valueMin, valueMax, 0, 255);
+
+			//border
+			if (bBorder)
+			{
+				ofNoFill();
+				ofSetLineWidth(line);
+				ofSetColor(color, alphaMax * 0.1f * +alpha * 0.9f);
+
+				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
+				else ofDrawRectRounded(position.x, position.y, widthMax, -heightMax, rounded);
+			}
+
+			//value bar
+			ofFill();
+			ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
+			//ofSetColor(color, alphaMax);
+
+			float _val = ofMap(value, valueMin, valueMax, 0, 1, false);
+			//float _val = value;
+
+			if (bOrientation) {//vertical
+				height = _val * heightMax;
+
+				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, widthMax, -height);
+				else ofDrawRectRounded(position.x, position.y, widthMax, -height, rounded);
+			}
+			else {//TODO:
+				width = _val * widthMax;
+
+				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, width, -heightMax);
+				else ofDrawRectRounded(position.x, position.y, width, -heightMax, rounded);
+			}
+
+			// labels
+			if (bLabel || bTitle)
+			{
+				ofPushStyle();
+				if (bLabel) fontCycle.drawString(label, getX() - fontCycleSize, getY() + 0.5 * fontCycleSize);
+				//if (bTitle) fontCycle.drawString(tittle,
+				//	getX() - widthMax - fontCycle.getStringBoundingBox(tittle, 0, 0).getWidth()*0.5,
+				//	getY() - heightMax - 0.5*fontCycleSize - 5);
+
+				if (bTitle) fontCycle.drawString(tittle,
+					getX() + widthMax * 0.5 - fontCycle.getStringBoundingBox(tittle, 0, 0).getWidth() * 0.5,
+					getY() - heightMax - 0.5 * fontCycleSize - 5);
+
+				//if (bTitle) fontCycle.drawString(tittle, getX() - radiusMax, getY() - radiusMax - 0.5*fontCycleSize);// left upper corner
+				ofPopStyle();
+			}
 		}
-
-		//value bar
-		ofFill();
-		ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
-		//ofSetColor(color, alphaMax);
-
-		float _val = ofMap(value, valueMin, valueMax, 0, 1, false);
-		//float _val = value;
-
-		if (bOrientation) {//vertical
-			height = _val * heightMax;
-			ofDrawRectangle(position.x, position.y, widthMax, -height);
-		}
-		else {//TODO:
-			width = _val * widthMax;
-			ofDrawRectangle(position.x, position.y, width, heightMax);
-		}
-
-		// labels
-		if (bLabel || bTitle)
-		{
-			ofPushStyle();
-			if (bLabel) fontCycle.drawString(label, getX() - fontCycleSize, getY() + 0.5*fontCycleSize);
-			//if (bTitle) fontCycle.drawString(tittle,
-			//	getX() - widthMax - fontCycle.getStringBoundingBox(tittle, 0, 0).getWidth()*0.5,
-			//	getY() - heightMax - 0.5*fontCycleSize - 5);
-
-			if (bTitle) fontCycle.drawString(tittle,
-				getX() + widthMax * 0.5 - fontCycle.getStringBoundingBox(tittle, 0, 0).getWidth()*0.5,
-				getY() - heightMax - 0.5*fontCycleSize - 5);
-
-			//if (bTitle) fontCycle.drawString(tittle, getX() - radiusMax, getY() - radiusMax - 0.5*fontCycleSize);// left upper corner
-			ofPopStyle();
-		}
-
 		ofPopStyle();
 	}
 

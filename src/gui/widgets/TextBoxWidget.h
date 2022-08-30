@@ -42,7 +42,7 @@
 
 	// Setup
 	{
-		//boxHelpInfo.setPath(path_GLOBAL + "HelpBox/");//customize path before call setup
+		//boxHelpInfo.setPath(path_Global + "HelpBox/");//customize path before call setup
 		boxHelpInfo.setup();
 
 		std::string helpInfo = "";

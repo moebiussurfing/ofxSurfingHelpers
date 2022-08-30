@@ -6,18 +6,19 @@
 
 #include "ofxGui.h"
 
-// more helpers to custpmize:
+// More helpers to customize:
 // https://github.com/openframeworks/openFrameworks/pull/6479
 // https://github.com/openframeworks/openFrameworks/issues/6470
 
-// snippets
+// Snippets
 //#include "ofxSurfing_ofxGui.h"
 //ofxSurfingHelpers::setThemeDark_ofxGui();
 
 //#define FONT_PATH_DEFAULT "assets/fonts/overpass-mono-bold.otf"
 //#define FONT_SIZE_DEFAULT 9
 
-#define FONT_PATH_DEFAULT "assets/fonts/telegrama_render.otf"
+#define FONT_PATH_DEFAULT "assets/fonts/JetBrainsMono-Bold.ttf"
+#define FONT_PATH_DEFAULT_LEGACY "assets/fonts/telegrama_render.otf"
 #define FONT_SIZE_DEFAULT 8
 
 namespace ofxSurfingHelpers
@@ -27,7 +28,7 @@ namespace ofxSurfingHelpers
 	// My ofxGui Dark Theme
 	//--------------------------------------------------------------
 
-	//// legacy. Now default is the mini version.
+	//// Legacy. Now default is the mini version.
 	////--------------------------------------------------------------
 	//inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
 	//{
@@ -47,7 +48,17 @@ namespace ofxSurfingHelpers
 			ofxGuiSetFont(pathFont, size);
 		}
 		else {
-			ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
+			ofLogWarning(__FUNCTION__) << "file " << pathFont << " not found!";
+			pathFont = FONT_PATH_DEFAULT_LEGACY;
+			ofLogWarning(__FUNCTION__) << "Try to load Legacy font " << pathFont << "!";
+
+			ofFile file2(pathFont);
+			if (file2.exists())
+				ofxGuiSetFont(pathFont, size);
+			else {
+				ofLogError(__FUNCTION__) << "File " << pathFont << " not found!";
+				ofLogError(__FUNCTION__) << "Custom font can not be loaded!";
+			}
 		}
 
 		//-

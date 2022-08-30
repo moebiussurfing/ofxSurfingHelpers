@@ -10,7 +10,7 @@ public:
 	string fileExtension = ".xml";
 
 	string path_Params = "settings";
-	string path_GLOBAL = "ofxAutosaveGroupTimer";
+	string path_Global = "ofxAutosaveGroupTimer";
 
 	ofParameterGroup paramsControl;
 

@@ -8,8 +8,22 @@ private:
 
 	float dt_Bpm = 0.f;
 	bool bBpmMode = false;
+	bool bToggleMode = false;
+	bool bState = false;
 
 public:
+
+	void toggle(bool b)
+	{
+		bState = b;
+		if (bState)animCounter = 0.0f;//anim from 0.0 to 1.0
+		else animCounter = 1.0f;
+	}
+
+	void setToggleMode(bool b) {
+		bToggleMode = b;
+		toggle(false);
+	}
 
 	ofParameterGroup params{ "CircleBeat" };
 	ofParameter<float> radiusMax{ "Radius", 100, 10, 1920 };
@@ -274,6 +288,12 @@ public:
 	{
 		if (!bGui) return;
 
+		if (bToggleMode)
+		{
+			animRunning = false;
+			return;
+		}
+
 		animRunning = (animCounter <= 1.0f);//goes from 0 to 1 (finished)
 
 		if (animRunning)
@@ -298,27 +318,38 @@ public:
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
 
+		bool bSmall = radiusMax < 50;
+
 		// inner radium
-		if (animRunning)
+		if (animRunning|| bToggleMode)
 		{
-			static const int gap = 3;
+			static const int gap = bSmall ? 0 : 3;
 
 			ofFill();
 			alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
-			float _radius = ofMap(animCounter, 0, 1, radiusMax - gap, radiusMin, true);
+
+			float _radius;
+			if (!bToggleMode) _radius = ofMap(animCounter, 0, 1, radiusMax - gap, radiusMin, true);
+			else {
+				if (bState) _radius = radiusMax - gap;
+				else _radius = radiusMin;
+			}
 
 			ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
 			ofDrawCircle(position, _radius);
 
 			// shadowed border
-			ofNoFill();
-			static const float thickness = 4.5f;
-			static const int a = 64;
-			float r = 1 + _radius - (thickness / 2.f);
-			ofSetLineWidth(thickness);
-			ofSetColor(colorBg, a);
-			ofDrawCircle(position, r);
-
+			if (!bSmall) {
+				ofNoFill();
+				static const float thickness = bSmall ? 1.f : 4.f;
+				static const int a = 64;
+				float r;
+				if (!bSmall) r = 1 + _radius - (thickness / 2.f);
+				else r = _radius;
+				ofSetLineWidth(thickness);
+				ofSetColor(colorBg, a);
+				ofDrawCircle(position, r);
+			}
 		}
 
 		// outer radium

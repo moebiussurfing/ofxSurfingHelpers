@@ -31,7 +31,7 @@ void ofxAutosaveGroupTimer::saveAllGroups()
 {
 	for (int i = 0; i< params.size(); i++)
 	{
-		string path = path_GLOBAL + "/" + path_Params + "_" + params[i].getName() +fileExtension;
+		string path = path_Global + "/" + path_Params + "_" + params[i].getName() +fileExtension;
 		saveParams(params[i], path);
 	}
 }
@@ -51,12 +51,12 @@ void ofxAutosaveGroupTimer::update()
 
 		saveAllGroups();
 
-		//saveParams(params_AppsSettings, path_GLOBAL + path_Params_AppSettings);
+		//saveParams(params_AppsSettings, path_Global + path_Params_AppSettings);
 		
 		// bDISABLE_CALLBACKS = true;
 		// //get gui position before save
-		// positionGui = glm::vec2(gui_User.getPosition());
-		// saveParams(params_AppsSettings, path_GLOBAL + path_Params_AppSettings);
+		// positionGui_Internal = glm::vec2(gui_User.getPosition());
+		// saveParams(params_AppsSettings, path_Global + path_Params_AppSettings);
 		// bDISABLE_CALLBACKS = false;
 
 		//-
