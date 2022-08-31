@@ -264,17 +264,44 @@ public:
 	{
 		this->x = x;
 		this->y = y;
-		this->width = width;
-		this->height = height;
+
+		if(!bConstrainedMin) this->width = width;
+		else this->width = MAX(width, shapeConstraintMin.x);
+		if(!bConstrainedMin) this->height = height;
+		else this->height = MAX(height, shapeConstraintMin.y);
 	}
+
+	//--
 
 private:
 
-	ofJson toJson();
-	void fromJson(const ofJson& j);
+	glm::vec2 shapeConstraintMin;//min shape
+	glm::vec2 shapeConstraintMax;//max shape//TODO:
+	bool bConstrainedMin = false;
+	bool bConstrainedMax = false;
+	
+public:
 
-	ofXml toXml();
-	bool fromXml(const ofXml& x);
+	//--------------------------------------------------------------
+	void setRectConstraintMin(glm::vec2 shape) {
+		shapeConstraintMin = shape;
+		bConstrainedMin = true;
+	}
+	//--------------------------------------------------------------
+	void setRectConstraintMax(glm::vec2 shape) {
+		shapeConstraintMax = shape;
+		bConstrainedMax = true;
+	}
+
+	//--
+
+private:
+
+	ofJson saveToJson();
+	void loadFromJson(const ofJson& j);
+
+	ofXml saveToXml();
+	bool loadFromXml(const ofXml& x);
 
 public:
 

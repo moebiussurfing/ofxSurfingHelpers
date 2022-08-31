@@ -209,7 +209,7 @@ public:
 
 		ofSetCircleResolution(100);
 
-		color.set(255, 255, 255);
+		color.set(255, 255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
 		alphaMax = 200;
 
@@ -321,7 +321,7 @@ public:
 		bool bSmall = radiusMax < 50;
 
 		// inner radium
-		if (animRunning|| bToggleMode)
+		if (animRunning || bToggleMode)
 		{
 			static const int gap = bSmall ? 0 : 3;
 
@@ -335,11 +335,14 @@ public:
 				else _radius = radiusMin;
 			}
 
-			ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
+			//ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
+			//int a = alphaMax * 0.2f + alpha * 0.8f;
+			ofSetColor(color, ofMap(alpha, 0, 255, 0, color.a, true));
+
 			ofDrawCircle(position, _radius);
 
 			// shadowed border
-			if (!bSmall) {
+			if (!bSmall && bBorder) {
 				ofNoFill();
 				static const float thickness = bSmall ? 1.f : 4.f;
 				static const int a = 64;
@@ -359,8 +362,10 @@ public:
 			if (radiusMax > 20)	ofSetLineWidth(line);
 			else ofSetLineWidth(1.0f);
 
-			ofSetColor(color, alphaMax * 0.2f + alpha * 0.8f);
+			//int a = alphaMax * 0.2f + alpha * 0.8f;
+			//ofSetColor(color, ofMap(a, 0, 255, 0, color.a, true));
 			//ofSetColor(color, alpha);
+			ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
 			ofDrawCircle(position, radiusMax);
 		}

@@ -36,6 +36,13 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 	setColorBorderDraggable(ofColor(0, 128));
 	setColorEditingPressedBorder(ofColor(0, 128));
 	setColorEditingMoving(ofColor(128, 32));
+
+	// constraint
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
 }
 
 //--------------------------------------------------------------
@@ -104,17 +111,17 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 
 	if (saveJson) {
 		filename += ".json";
-		ofSaveJson(filename, toJson());
+		ofSaveJson(filename, saveToJson());
 	}
 	else {
 		filename += ".xml";
-		toXml().save(filename);
+		saveToXml().save(filename);
 	}
 
 	ofLogNotice(__FUNCTION__) << filename;
 }
 
-ofJson ofxInteractiveRect::toJson()
+ofJson ofxInteractiveRect::saveToJson()
 {
 	ofLogNotice(__FUNCTION__);
 
@@ -130,7 +137,7 @@ ofJson ofxInteractiveRect::toJson()
 	return j;
 }
 
-void ofxInteractiveRect::fromJson(const ofJson& j)
+void ofxInteractiveRect::loadFromJson(const ofJson& j)
 {
 	ofLogNotice(__FUNCTION__);
 
@@ -146,9 +153,16 @@ void ofxInteractiveRect::fromJson(const ofJson& j)
 
 	j["isEditing"].get_to(editing);
 	enableEdit(editing);
+
+	// constraint
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
 }
 
-ofXml ofxInteractiveRect::toXml()
+ofXml ofxInteractiveRect::saveToXml()
 {
 	ofXml xml;
 	auto r = xml.appendChild("interactiveRect");
@@ -164,7 +178,7 @@ ofXml ofxInteractiveRect::toXml()
 	return xml;
 }
 
-bool ofxInteractiveRect::fromXml(const ofXml& xml)
+bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 {
 	auto r = xml.getChild("interactiveRect");
 	if (r)
@@ -176,6 +190,13 @@ bool ofxInteractiveRect::fromXml(const ofXml& xml)
 		this->ofRectangle::height = r.getChild("height").getFloatValue();
 		this->name = r.getChild("name").getValue();
 		enableEdit(r.getChild("isEditing").getBoolValue());
+
+		// constraint
+		if (bConstrainedMin)
+		{
+			this->width = MAX(width, shapeConstraintMin.x);
+			this->height = MAX(height, shapeConstraintMin.y);
+		}
 
 		return true;
 	}
@@ -190,7 +211,6 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 	{
 		this->name = name;
 	}
-
 	if (path != "")
 	{
 		this->path = path;
@@ -207,7 +227,7 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 		file.open(filename);
 		if (!file.exists()) return false;
 
-		fromJson(ofLoadJson(filename));
+		loadFromJson(ofLoadJson(filename));
 		return true;
 
 	}
@@ -222,15 +242,15 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 		ofXml xml;
 		if (xml.load(filename))
 		{
-			if (fromXml(xml))
+			if (loadFromXml(xml))
 			{
 				return true;
 			}
 		}
 	}
-	ofLogVerbose(__FUNCTION__) << "unable to load : " << filename;
 
-	rectParam.set(this->getRect());
+	ofLogVerbose(__FUNCTION__) << "unable to load : " << filename;
+	rectParam.set(this->getRect());//?
 
 	return false;
 }
@@ -287,14 +307,14 @@ void ofxInteractiveRect::draw()
 		}
 
 		// Border
-		
+
 		//else 
 		{
 			drawBorder(); // will blink
 		}
 
 		//--
-		
+
 		// Fill
 
 		ofFill();
@@ -442,7 +462,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 	if (bLock) return;
 	if (!bEditMode) return;
 	//if (!this->isMouseOver()) return;
-	
+
 	//if (!bLockResize) 
 	{
 		if (bUp && !bLockX)
@@ -471,6 +491,13 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 			width += mouse.x - mousePrev.x;
 
 			if (bLockAspectRatio) height = width / aspectRatio;
+		}
+
+		// constraint
+		if (bConstrainedMin)
+		{
+			this->width = MAX(width, shapeConstraintMin.x);
+			this->height = MAX(height, shapeConstraintMin.y);
 		}
 	}
 
@@ -505,6 +532,13 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	width = ofClamp(width, _min, ofGetWidth());
 	height = ofClamp(height, _min, ofGetHeight());
 
+	// constraint
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
+
 	rectParam.setWithoutEventNotifications(this->getRect());
 }
 
@@ -522,6 +556,13 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 	ofLogNotice(__FUNCTION__) << r;
 
 	this->set(r);
+
+	// constraint
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
 }
 
 //--------------------------------------------------------------
@@ -530,6 +571,11 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	if (!bEditMode) return;
 	if (!this->isMouseOver()) return;
 
+	//if (width <= shapeConstraintMin.x + 20 || height <= shapeConstraintMin.y + 20) {
+	//	return;
+	//	// skip to avoid move
+	//}
+
 	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
 	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
 
@@ -537,6 +583,13 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
 	this->scaleFromCenter(s);
 	if (bLockAspectRatio) height = width / aspectRatio;
+
+	// constraint
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
 }
 
 void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}

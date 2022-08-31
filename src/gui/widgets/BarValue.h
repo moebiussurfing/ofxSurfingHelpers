@@ -121,7 +121,7 @@ public:
 	};
 
 	BarValue() {
-		color.set(255, 255, 255);
+		color.set(255, 255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
 		alphaMax = 200;
 
@@ -170,7 +170,7 @@ public:
 			{
 				ofNoFill();
 				ofSetLineWidth(line);
-				ofSetColor(color, alphaMax * 0.1f * +alpha * 0.9f);
+				ofSetColor(color, alphaMax * 0.1f * alpha * 0.9f);
 
 				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
 				else ofDrawRectRounded(position.x, position.y, widthMax, -heightMax, rounded);
@@ -178,7 +178,9 @@ public:
 
 			//value bar
 			ofFill();
-			ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
+			int a = alphaMax * 0.1f + alpha * 0.9f;
+			ofSetColor(color, ofMap(a, 0, 255, 0, color.a, true));
+			//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 			//ofSetColor(color, alphaMax);
 
 			float _val = ofMap(value, valueMin, valueMax, 0, 1, false);
