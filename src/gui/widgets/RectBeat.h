@@ -211,7 +211,8 @@ public:
 
 		color.set(255, 255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
-		alphaMax = 200;
+		alphaMax = 255;
+		//alphaMax = 200;
 
 		dt = 1.0f / 60.f;
 		alpha = 0.0f;
@@ -319,76 +320,42 @@ public:
 			ofFill();
 			ofSetColor(colorBg);
 
-			//ofDrawCircle(position, sizeMax);
 			float _w = 2 * sizeMax;
 			ofDrawRectangle(position, _w, _w);
 
-			bool bSmall = sizeMax < 50;
-
-			// inner radium
-			if (animRunning || bToggleMode)
+			// fading bg box
 			{
-				static const int gap = bSmall ? 0 : 3;
-
 				ofFill();
 				alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
-
-				/*
-				float _radius;
-				if (!bToggleMode) _radius = ofMap(animCounter, 0, 1, sizeMax - gap, sizeMin, true);
-				else {
-					if (bState) _radius = sizeMax - gap;
-					else _radius = sizeMin;
+				int _a = ofMap(alpha, 0, 255, 0, color.a, true);
+				if (/*animRunning || */bToggleMode)
+				{
+					ofSetColor(color, _a);
 				}
-				*/
-				float _radius= sizeMax;
-
-				//ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
-				//int a = alphaMax * 0.2f + alpha * 0.8f;
-				ofSetColor(color, ofMap(alpha, 0, 255, 0, color.a, true));
-
-				//ofDrawCircle(position, _radius);
-				float _w = 2 * _radius;
+				else
+				{
+					ofSetColor(color, MAX(_a, 32));//transparent box
+				}
 				ofDrawRectangle(position, _w, _w);
-
-				//// shadowed border
-				//if (/*!bSmall && */bBorder) {
-				//	ofNoFill();
-				//	static const float thickness = bSmall ? 1.f : 4.f;
-				//	static const int a = 64;
-				//	float r;
-				//	if (!bSmall) r = 1 + _radius - (thickness / 2.f);
-				//	else r = _radius;
-				//	ofSetLineWidth(thickness);
-				//	ofSetColor(colorBg, a);
-
-				//	//ofDrawCircle(position, r);
-				//	ofDrawRectangle(position, r, r);
-				//}
 			}
+
+			//--
 
 			// border
 			// outer radium
 			if (bBorder)
 			{
 				ofNoFill();
-				if (sizeMax > 20)	ofSetLineWidth(line);
-				else ofSetLineWidth(1.0f);
-
-				//int a = alphaMax * 0.2f + alpha * 0.8f;
-				//ofSetColor(color, ofMap(a, 0, 255, 0, color.a, true));
-				//ofSetColor(color, alpha);
-				//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
+				ofSetLineWidth(line);
 
 				if (bBorder) ofSetColor(color, MAX(64, alphaMax * 0.1f + alpha * 0.9f));
 				else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
-				//ofDrawCircle(position, sizeMax);
 				float _w = 2 * sizeMax;
 				ofDrawRectangle(position, _w, _w);
 			}
 
-			//-
+			//--
 
 			// draggable
 
@@ -428,7 +395,6 @@ public:
 					//float offsetSz = 2;
 					float offsetSz = ((hovered || dragged) ? 0.01 : 0.0) * sizeMax;
 
-					//ofDrawCircle(x, y, sizeMax + offsetSz);
 					float _w = 2 * sizeMax + offsetSz;
 					ofDrawRectangle(x, y, _w, _w);
 
@@ -439,6 +405,10 @@ public:
 				mousePressedPrev = ofGetMousePressed();
 			}
 
+			//--
+
+			// text
+
 			// name
 			if (bNamed) {
 				ofSetColor(255, 200);
@@ -448,11 +418,11 @@ public:
 				//_x = position.get().x;
 				//_y = position.get().y;
 
-				//center
+				// center
 				_x = position.get().x - r.getWidth() / 2;
 				_y = position.get().y + r.getHeight() / 2;
 
-				//bottom
+				// bottom
 				//_y = position.get().y + sizeMax - 2 * pad;
 
 				font.drawString(name, _x, _y);
@@ -472,14 +442,14 @@ public:
 				//_x = position.get().x;
 				//_y = position.get().y;
 
-				//center
+				// center
 				_x = position.get().x - r.getWidth() / 2;
 				_y = position.get().y + r.getHeight() / 2;
 
-				//bottom
+				// bottom
 				//_y = position.get().y + sizeMax - 2 * pad;
 
-				_y += fontSize;//space for name
+				_y += fontSize; // space for name
 
 				font2.drawString(name2, _x, _y);
 			}
