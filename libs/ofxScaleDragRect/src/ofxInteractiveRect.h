@@ -98,7 +98,8 @@ private:
 
 	// Rounded
 	bool bRounded = false;
-	float rounded = 5.0;
+	float rounded = 0.0f;
+	//float rounded = 5.0;
 
 public:
 
@@ -279,6 +280,8 @@ private:
 	glm::vec2 shapeConstraintMax;//max shape//TODO:
 	bool bConstrainedMin = false;
 	bool bConstrainedMax = false;
+
+	void refreshConstraints();
 	
 public:
 

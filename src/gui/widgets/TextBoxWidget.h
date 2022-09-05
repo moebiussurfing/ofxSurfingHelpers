@@ -164,7 +164,12 @@ public:
 		return str_modeLayout;
 	}
 
-	ofParameter<bool> bGui{ "Show TextBox", true };
+	ofRectangle getRectangle() const
+	{
+		return rect_HelpTextBox;
+	}
+	
+		ofParameter<bool> bGui{ "Show TextBox", true };
 
 private:
 

@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 
-class CircleBeat
+class RectBeat
 {
 private:
 
@@ -25,8 +25,8 @@ public:
 		toggle(false);
 	}
 
-	ofParameterGroup params{ "CircleBeat" };
-	ofParameter<float> radiusMax{ "Radius", 100, 10, 1920 };
+	ofParameterGroup params{ "RectBeat" };
+	ofParameter<float> sizeMax{ "Size", 100, 10, 1920 };
 	ofParameter<float> bpm{ "Bpm", -1, 40.f, 240.f };
 	ofParameter<float> speed{ "Speed", 0.5f, 0.01f, 1 };
 	ofParameter<int> div{ "Bpm Div", 2, 1, 4 };
@@ -85,10 +85,10 @@ public:
 		ofClamp(_speed, 0.01f, 1.0f);
 		speed = _speed;
 	}
-	void setRadius(float _size)
+	void setSize(float _size)
 	{
-		radiusMax = _size;
-		radiusMin = radiusMax * 0.2f;
+		sizeMax = _size;
+		sizeMin = sizeMax * 0.2f;
 	}
 	void setPosition(glm::vec2 _pos)
 	{
@@ -115,7 +115,7 @@ public:
 	}
 	float getRadius()
 	{
-		return radiusMax;
+		return sizeMax;
 	}
 	glm::vec2 getPosition()
 	{
@@ -172,8 +172,8 @@ private:
 
 	ofColor color;
 	ofColor colorBg;
-	//float radiusMax;
-	float radiusMin;
+	//float sizeMax;
+	float sizeMin;
 
 	//glm::vec2 position;
 	float x, y;
@@ -203,9 +203,9 @@ public:
 
 public:
 
-	CircleBeat()
+	RectBeat()
 	{
-		ofAddListener(ofEvents().mouseScrolled, this, &CircleBeat::mouseScrolled);
+		ofAddListener(ofEvents().mouseScrolled, this, &RectBeat::mouseScrolled);
 
 		ofSetCircleResolution(100);
 
@@ -221,27 +221,27 @@ public:
 
 		speed.set("Speed", 0.5f, 0.01f, 1.f);
 
-		radiusMax = 100;
-		radiusMin = radiusMax * 0.8f;
+		sizeMax = 100;
+		sizeMin = sizeMax * 0.8f;
 
 		line = 2.0f;
 
 		// params that can handle settings serialization from parent scope
 		params.add(bGui);
-		params.add(radiusMax);
+		params.add(sizeMax);
 		params.add(speed);
 		params.add(div);
 		params.add(bLock);
 		params.add(position);
 
-		ofAddListener(params.parameterChangedE(), this, &CircleBeat::Changed);
+		ofAddListener(params.parameterChangedE(), this, &RectBeat::Changed);
 
 		stop();
 	};
 
-	~CircleBeat() {
-		ofRemoveListener(ofEvents().mouseScrolled, this, &CircleBeat::mouseScrolled);
-		ofRemoveListener(params.parameterChangedE(), this, &CircleBeat::Changed);
+	~RectBeat() {
+		ofRemoveListener(ofEvents().mouseScrolled, this, &RectBeat::mouseScrolled);
+		ofRemoveListener(params.parameterChangedE(), this, &RectBeat::Changed);
 	};
 
 	//--------------------------------------------------------------
@@ -249,9 +249,9 @@ public:
 	{
 		string n = e.getName();
 
-		if (n == radiusMax.getName())
+		if (n == sizeMax.getName())
 		{
-			radiusMin = radiusMax * 0.2f;
+			sizeMin = sizeMax * 0.2f;
 		}
 		else if (n == position.getName())
 		{
@@ -312,160 +312,179 @@ public:
 		update();
 
 		ofPushStyle();
-
-		// background dark
-		ofFill();
-		ofSetColor(colorBg);
-		ofDrawCircle(position, radiusMax);
-
-		bool bSmall = radiusMax < 50;
-
-		// inner radium
-		if (animRunning || bToggleMode)
+		ofPushMatrix();
+		ofTranslate(-sizeMax, -sizeMax);
 		{
-			static const int gap = bSmall ? 0 : 3;
-
+			// background dark
 			ofFill();
-			alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
+			ofSetColor(colorBg);
 
-			float _radius;
-			if (!bToggleMode) _radius = ofMap(animCounter, 0, 1, radiusMax - gap, radiusMin, true);
-			else {
-				if (bState) _radius = radiusMax - gap;
-				else _radius = radiusMin;
-			}
+			//ofDrawCircle(position, sizeMax);
+			float _w = 2 * sizeMax;
+			ofDrawRectangle(position, _w, _w);
 
-			//ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
-			//int a = alphaMax * 0.2f + alpha * 0.8f;
-			ofSetColor(color, ofMap(alpha, 0, 255, 0, color.a, true));
+			bool bSmall = sizeMax < 50;
 
-			ofDrawCircle(position, _radius);
-
-			// shadowed border
-			if (!bSmall && bBorder) {
-				ofNoFill();
-				static const float thickness = bSmall ? 1.f : 4.f;
-				static const int a = 64;
-				float r;
-				if (!bSmall) r = 1 + _radius - (thickness / 2.f);
-				else r = _radius;
-				ofSetLineWidth(thickness);
-				ofSetColor(colorBg, a);
-				ofDrawCircle(position, r);
-			}
-		}
-
-		// border
-		// outer radium
-		if (bBorder)
-		{
-			ofNoFill();
-			if (radiusMax > 20)	ofSetLineWidth(line);
-			else ofSetLineWidth(1.0f);
-
-			//int a = alphaMax * 0.2f + alpha * 0.8f;
-			//ofSetColor(color, ofMap(a, 0, 255, 0, color.a, true));
-			//ofSetColor(color, alpha);
-			//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
-
-			if(bBorder) ofSetColor(color, MAX(36, alphaMax * 0.1f + alpha * 0.9f));
-			else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
-
-			ofDrawCircle(position, radiusMax);
-		}
-
-		//-
-
-		// draggable
-
-		if (bDraggable && !bLock)
-		{
-			position = glm::vec2(x, y);
-
-			// check if hovered
-			hovered = (ofGetMouseX() - x) * (ofGetMouseX() - x) + (ofGetMouseY() - y) * (ofGetMouseY() - y) < radiusMax * radiusMax;
-
-			// check if point is clicked
-			if (hovered && ofGetMousePressed() && !mousePressedPrev) {
-				dragged = true;
-			}
-
-			// this registers when we unclick
-			dragged &= ofGetMousePressed();
-
-			// store mouse posString and value when dragging starts
-			if (dragged && !draggedPrev) {
-				diffDrag = ofVec2f(x, y) - ofVec2f(ofGetMouseX(), ofGetMouseY());
-			}
-
-			// move point
-			if (dragged) {
-				x = ofGetMouseX() + diffDrag.x;
-				y = ofGetMouseY() + diffDrag.y;
-			}
-
-			// update released
-			released = !dragged && draggedPrev;
-
-			// draw border
-			if (hovered || dragged)
+			// inner radium
+			if (animRunning || bToggleMode)
 			{
-				ofSetColor(color, alphaMax * 0.4f);
-				//float offsetSz = 2;
-				float offsetSz = ((hovered || dragged) ? 0.01 : 0.0) * radiusMax;
-				ofDrawCircle(x, y, radiusMax + offsetSz);
+				static const int gap = bSmall ? 0 : 3;
+
+				ofFill();
+				alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
+
+				/*
+				float _radius;
+				if (!bToggleMode) _radius = ofMap(animCounter, 0, 1, sizeMax - gap, sizeMin, true);
+				else {
+					if (bState) _radius = sizeMax - gap;
+					else _radius = sizeMin;
+				}
+				*/
+				float _radius= sizeMax;
+
+				//ofSetColor(color.r, color.g, color.b, alpha); // faded alpha
+				//int a = alphaMax * 0.2f + alpha * 0.8f;
+				ofSetColor(color, ofMap(alpha, 0, 255, 0, color.a, true));
+
+				//ofDrawCircle(position, _radius);
+				float _w = 2 * _radius;
+				ofDrawRectangle(position, _w, _w);
+
+				//// shadowed border
+				//if (/*!bSmall && */bBorder) {
+				//	ofNoFill();
+				//	static const float thickness = bSmall ? 1.f : 4.f;
+				//	static const int a = 64;
+				//	float r;
+				//	if (!bSmall) r = 1 + _radius - (thickness / 2.f);
+				//	else r = _radius;
+				//	ofSetLineWidth(thickness);
+				//	ofSetColor(colorBg, a);
+
+				//	//ofDrawCircle(position, r);
+				//	ofDrawRectangle(position, r, r);
+				//}
 			}
 
-			// update states
-			draggedPrev = dragged;
-			mousePressedPrev = ofGetMousePressed();
-		}
+			// border
+			// outer radium
+			if (bBorder)
+			{
+				ofNoFill();
+				if (sizeMax > 20)	ofSetLineWidth(line);
+				else ofSetLineWidth(1.0f);
 
-		// name
-		if (bNamed) {
-			ofSetColor(255, 200);
-			ofRectangle r = font.getStringBoundingBox(name, 0, 0);
-			int pad = r.getHeight();
-			int _x, _y;
-			//_x = position.get().x;
-			//_y = position.get().y;
+				//int a = alphaMax * 0.2f + alpha * 0.8f;
+				//ofSetColor(color, ofMap(a, 0, 255, 0, color.a, true));
+				//ofSetColor(color, alpha);
+				//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
-			//center
-			_x = position.get().x - r.getWidth() / 2;
-			_y = position.get().y + r.getHeight() / 2;
+				if (bBorder) ofSetColor(color, MAX(64, alphaMax * 0.1f + alpha * 0.9f));
+				else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
-			//bottom
-			//_y = position.get().y + radiusMax - 2 * pad;
-
-			font.drawString(name, _x, _y);
-		}
-
-		// sub label
-		if (bNamed2) {
-			if (bSubLabelBlinkind) {
-				ofSetColor(255, 200 * ofxSurfingHelpers::Bounce());
+				//ofDrawCircle(position, sizeMax);
+				float _w = 2 * sizeMax;
+				ofDrawRectangle(position, _w, _w);
 			}
-			else
+
+			//-
+
+			// draggable
+
+			if (bDraggable && !bLock)
+			{
+				position = glm::vec2(x, y);
+
+				// check if hovered
+				hovered = (ofGetMouseX() - x) * (ofGetMouseX() - x) + (ofGetMouseY() - y) * (ofGetMouseY() - y) < sizeMax * sizeMax;
+
+				// check if point is clicked
+				if (hovered && ofGetMousePressed() && !mousePressedPrev) {
+					dragged = true;
+				}
+
+				// this registers when we unclick
+				dragged &= ofGetMousePressed();
+
+				// store mouse posString and value when dragging starts
+				if (dragged && !draggedPrev) {
+					diffDrag = ofVec2f(x, y) - ofVec2f(ofGetMouseX(), ofGetMouseY());
+				}
+
+				// move point
+				if (dragged) {
+					x = ofGetMouseX() + diffDrag.x;
+					y = ofGetMouseY() + diffDrag.y;
+				}
+
+				// update released
+				released = !dragged && draggedPrev;
+
+				// draw border
+				if (hovered || dragged)
+				{
+					ofSetColor(color, alphaMax * 0.4f);
+					//float offsetSz = 2;
+					float offsetSz = ((hovered || dragged) ? 0.01 : 0.0) * sizeMax;
+
+					//ofDrawCircle(x, y, sizeMax + offsetSz);
+					float _w = 2 * sizeMax + offsetSz;
+					ofDrawRectangle(x, y, _w, _w);
+
+				}
+
+				// update states
+				draggedPrev = dragged;
+				mousePressedPrev = ofGetMousePressed();
+			}
+
+			// name
+			if (bNamed) {
 				ofSetColor(255, 200);
+				ofRectangle r = font.getStringBoundingBox(name, 0, 0);
+				int pad = r.getHeight();
+				int _x, _y;
+				//_x = position.get().x;
+				//_y = position.get().y;
 
-			ofRectangle r = font2.getStringBoundingBox(name2, 0, 0);
-			int pad = r.getHeight();
-			int _x, _y;
-			//_x = position.get().x;
-			//_y = position.get().y;
+				//center
+				_x = position.get().x - r.getWidth() / 2;
+				_y = position.get().y + r.getHeight() / 2;
 
-			//center
-			_x = position.get().x - r.getWidth() / 2;
-			_y = position.get().y + r.getHeight() / 2;
+				//bottom
+				//_y = position.get().y + sizeMax - 2 * pad;
 
-			//bottom
-			//_y = position.get().y + radiusMax - 2 * pad;
+				font.drawString(name, _x, _y);
+			}
 
-			_y += fontSize;//space for name
+			// sub label
+			if (bNamed2) {
+				if (bSubLabelBlinkind) {
+					ofSetColor(255, 200 * ofxSurfingHelpers::Bounce());
+				}
+				else
+					ofSetColor(255, 200);
 
-			font2.drawString(name2, _x, _y);
+				ofRectangle r = font2.getStringBoundingBox(name2, 0, 0);
+				int pad = r.getHeight();
+				int _x, _y;
+				//_x = position.get().x;
+				//_y = position.get().y;
+
+				//center
+				_x = position.get().x - r.getWidth() / 2;
+				_y = position.get().y + r.getHeight() / 2;
+
+				//bottom
+				//_y = position.get().y + sizeMax - 2 * pad;
+
+				_y += fontSize;//space for name
+
+				font2.drawString(name2, _x, _y);
+			}
 		}
-
+		ofPopMatrix();
 		ofPopStyle();
 	}
 
@@ -474,8 +493,8 @@ public:
 		x = position.get().x;
 		y = position.get().y;
 
-		radiusMax = size;
-		radiusMin = radiusMax * 0.8;
+		sizeMax = size;
+		sizeMin = sizeMax * 0.8;
 
 		draw();
 	}
@@ -497,13 +516,13 @@ private:
 		if (!bDraggable) return;
 		if (!hovered) return;
 
-		ofLogNotice("CircleBeat") << mouse.scrollY;
+		ofLogNotice("RectBeat") << mouse.scrollY;
 
 		float d = 0.1f;
 		float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
 
-		radiusMax *= s;
-		radiusMin = radiusMax * 0.8;
+		sizeMax *= s;
+		sizeMin = sizeMax * 0.8;
 	}
 };
 

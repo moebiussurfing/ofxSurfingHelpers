@@ -37,12 +37,7 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 	setColorEditingPressedBorder(ofColor(0, 128));
 	setColorEditingMoving(ofColor(128, 32));
 
-	// constraint
-	if (bConstrainedMin)
-	{
-		this->width = MAX(width, shapeConstraintMin.x);
-		this->height = MAX(height, shapeConstraintMin.y);
-	}
+	refreshConstraints();
 }
 
 //--------------------------------------------------------------
@@ -155,11 +150,7 @@ void ofxInteractiveRect::loadFromJson(const ofJson& j)
 	enableEdit(editing);
 
 	// constraint
-	if (bConstrainedMin)
-	{
-		this->width = MAX(width, shapeConstraintMin.x);
-		this->height = MAX(height, shapeConstraintMin.y);
-	}
+	refreshConstraints();
 }
 
 ofXml ofxInteractiveRect::saveToXml()
@@ -192,11 +183,7 @@ bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 		enableEdit(r.getChild("isEditing").getBoolValue());
 
 		// constraint
-		if (bConstrainedMin)
-		{
-			this->width = MAX(width, shapeConstraintMin.x);
-			this->height = MAX(height, shapeConstraintMin.y);
-		}
+		refreshConstraints();
 
 		return true;
 	}
@@ -334,19 +321,23 @@ void ofxInteractiveRect::draw()
 
 			if (bUp)
 			{
-				ofDrawRectRounded(x, y, width, BORDER_DRAG_SIZE, rounded);
+				if (bRounded) ofDrawRectRounded(x, y, width, BORDER_DRAG_SIZE, rounded);
+				else ofDrawRectangle(x, y, width, BORDER_DRAG_SIZE);
 			}
 			else if (bDown)
 			{
-				ofDrawRectRounded(x, y + height - BORDER_DRAG_SIZE, width, BORDER_DRAG_SIZE, rounded);
+				if (bRounded) ofDrawRectRounded(x, y + height - BORDER_DRAG_SIZE, width, BORDER_DRAG_SIZE, rounded);
+				else ofDrawRectangle(x, y + height - BORDER_DRAG_SIZE, width, BORDER_DRAG_SIZE);
 			}
 			if (bLeft)
 			{
-				ofDrawRectRounded(x, y, BORDER_DRAG_SIZE, height, rounded);
+				if (bRounded) ofDrawRectRounded(x, y, BORDER_DRAG_SIZE, height, rounded);
+				else ofDrawRectangle(x, y, BORDER_DRAG_SIZE, height);
 			}
 			else if (bRight)
 			{
-				ofDrawRectRounded(x + width - BORDER_DRAG_SIZE, y, BORDER_DRAG_SIZE, height, rounded);
+				if (bRounded) ofDrawRectRounded(x + width - BORDER_DRAG_SIZE, y, BORDER_DRAG_SIZE, height, rounded);
+				else ofDrawRectangle(x + width - BORDER_DRAG_SIZE, y, BORDER_DRAG_SIZE, height);
 			}
 		}
 
@@ -494,11 +485,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 		}
 
 		// constraint
-		if (bConstrainedMin)
-		{
-			this->width = MAX(width, shapeConstraintMin.x);
-			this->height = MAX(height, shapeConstraintMin.y);
-		}
+		refreshConstraints();
 	}
 
 	if (bMove)
@@ -533,11 +520,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	height = ofClamp(height, _min, ofGetHeight());
 
 	// constraint
-	if (bConstrainedMin)
-	{
-		this->width = MAX(width, shapeConstraintMin.x);
-		this->height = MAX(height, shapeConstraintMin.y);
-	}
+	refreshConstraints();
 
 	rectParam.setWithoutEventNotifications(this->getRect());
 }
@@ -557,12 +540,7 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 
 	this->set(r);
 
-	// constraint
-	if (bConstrainedMin)
-	{
-		this->width = MAX(width, shapeConstraintMin.x);
-		this->height = MAX(height, shapeConstraintMin.y);
-	}
+	refreshConstraints();
 }
 
 //--------------------------------------------------------------
@@ -585,12 +563,24 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	if (bLockAspectRatio) height = width / aspectRatio;
 
 	// constraint
+	refreshConstraints();
+}
+
+//--------------------------------------------------------------
+void ofxInteractiveRect::refreshConstraints() {
+
 	if (bConstrainedMin)
 	{
 		this->width = MAX(width, shapeConstraintMin.x);
 		this->height = MAX(height, shapeConstraintMin.y);
 	}
-}
+
+	if (bConstrainedMax)
+	{
+		this->width = MIN(width, shapeConstraintMax.x);
+		this->height = MIN(height, shapeConstraintMax.y);
+	}
+} 
 
 void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
 void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}
