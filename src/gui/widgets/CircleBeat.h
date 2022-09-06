@@ -318,12 +318,13 @@ public:
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
 
-		bool bSmall = radiusMax < 50;
+		//bool bSmall = radiusMax < 50;
 
 		// inner radium
 		if (animRunning || bToggleMode)
 		{
-			static const int gap = bSmall ? 0 : 3;
+			//static const int gap = bSmall ? 0 : 3;
+			static const int gap = 3;
 
 			ofFill();
 			alpha = ofMap(animCounter, 0, 1, alphaMax, 0, true);
@@ -342,13 +343,15 @@ public:
 			ofDrawCircle(position, _radius);
 
 			// shadowed border
-			if (!bSmall && bBorder) {
+			if (/*!bSmall && */bBorder) {
 				ofNoFill();
-				static const float thickness = bSmall ? 1.f : 4.f;
+				static const float thickness = 4.f;
+				//static const float thickness = bSmall ? 1.f : 4.f;
 				static const int a = 64;
 				float r;
-				if (!bSmall) r = 1 + _radius - (thickness / 2.f);
-				else r = _radius;
+				//if (!bSmall) r = 1 + _radius - (thickness / 2.f);
+				//else r = _radius;
+				r = _radius;
 				ofSetLineWidth(thickness);
 				ofSetColor(colorBg, a);
 				ofDrawCircle(position, r);
@@ -368,7 +371,7 @@ public:
 			//ofSetColor(color, alpha);
 			//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
-			if(bBorder) ofSetColor(color, MAX(36, alphaMax * 0.1f + alpha * 0.9f));
+			if(bBorder) ofSetColor(color, MAX(48, alphaMax * 0.1f + alpha * 0.9f));
 			else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
 			ofDrawCircle(position, radiusMax);

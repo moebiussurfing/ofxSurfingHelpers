@@ -207,11 +207,10 @@ public:
 	{
 		ofAddListener(ofEvents().mouseScrolled, this, &RectBeat::mouseScrolled);
 
-		ofSetCircleResolution(100);
-
 		color.set(255, 255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
-		alphaMax = 255;
+
+		alphaMax = 225;
 		//alphaMax = 200;
 
 		dt = 1.0f / 60.f;
@@ -334,7 +333,7 @@ public:
 				}
 				else
 				{
-					ofSetColor(color, MAX(_a, 32));//transparent box
+					ofSetColor(color, MAX(_a, 40));//transparent box
 				}
 				ofDrawRectangle(position, _w, _w);
 			}
