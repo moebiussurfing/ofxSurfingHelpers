@@ -28,13 +28,13 @@
 
 //----
 
-class SurfPresets
+class SurfingPresets
 {
 
 public:
 
-	SurfPresets() {
-		ofAddListener(params.parameterChangedE(), this, &SurfPresets::Changed);
+	SurfingPresets() {
+		ofAddListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
 
 		params.add(vScan);
 		params.add(vDelete);
@@ -45,8 +45,8 @@ public:
 		params.add(index);
 	};
 
-	~SurfPresets() {
-		ofRemoveListener(params.parameterChangedE(), this, &SurfPresets::Changed);
+	~SurfingPresets() {
+		ofRemoveListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
 
 		doSave();
 	};
@@ -238,13 +238,13 @@ public:
 
 	void setup()
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 		doRefreshFiles();//TODO:
 	}
 
 	void startup()
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 
 		doRefreshFiles();
 
@@ -253,7 +253,7 @@ public:
 
 	void update()
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 	}
 
 	void draw()
@@ -267,7 +267,7 @@ public:
 
 	void doSave()
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 
 		ofxSurfingHelpers::CheckFolder(pathPresets);
 		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
@@ -278,7 +278,7 @@ public:
 	/*
 	void Save(string filename)
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 
 		//ofxSurfingHelpers::CheckFolder(pathPresets);
 		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
@@ -287,7 +287,7 @@ public:
 
 	void doLoad()
 	{
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
 
 		// Load Settings
 		ofxSurfingHelpers::loadGroup(paramsPreset, pathPresets + "/" + filename + ".json");
@@ -320,8 +320,8 @@ private:
 	void Changed(ofAbstractParameter& e)
 	{
 		string name = e.getName();
-		ofLogNotice("SurfPresets") << (__FUNCTION__);
-		ofLogNotice("SurfPresets") << name << " " << e;
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("SurfingPresets") << name << " " << e;
 
 		if (0) {}
 
@@ -362,10 +362,10 @@ private:
 
 private:
 
-	ofParameterGroup params{ "SurfPresets" };
+	ofParameterGroup params{ "SurfingPresets" };
 	ofParameterGroup paramsPreset{ "Preset" };
 
-	string pathPresets = "SurfPresets";
+	string pathPresets = "SurfingPresets";
 
 	// Files Browser
 	ofDirectory dir;
@@ -384,7 +384,7 @@ private:
 	bool doRefreshFiles()
 	{
 		// Load dragged images folder
-		ofLogNotice("SurfPresets") << (__FUNCTION__) << "list files " << pathPresets;
+		ofLogNotice("SurfingPresets") << (__FUNCTION__) << "list files " << pathPresets;
 
 		bool b = false;
 
@@ -397,7 +397,7 @@ private:
 		filenames.clear();
 		for (int i = 0; i < dir.size(); i++)
 		{
-			ofLogNotice("SurfPresets") << (__FUNCTION__) << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
+			ofLogNotice("SurfingPresets") << (__FUNCTION__) << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
 
 			std::string _name = "NoName"; // without ext
 			auto _names = ofSplitString(dir.getName(i), ".");
