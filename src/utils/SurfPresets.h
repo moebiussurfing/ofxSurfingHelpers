@@ -62,8 +62,9 @@ public:
 
 	//--
 
-	// 2. Presets
-	void drawImGui(bool bWindowed)
+	// Presets
+
+	void drawImGui(bool bWindowed = false)
 	{
 		//TODO:
 		// make windowed
@@ -122,7 +123,15 @@ public:
 			//--
 
 			// Combo
-			ui->AddComboButtonDual(index, filenames);
+			ui->AddComboButtonDual(index, filenames, true);
+
+			//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+
+			//--
+
+			ui->AddSeparated();
+
+			drawImGuiClicker();
 
 			/*
 			if (!ui->bMinimize)
@@ -133,6 +142,80 @@ public:
 			*/
 		}
 		if (bWindowed) {}
+	}
+
+
+	////--
+
+	//TODO:
+	// Files
+
+	// 2. Presets
+	void drawImGuiClicker(bool bWindowed = false)
+	{
+		ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+		if (bClicker)
+		{
+			float h = ui->getWidgetsHeightUnit();
+			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, 1, true, h);
+
+			/*
+			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&_index,
+			const std::vector<string> labels, bool bResponsive = true, int amountBtRow = 3, const bool bDrawBorder = true, float __h = -1, bool bSpaced = true, string toolTip = "")
+			*/
+
+			/*
+			ui->Indent();
+			{
+				// Paths
+				{
+					bool bOpen = false;
+					ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+					//_flagt |= ImGuiTreeNodeFlags_Framed;
+
+					if (ImGui::TreeNodeEx("Path", _flagt))
+					{
+						ImGui::TextWrapped(pathPresets.data()); // -> show path
+						ImGui::TreePop();
+					}
+				}
+
+				// Files
+				// Buttons Selector for each file
+				if (ofxImGuiSurfing::filesPicker(pathPresets, filename, index, { "json" }))
+				{
+					// Buttons Matrix
+
+					//TODO:
+					// Index back not working
+					// this is a workaround
+					// could fail on macOS/Linux -> requires fix paths slashes
+
+					for (int i = 0; i < dir.size(); i++)
+					{
+						std::string si = ofToString(i);
+						if (i < 10) si = "0" + si;
+						std::string ss = name_Root + "_" + si;
+						fileName = ss;
+
+						auto s0 = ofSplitString(nameSelected, "\\", true);
+						std::string s1 = s0[s0.size() - 1]; // filename
+						auto s = ofSplitString(s1, ".json");
+
+						std::string _nameSelected = s[0];
+
+						if (_nameSelected == fileName)
+						{
+							index = i;
+						}
+					}
+
+					ofLogNotice(__FUNCTION__) << "Picked file " << nameSelected << " > " << index;
+				}
+			}
+			ui->Unindent();
+			*/
+		}
 	}
 
 	//--
@@ -147,13 +230,16 @@ public:
 	ofParameter<void> vLoad{ "Load" };
 	ofParameter<void> vNew{ "New" };
 	ofParameter<void> vReset{ "Reset" };
+
 	ofParameter<int> index{ "Index", 0, 0, 0 };
+	ofParameter<bool> bClicker{ "clicker", false };
 
 public:
 
 	void setup()
 	{
 		ofLogNotice("SurfPresets") << (__FUNCTION__);
+		doRefreshFiles();//TODO:
 	}
 
 	void startup()
@@ -161,6 +247,8 @@ public:
 		ofLogNotice("SurfPresets") << (__FUNCTION__);
 
 		doRefreshFiles();
+
+		//index = index;
 	}
 
 	void update()
@@ -239,6 +327,8 @@ private:
 
 		else if (name == index.getName())
 		{
+			if (filenames.size() == 0) return;
+
 			filename = filenames[index];
 			doLoad();
 		}
@@ -260,6 +350,8 @@ private:
 
 		else if (name == vDelete.getName())
 		{
+			if (filenames.size() == 0) return;
+			
 			filename = filenames[index];
 			ofFile::removeFile(pathPresets + "/" + filename + ".json");
 			doRefreshFiles();
