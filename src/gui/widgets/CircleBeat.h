@@ -27,7 +27,7 @@ public:
 
 	ofParameterGroup params{ "CircleBeat" };
 	ofParameter<float> radiusMax{ "Radius", 100, 10, 1920 };
-	ofParameter<float> bpm{ "Bpm", -1, 40.f, 240.f };
+	ofParameter<float> bpm{ "Bpm", -1, 40.f, 400.f };
 	ofParameter<float> speed{ "Speed", 0.5f, 0.01f, 1 };
 	ofParameter<int> div{ "Bpm Div", 2, 1, 4 };
 	ofParameter<glm::vec2> position{ "Position", glm::vec2(100,100), glm::vec2(0,0), glm::vec2(1920,1080) };
@@ -36,6 +36,12 @@ public:
 
 	void setLocked(bool b) {
 		bLock = b;
+	}
+
+	void setDiv(int _div)
+	{
+		div = _div;
+		setBpm(bpm);
 	}
 
 	void setBpm(float _bpm, float _fps = 60.f)
@@ -268,7 +274,8 @@ public:
 		}
 		else if (n == div.getName())
 		{
-			setBpm(bpm);
+			//setBpm(bpm);
+			setDiv(div);
 		}
 	}
 

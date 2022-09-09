@@ -170,7 +170,10 @@ public:
 			{
 				ofNoFill();
 				ofSetLineWidth(line);
-				ofSetColor(color, alphaMax * 0.1f * alpha * 0.9f);
+				
+				//ofSetColor(color, alphaMax * 0.1f * alpha * 0.9f);
+				if (bBorder) ofSetColor(color, MAX(96, alphaMax * 0.1f + alpha * 0.9f));
+				else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
 				if (rounded == 0.f) ofDrawRectangle(position.x, position.y, widthMax, -heightMax);
 				else ofDrawRectRounded(position.x, position.y, widthMax, -heightMax, rounded);
