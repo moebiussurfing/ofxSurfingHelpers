@@ -135,13 +135,27 @@ public:
 		bGui.setName(name);
 		params.setName(name);
 
-		if (font.isLoaded()) return;
-		//fontSize = sz;
-		std::string _path = "assets/fonts/"; // assets folder
-		string f = "JetBrainsMono-Bold.ttf";
-		_path += f;
-		bool b = font.load(_path, fontSize);
-		if (!b) font.load(OF_TTF_MONO, fontSize);
+		// font big
+		{
+			if (font.isLoaded()) return;
+			//fontSize = sz;
+			std::string _path = "assets/fonts/"; // assets folder
+			string f = "JetBrainsMono-Bold.ttf";
+			_path += f;
+			bool b = font.load(_path, fontSize);
+			if (!b) font.load(OF_TTF_MONO, fontSize);
+		}
+
+		// font small
+		{
+			if (font2.isLoaded()) return;
+			//fontSize2 = sz;
+			std::string _path = "assets/fonts/"; // assets folder
+			string f = "JetBrainsMono-Bold.ttf";
+			_path += f;
+			bool b = font2.load(_path, fontSize2);
+			if (!b) font2.load(OF_TTF_MONO, fontSize2);
+		}
 	}
 
 	void setSubLabel(string n) { //call before setup
@@ -164,8 +178,8 @@ private:
 	ofTrueTypeFont font;
 	ofTrueTypeFont font2;
 
-	int fontSize = 16;
-	int fontSize2 = 9;
+	int fontSize = 20;//big
+	int fontSize2 = 12;//small
 
 	//name
 	string name = "";
@@ -325,7 +339,7 @@ public:
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
 
-		//bool bSmall = radiusMax < 50;
+		bool bSmall = radiusMax < 70;
 
 		// inner radium
 		if (animRunning || bToggleMode)
@@ -378,7 +392,7 @@ public:
 			//ofSetColor(color, alpha);
 			//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
-			if(bBorder) ofSetColor(color, MAX(48, alphaMax * 0.1f + alpha * 0.9f));
+			if (bBorder) ofSetColor(color, MAX(48, alphaMax * 0.1f + alpha * 0.9f));
 			else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
 			ofDrawCircle(position, radiusMax);
@@ -431,10 +445,17 @@ public:
 			mousePressedPrev = ofGetMousePressed();
 		}
 
+
+		//--
+		// 
+		// text
+		// 
 		// name
 		if (bNamed) {
 			ofSetColor(255, 200);
-			ofRectangle r = font.getStringBoundingBox(name, 0, 0);
+			ofRectangle r;
+			if (bSmall) r = font2.getStringBoundingBox(name, 0, 0);
+			else r = font.getStringBoundingBox(name, 0, 0);
 			int pad = r.getHeight();
 			int _x, _y;
 			//_x = position.get().x;
@@ -444,10 +465,12 @@ public:
 			_x = position.get().x - r.getWidth() / 2;
 			_y = position.get().y + r.getHeight() / 2;
 
+			if (bNamed2) _y -= fontSize / 2;
+
 			//bottom
 			//_y = position.get().y + radiusMax - 2 * pad;
-
-			font.drawString(name, _x, _y);
+			if (bSmall) font2.drawString(name, _x, _y);
+			else font.drawString(name, _x, _y);
 		}
 
 		// sub label
@@ -468,10 +491,13 @@ public:
 			_x = position.get().x - r.getWidth() / 2;
 			_y = position.get().y + r.getHeight() / 2;
 
+			_y -= fontSize / 2;
+
 			//bottom
 			//_y = position.get().y + radiusMax - 2 * pad;
 
-			_y += fontSize;//space for name
+			if (bSmall) _y += fontSize2 + 5;//space for name
+			else _y += fontSize + 5 ;//space for name
 
 			font2.drawString(name2, _x, _y);
 		}

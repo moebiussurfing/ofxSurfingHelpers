@@ -78,68 +78,84 @@ public:
 			//string s = "presetName";
 			string s = filename;
 
-
-			ui->AddLabelBig("Presets", true, true);
-			if (!ui->bMinimize) {
-				ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
-
-				if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
+			static bool bFolder = true;
+			static bool bExpand = false;
+			
+			bool b;
+			if (!bFolder) ui->AddLabelBig("PRESETS", true, true);
+			else b = ui->BeginTree("PRESETS");
+			if (b) {
+				ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
+				//if (!ui->bMinimize)
+				if (bExpand)
 				{
-					bInputText = false;
-					_namePreset = s;
-				};
+					ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
-				if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
-				{
-					if (!bInputText) bInputText = true;
-					_namePreset = "";
-					setFilename(_namePreset);
-				};
-				ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
+					if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
+					{
+						bInputText = false;
+						_namePreset = s;
+					};
 
-				ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
-				ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
+					if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
+					{
+						if (!bInputText) bInputText = true;
+						_namePreset = "";
+						setFilename(_namePreset);
+					};
+					ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
+
+					ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
+					ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
+
+					//--
+
+					ui->AddSpacing();
+
+					if (bInputText)
+					{
+						int _w = ui->getWidgetsWidth() * 0.9f;
+						ImGui::PushItemWidth(_w);
+						{
+							bool b = ImGui::InputText("##NAME", &s);
+							if (b) {
+								ofLogNotice("WaveformPlot") << "InputText:" << s.c_str();
+								setFilename(s);
+							}
+						}
+
+						ImGui::PopItemWidth();
+					}
+				}
+				else {
+					ui->Add(vSave, OFX_IM_BUTTON_SMALL);
+				}
 
 				//--
 
-				ui->AddSpacing();
+				// Combo
+				ui->AddComboButtonDual(index, filenames, true);
 
-				if (bInputText)
+				//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+
+				//--
+
+				//ui->AddSeparated();
+
+				drawImGuiClicker();
+
+				/*
+				if (!ui->bMinimize)
 				{
-					int _w = ui->getWidgetsWidth() * 0.9f;
-					ImGui::PushItemWidth(_w);
-					{
-						bool b = ImGui::InputText("##NAME", &s);
-						if (b) {
-							ofLogNotice("WaveformPlot") << "InputText:" << s.c_str();
-							setFilename(s);
-						}
-					}
-
-					ImGui::PopItemWidth();
+					// preset name
+					if (_namePreset != "") ui->AddLabel(_namePreset.c_str());
 				}
+				*/
+
+				//--
+
+				if (b) ui->EndTree();
 			}
-
-			//--
-
-			// Combo
-			ui->AddComboButtonDual(index, filenames, true);
-
-			//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
-
-			//--
-
-			ui->AddSeparated();
-
-			drawImGuiClicker();
-
-			/*
-			if (!ui->bMinimize)
-			{
-				// preset name
-				if (_namePreset != "") ui->AddLabel(_namePreset.c_str());
-			}
-			*/
 		}
 		if (bWindowed) {}
 	}
@@ -232,7 +248,7 @@ public:
 	ofParameter<void> vReset{ "Reset" };
 
 	ofParameter<int> index{ "Index", 0, 0, 0 };
-	ofParameter<bool> bClicker{ "clicker", false };
+	ofParameter<bool> bClicker{ "Clicker", false };
 
 public:
 
@@ -271,8 +287,6 @@ public:
 
 		ofxSurfingHelpers::CheckFolder(pathPresets);
 		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
-
-		doRefreshFiles();
 	}
 
 	/*
@@ -341,6 +355,20 @@ private:
 		else if (name == vSave.getName())
 		{
 			doSave();
+
+			string filename_ = filename;
+			doRefreshFiles();
+			if (filename_ != filename)
+			{
+				ofLogNotice("SmoothChannel") << (__FUNCTION__) << "Must reorganize indexes";
+				for (int i = 0; i < dir.size(); i++)
+				{
+					if (dir.getName(i) == filename_)
+					{
+						index = i;
+					}
+				}
+			}
 		}
 
 		else if (name == vScan.getName())
@@ -351,7 +379,7 @@ private:
 		else if (name == vDelete.getName())
 		{
 			if (filenames.size() == 0) return;
-			
+
 			filename = filenames[index];
 			ofFile::removeFile(pathPresets + "/" + filename + ".json");
 			doRefreshFiles();
