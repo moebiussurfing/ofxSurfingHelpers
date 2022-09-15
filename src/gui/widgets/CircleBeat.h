@@ -2,6 +2,12 @@
 
 #include "ofMain.h"
 
+#define FONT_FILES_PATH "assets/fonts/"
+#define FONT_FILE_BIG "JetBrainsMonoNL-ExtraBold.ttf"
+#define FONT_FILE_SMALL "JetBrainsMono-Bold.ttf"
+#define FONT_SIZE_BIG 16
+#define FONT_SIZE_SMALL 10
+
 class CircleBeat
 {
 private:
@@ -103,10 +109,10 @@ public:
 		x = position.get().x;
 		y = position.get().y;
 	}
-	void setPosition(int x, int y)
+	void setPosition(int _x, int _y)
 	{
-		x = position.get().x;
-		y = position.get().y;
+		x = _x;
+		y = _y;
 
 		position = glm::vec2(x, y);
 	}
@@ -139,8 +145,9 @@ public:
 		{
 			if (font.isLoaded()) return;
 			//fontSize = sz;
-			std::string _path = "assets/fonts/"; // assets folder
-			string f = "JetBrainsMono-Bold.ttf";
+			std::string _path = FONT_FILES_PATH; // assets folder
+			string f = FONT_FILE_BIG;
+			//string f = "JetBrainsMono-Bold.ttf";
 			_path += f;
 			bool b = font.load(_path, fontSize);
 			if (!b) font.load(OF_TTF_MONO, fontSize);
@@ -150,8 +157,8 @@ public:
 		{
 			if (font2.isLoaded()) return;
 			//fontSize2 = sz;
-			std::string _path = "assets/fonts/"; // assets folder
-			string f = "JetBrainsMono-Bold.ttf";
+			std::string _path = FONT_FILES_PATH; // assets folder
+			string f = FONT_FILE_SMALL;
 			_path += f;
 			bool b = font2.load(_path, fontSize2);
 			if (!b) font2.load(OF_TTF_MONO, fontSize2);
@@ -165,8 +172,8 @@ public:
 		if (font2.isLoaded()) return;
 
 		//fontSize2 = sz;
-		std::string _path = "assets/fonts/"; // assets folder
-		string f = "JetBrainsMono-Bold.ttf";
+		std::string _path = FONT_FILES_PATH; // assets folder
+		string f = FONT_FILE_SMALL;
 		_path += f;
 		bool b = font2.load(_path, fontSize2);
 		if (!b) font2.load(OF_TTF_MONO, fontSize2);
@@ -178,8 +185,8 @@ private:
 	ofTrueTypeFont font;
 	ofTrueTypeFont font2;
 
-	int fontSize = 20;//big
-	int fontSize2 = 12;//small
+	int fontSize = FONT_SIZE_BIG;//big
+	int fontSize2 = FONT_SIZE_SMALL;//small
 
 	//name
 	string name = "";
@@ -339,7 +346,7 @@ public:
 		ofSetColor(colorBg);
 		ofDrawCircle(position, radiusMax);
 
-		bool bSmall = radiusMax < 70;
+		bool bSmall = radiusMax < 60;
 
 		// inner radium
 		if (animRunning || bToggleMode)

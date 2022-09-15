@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxSurfingHelpers.h"
 
 class RectBeat
 {
@@ -97,10 +98,10 @@ public:
 		x = position.get().x;
 		y = position.get().y;
 	}
-	void setPosition(int x, int y)
+	void setPosition(int _x, int _y)
 	{
-		x = position.get().x;
-		y = position.get().y;
+		x = _x;
+		y = _y;
 
 		position = glm::vec2(x, y);
 	}
@@ -113,7 +114,7 @@ public:
 		float f = ofClamp(1.0f - animCounter, 0.f, 1.f);
 		return f;
 	}
-	float getRadius()
+	float getSize()
 	{
 		return sizeMax;
 	}
