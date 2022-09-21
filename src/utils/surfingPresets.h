@@ -74,7 +74,7 @@ public:
 private:
 	string pathSettings = "ofApp";
 
-	//--
+	//----
 
 public:
 
@@ -84,13 +84,14 @@ public:
 	{
 		//TODO:
 		// make windowed
-		bool b;
+		bool b = true;;
 
 		if (bWindowed) {
 			b = ui->BeginWindow("Presets");
 		}
 
-		if (b) {
+		if (b) 
+		{
 			//TODO:
 			static string _namePreset = "";
 			//static bool bTyping = false;
@@ -277,8 +278,12 @@ public:
 
 	//--
 
+public:
+
+	ofParameter<void> vReset{ "Reset" };//exposed to trig an external method
+	ofParameter<int> index{ "Index", 0, 0, 0 };
+
 private:
-//public:
 
 	ofParameter<void> vPrevious{ "<" };
 	ofParameter<void> vNext{ ">" };
@@ -288,18 +293,17 @@ private:
 	ofParameter<void> vSave{ "Save" };
 	ofParameter<void> vLoad{ "Load" };
 	ofParameter<void> vNew{ "New" };
-	ofParameter<void> vReset{ "Reset" };
-
-	ofParameter<int> index{ "Index", 0, 0, 0 };
 	ofParameter<bool> bClicker{ "CLICKER", false };
 	ofParameter<bool> bAutoSave{ "AutoSave", true };
 	ofParameter<bool> bExpand{ "Expand", true };
 
-public:
+//public:
+	private:
 
 	void setup()
 	{
 		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+
 		doRefreshFiles();//TODO:
 	}
 
@@ -309,9 +313,9 @@ public:
 
 		doRefreshFiles();
 
-		//index = index;
-
 		ofxSurfingHelpers::loadGroup(params);
+
+		//index = index;
 	}
 
 	void update(ofEventArgs& args)
@@ -338,16 +342,6 @@ public:
 		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
 	}
 
-	/*
-	void Save(string filename)
-	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
-
-		//ofxSurfingHelpers::CheckFolder(pathPresets);
-		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
-	}
-	*/
-
 	void doLoad()
 	{
 		ofLogNotice("SurfingPresets") << (__FUNCTION__);
@@ -365,6 +359,8 @@ public:
 	}
 
 	//-
+
+public:
 
 	void AddGroup(ofParameterGroup& group)
 	{
@@ -507,6 +503,7 @@ private:
 	std::string filePath;
 
 public:
+
 	string filename = "presetName";
 
 	vector<std::string> filenames;
