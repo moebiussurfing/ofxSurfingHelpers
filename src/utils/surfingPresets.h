@@ -5,6 +5,7 @@
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
 #include "imgui_stdlib.h"
+//#include "surfingParamsRandom.h"
 
 /*
 
@@ -15,15 +16,14 @@
 //----
 
 /*
-
 	TODO:
 
+	add settings state for gui
+	add auto save
+	add rename preset
+	add copy/swap?
 	add save files
 	search file listers from surfingPresets
-
-	could pass an unique pointer of a ui object to avoid create a new one..
-	#include "ofxSurfingImGui.h"
-
 */
 
 //----
@@ -33,34 +33,50 @@ class SurfingPresets
 
 public:
 
-	SurfingPresets() {
+	SurfingPresets::SurfingPresets() 
+	{
 		ofAddListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
+		ofAddListener(ofEvents().update, this, &SurfingPresets::update);
 
 		params.add(vScan);
 		params.add(vDelete);
 		params.add(vSave);
 		params.add(vLoad);
 		params.add(vNew);
+		params.add(vRename);
 		params.add(vReset);
 		params.add(index);
+		params.add(bAutoSave);
+		params.add(bClicker);
+		params.add(bExpand);
 	};
 
-	~SurfingPresets() {
+	SurfingPresets::~SurfingPresets()
+	{
 		ofRemoveListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
+		ofRemoveListener(ofEvents().update, this, &SurfingPresets::update);
+
+		ofxSurfingHelpers::CheckFolder(pathSettings);
+		ofxSurfingHelpers::saveGroup(params);
 
 		doSave();
 	};
 
-public:
 
+private:
 	ofxSurfingGui* ui;
+
+public:
 	void setUiPtr(ofxSurfingGui* _ui) {
 		ui = _ui;
 	}
 
-
+private:
+	string pathSettings = "ofApp";
 
 	//--
+
+public:
 
 	// Presets
 
@@ -68,9 +84,13 @@ public:
 	{
 		//TODO:
 		// make windowed
+		bool b;
 
-		if (bWindowed) {}
-		{
+		if (bWindowed) {
+			b = ui->BeginWindow("Presets");
+		}
+
+		if (b) {
 			//TODO:
 			static string _namePreset = "";
 			//static bool bTyping = false;
@@ -79,13 +99,13 @@ public:
 			string s = filename;
 
 			static bool bFolder = true;
-			static bool bExpand = false;
-			
+
 			bool b;
 			if (!bFolder) ui->AddLabelBig("PRESETS", true, true);
 			else b = ui->BeginTree("PRESETS");
 			if (b) {
-				ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
+				ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
+				//ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 				//if (!ui->bMinimize)
 				if (bExpand)
 				{
@@ -103,10 +123,21 @@ public:
 						_namePreset = "";
 						setFilename(_namePreset);
 					};
+
 					ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
 
-					ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
+					if (ui->Add(vRename, OFX_IM_BUTTON_SMALL, 2, true)) {
+						//delete
+						vDelete.trigger();
+						//create new
+						if (!bInputText) bInputText = true;
+						_namePreset = "";
+						setFilename(_namePreset);
+					};
+
 					ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
+					ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
+					ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL, 2);
 
 					//--
 
@@ -133,14 +164,21 @@ public:
 
 				//--
 
+				ui->AddSpacingSeparated();
+
 				// Combo
 				ui->AddComboButtonDual(index, filenames, true);
+
+				if (ui->AddButton("NEXT", OFX_IM_BUTTON_SMALL))
+				{
+					doLoadNext();
+				};
 
 				//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
 				//--
 
-				//ui->AddSeparated();
+				ui->AddSpacingSeparated();
 
 				drawImGuiClicker();
 
@@ -157,7 +195,10 @@ public:
 				if (b) ui->EndTree();
 			}
 		}
-		if (bWindowed) {}
+
+		if (bWindowed && b) {
+			ui->EndWindow();
+		}
 	}
 
 
@@ -236,10 +277,12 @@ public:
 
 	//--
 
-public:
+private:
+//public:
 
 	ofParameter<void> vPrevious{ "<" };
 	ofParameter<void> vNext{ ">" };
+	ofParameter<void> vRename{ "Rename" };
 	ofParameter<void> vScan{ "Scan" };
 	ofParameter<void> vDelete{ "Delete" };
 	ofParameter<void> vSave{ "Save" };
@@ -248,7 +291,9 @@ public:
 	ofParameter<void> vReset{ "Reset" };
 
 	ofParameter<int> index{ "Index", 0, 0, 0 };
-	ofParameter<bool> bClicker{ "Clicker", false };
+	ofParameter<bool> bClicker{ "CLICKER", false };
+	ofParameter<bool> bAutoSave{ "AutoSave", true };
+	ofParameter<bool> bExpand{ "Expand", true };
 
 public:
 
@@ -265,11 +310,15 @@ public:
 		doRefreshFiles();
 
 		//index = index;
+
+		ofxSurfingHelpers::loadGroup(params);
 	}
 
-	void update()
+	void update(ofEventArgs& args)
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		if (ofGetFrameNum() == 0) {
+			startup();
+		}
 	}
 
 	void draw()
@@ -307,6 +356,14 @@ public:
 		ofxSurfingHelpers::loadGroup(paramsPreset, pathPresets + "/" + filename + ".json");
 	}
 
+	void doReset()
+	{
+		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+
+		//TODO:
+		//doResetParamsFull(RESET_PARAM_MIN);
+	}
+
 	//-
 
 	void AddGroup(ofParameterGroup& group)
@@ -319,6 +376,8 @@ public:
 		{
 			paramsPreset = group;
 		}
+
+		setup();
 	}
 
 	void setPath(string p) {
@@ -327,6 +386,11 @@ public:
 
 	void setFilename(string p) {
 		filename = p;
+	}
+
+	void doLoadNext() {
+		if (index < index.getMax()) index++;
+		else if (index == index.getMax()) index = index.getMin();
 	}
 
 private:
@@ -343,8 +407,22 @@ private:
 		{
 			if (filenames.size() == 0) return;
 
-			filename = filenames[index];
-			doLoad();
+			static int _index;
+			if (_index != index) {//changed
+				if (bAutoSave)
+				{
+					if (_index < filenames.size()) {
+						filename = filenames[_index];
+						doSave();
+					}
+				}
+				_index = index;
+			}
+
+			if (_index < filenames.size()) {
+				filename = filenames[index];
+				doLoad();
+			}
 		}
 
 		else if (name == vLoad.getName())
@@ -352,20 +430,31 @@ private:
 			doLoad();
 		}
 
+		else if (name == vReset.getName())
+		{
+			doReset();
+		}
+
 		else if (name == vSave.getName())
 		{
+			int num = getNumFiles();
+
 			doSave();
 
+			// scan
 			string filename_ = filename;
 			doRefreshFiles();
-			if (filename_ != filename)
+
+			//if (filename_ != filename)
+			if (num != getNumFiles())
 			{
-				ofLogNotice("SmoothChannel") << (__FUNCTION__) << "Must reorganize indexes";
+				ofLogNotice("SmoothChannel") << (__FUNCTION__) << "Reorganize " << dir.size() << " files.";
 				for (int i = 0; i < dir.size(); i++)
 				{
 					if (dir.getName(i) == filename_)
 					{
 						index = i;
+						break;
 					}
 				}
 			}
@@ -380,9 +469,26 @@ private:
 		{
 			if (filenames.size() == 0) return;
 
-			filename = filenames[index];
+			//filename = filenames[index];
 			ofFile::removeFile(pathPresets + "/" + filename + ".json");
 			doRefreshFiles();
+
+			index = index;
+			//doLoad();
+		}
+
+		else if (name == vRename.getName())
+		{
+			if (filenames.size() == 0) return;
+
+			/*
+			// remove
+			//filename = filenames[index];
+			ofFile::removeFile(pathPresets + "/" + filename + ".json");
+			doRefreshFiles();
+
+			// make new
+			*/
 		}
 	};
 
@@ -408,6 +514,10 @@ public:
 	//--
 
 private:
+
+	int getNumFiles() {
+		return filenames.size();
+	}
 
 	bool doRefreshFiles()
 	{
@@ -451,6 +561,215 @@ private:
 		// true if there's some file
 
 		return b;
+	}
+
+	//--
+
+	// Resets
+	//TODO:
+private:
+
+	enum ResetPramsType
+	{
+		RESET_PARAM_MIN = 0,
+		RESET_PARAM_FULL_CENTER,
+		RESET_PARAM_RANGE_CENTER,
+		RESET_PARAM_MAX,
+		RESET_RANGE_MIN,
+		RESET_RANGE_MAX,
+	};
+
+	//--------------------------------------------------------------
+	void doResetParamsFull(ResetPramsType MS_type) {
+		ofLogNotice(__FUNCTION__);
+
+
+		for (int i = 0; i < paramsPreset.size(); i++)
+			//for (auto p : editorEnablers)
+		{
+			auto p = true;//only reset this iterated param if it's enabled
+
+			//-
+
+			//std::string name = p.getName();//name
+			std::string name = paramsPreset[i].getName();//name
+			//auto& g = paramsPreset.getGroup(name);//ofParameterGroup
+			//auto& g = paramsPreset.getGroup(name);//ofParameterGroup
+			auto& g = paramsPreset;//ofParameterGroup
+			auto& e = g.get(name);//ofAbstractParameter
+			//auto& e = paramsPreset.get(name);//ofAbstractParameter
+
+			auto type = e.type();
+			bool isFloat = type == typeid(ofParameter<float>).name();
+			bool isInt = type == typeid(ofParameter<int>).name();
+
+			bool isVec2 = type == typeid(ofParameter<glm::vec2>).name();
+			bool isVec3 = type == typeid(ofParameter<glm::vec3>).name();
+			bool isVec4 = type == typeid(ofParameter<glm::vec4>).name();
+
+			if (isFloat)
+			{
+				auto pmin = g.getFloat("Min").get();
+				auto pmax = g.getFloat("Max").get();
+				ofParameter<float> p0 = e.cast<float>();
+
+				if (0) {}
+				else if (MS_type == RESET_PARAM_MIN) p0.set(p0.getMin());//reset to param min
+				else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set((p0.getMax() - p0.getMin()) / 2);
+				else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set((pmax - pmin) / 2);
+				else if (MS_type == RESET_PARAM_MAX) p0.set(p0.getMax());//reset to param max
+				else if (MS_type == RESET_RANGE_MIN) p0.set(pmin);//reset to range min
+				else if (MS_type == RESET_RANGE_MAX) p0.set(pmax);//reset to range max
+			}
+
+			else if (isInt)
+			{
+				auto pmin = g.getInt("Min").get();
+				auto pmax = g.getInt("Max").get();
+				ofParameter<int> p0 = e.cast<int>();
+
+				if (0) {}
+				else if (MS_type == RESET_PARAM_MIN) p0.set(p0.getMin());//reset to param min
+				else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set((p0.getMax() - p0.getMin()) / 2);
+				else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set((pmax - pmin) / 2);
+				else if (MS_type == RESET_PARAM_MAX) p0.set(p0.getMax());//reset to param max
+				else if (MS_type == RESET_RANGE_MIN) p0.set(pmin);//reset to range min
+				else if (MS_type == RESET_RANGE_MAX) p0.set(pmax);//reset to range max
+			}
+
+			else if (isVec2)
+			{
+				auto pmin = g.getVec2f("Min").get();
+				auto pmax = g.getVec2f("Max").get();
+				ofParameter<glm::vec2> p0 = e.cast<glm::vec2>();
+
+				if (0) {}
+				else if (MS_type == RESET_PARAM_MIN) p0.set(p0.getMin());//reset to param min
+				else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set((p0.getMax() - p0.getMin()) / 2);
+				else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set((pmax - pmin) / 2);
+				else if (MS_type == RESET_PARAM_MAX) p0.set(p0.getMax());//reset to param max
+				else if (MS_type == RESET_RANGE_MIN) p0.set(pmin);//reset to range min
+				else if (MS_type == RESET_RANGE_MAX) p0.set(pmax);//reset to range max
+
+				//for (int dim = 0; dim < 2; dim++) {
+				//	if (dim == 0) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec2(p0.getMin().x, p0.get().y));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec2(p0.getMax().x - p0.getMin().x / 2, p0.get().y));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec2(pmax.x - pmin.x / 2, p0.get().y));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec2(p0.getMax().x, p0.get().y));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec2(pmin.x, p0.get().y));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec2(pmax.x, p0.get().y));//reset to range max
+				//	}
+				//	else if (dim == 1) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec2(p0.get().x, p0.getMin().y));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec2(p0.get().x,p0.getMax().y - p0.getMin().y / 2));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec2(p0.get().x,pmax.y - pmin.y / 2));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec2(p0.getMax().x, p0.get().y));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec2(p0.get().x, pmin.y));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec2(p0.get().x, pmax.y));//reset to range max
+				//	}
+				//}
+			}
+			else if (isVec3)
+			{
+				auto pmin = g.getVec3f("Min").get();
+				auto pmax = g.getVec3f("Max").get();
+				ofParameter<glm::vec3> p0 = e.cast<glm::vec3>();
+
+				if (0) {}
+				else if (MS_type == RESET_PARAM_MIN) p0.set(p0.getMin());//reset to param min
+				else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set((p0.getMax() - p0.getMin()) / 2);
+				else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set((pmax - pmin) / 2);
+				else if (MS_type == RESET_PARAM_MAX) p0.set(p0.getMax());//reset to param max
+				else if (MS_type == RESET_RANGE_MIN) p0.set(pmin);//reset to range min
+				else if (MS_type == RESET_RANGE_MAX) p0.set(pmax);//reset to range max
+
+				//for (int dim = 0; dim < 3; dim++) {
+				//	if (dim == 0) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec3(p0.getMin().x, p0.get().y, p0.get().z));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec3(p0.getMax().x - p0.getMin().x / 2, p0.get().y, p0.get().z));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec3(pmax.x - pmin.x / 2, p0.get().y, p0.get().z));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec3(p0.getMax().x, p0.get().y, p0.get().z));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec3(pmin.x, p0.get().y, p0.get().z));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec3(pmax.x, p0.get().y, p0.get().z));//reset to range max
+				//	}
+				//	else if (dim == 1) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec3(p0.get().x, p0.getMin().y, p0.getMin().z));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec3(p0.get().x, p0.getMax().y - p0.getMin().y / 2, p0.getMin().z));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec3(p0.get().x, pmax.y - pmin.y / 2, p0.getMin().z));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec3(p0.getMax().x, p0.get().y, p0.getMin().z));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec3(p0.get().x, pmin.y, p0.getMin().z));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec3(p0.get().x, pmax.y, p0.getMin().z));//reset to range max
+				//	}
+				//	else if (dim == 2) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec3(p0.get().x, p0.get().y, p0.getMin().z));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec3(p0.get().x, p0.get().y, p0.getMax().z - p0.getMin().z / 2));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec3(p0.get().x, p0.get().y, pmax.z - pmin.z / 2));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec3(p0.getMax().x, p0.get().y, p0.get().z));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec3(p0.get().x, p0.get().y, pmin.z));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec3(p0.get().x, p0.get().y, pmax.z));//reset to range max
+				//	}
+				//}
+			}
+			else if (isVec4)
+			{
+				auto pmin = g.getVec4f("Min").get();
+				auto pmax = g.getVec4f("Max").get();
+				ofParameter<glm::vec4> p0 = e.cast<glm::vec4>();
+
+				if (0) {}
+				else if (MS_type == RESET_PARAM_MIN) p0.set(p0.getMin());//reset to param min
+				else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set((p0.getMax() - p0.getMin()) / 2);
+				else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set((pmax - pmin) / 2);
+				else if (MS_type == RESET_PARAM_MAX) p0.set(p0.getMax());//reset to param max
+				else if (MS_type == RESET_RANGE_MIN) p0.set(pmin);//reset to range min
+				else if (MS_type == RESET_RANGE_MAX) p0.set(pmax);//reset to range max
+
+				//for (int dim = 0; dim < 4; dim++) {
+				//	if (dim == 0) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec4(p0.getMin().x, p0.get().y, p0.get().z, p0.get().w));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec4((p0.getMax().x - p0.getMin().x) / 2, p0.get().y, p0.get().z, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec4((pmax.x - pmin.x) / 2, p0.get().y, p0.get().z, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec4(p0.getMax().x, p0.get().y, p0.get().z, p0.get().w));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec4(pmin.x, p0.get().y, p0.get().z, p0.get().w));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec4(pmax.x, p0.get().y, p0.get().z, p0.get().w));//reset to range max
+				//	}
+				//	else if (dim == 1) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec4(p0.get().x, p0.getMin().y, p0.get().z, p0.get().w));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec4(p0.get().x, (p0.getMax().y - p0.getMin().y) / 2, p0.get().z, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec4(p0.get().x, (pmax.y - pmin.y) / 2, p0.get().z, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec4(p0.getMax().x, p0.get().y, p0.get().z, p0.get().w));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec4(p0.get().x, pmin.y, p0.get().z, p0.get().w));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec4(p0.get().x, pmax.y, p0.get().z, p0.get().w));//reset to range max
+				//	}
+				//	else if (dim == 2) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.getMin().z, p0.get().w));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec4(p0.get().x, p0.get().y, (p0.getMax().z - p0.getMin().z) / 2, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec4(p0.get().x, p0.get().y, (pmax.z - pmin.z) / 2, p0.get().w));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, p0.get().w));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec4(p0.get().x, p0.get().y, pmin.z, p0.get().w));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec4(p0.get().x, p0.get().y, pmax.z, p0.get().w));//reset to range max
+				//	}
+				//	else if (dim == 3) {
+				//		if (0) {}
+				//		else if (MS_type == RESET_PARAM_MIN) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, p0.getMin()));//reset to param min
+				//		else if (MS_type == RESET_PARAM_FULL_CENTER) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, (p0.getMax().w - p0.getMin().w) / 2));
+				//		else if (MS_type == RESET_PARAM_RANGE_CENTER) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, (pmax.w - pmin.w) / 2));
+				//		else if (MS_type == RESET_PARAM_MAX) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, p0.getMax().w));//reset to param max
+				//		else if (MS_type == RESET_RANGE_MIN) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, pmin));//reset to range min
+				//		else if (MS_type == RESET_RANGE_MAX) p0.set(glm::vec4(p0.get().x, p0.get().y, p0.get().z, pmax));//reset to range max
+				//	}
+				//}
+			}
+		}
 	}
 };
 
