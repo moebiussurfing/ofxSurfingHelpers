@@ -33,7 +33,7 @@ class SurfingPresets
 
 public:
 
-	SurfingPresets::SurfingPresets() 
+	SurfingPresets::SurfingPresets()
 	{
 		ofAddListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
 		ofAddListener(ofEvents().update, this, &SurfingPresets::update);
@@ -90,7 +90,7 @@ public:
 			b = ui->BeginWindow("Presets");
 		}
 
-		if (b) 
+		if (b)
 		{
 			//TODO:
 			static string _namePreset = "";
@@ -297,8 +297,8 @@ private:
 	ofParameter<bool> bAutoSave{ "AutoSave", true };
 	ofParameter<bool> bExpand{ "Expand", true };
 
-//public:
-	private:
+	//public:
+private:
 
 	void setup()
 	{
@@ -447,7 +447,8 @@ private:
 				ofLogNotice("SmoothChannel") << (__FUNCTION__) << "Reorganize " << dir.size() << " files.";
 				for (int i = 0; i < dir.size(); i++)
 				{
-					if (dir.getName(i) == filename_)
+					string n = dir.getName(i);
+					if (n == filename_ + ".json")
 					{
 						index = i;
 						break;
