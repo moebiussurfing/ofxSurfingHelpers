@@ -62,11 +62,12 @@ public:
 		doSave();
 	};
 
-
 private:
+
 	ofxSurfingGui* ui;
 
 public:
+
 	void setUiPtr(ofxSurfingGui* _ui) {
 		ui = _ui;
 	}

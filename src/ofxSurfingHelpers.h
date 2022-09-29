@@ -1,7 +1,7 @@
 //TODO:
 // Get some utils from here
 //https://github.com/d3cod3/ofxMosaicPlugin/blob/master/src/utils.h
-//
+
 
 #pragma once
 
@@ -49,6 +49,8 @@ namespace ofxSurfingHelpers {
 
 	//--------------------------------------------------------------
 	inline void ofDeserializeSilent(const ofJson& json, ofAbstractParameter& parameter) {
+		ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << parameter.getName();
+
 		if (!parameter.isSerializable()) {
 			return;
 		}
@@ -97,14 +99,14 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup& g, string path)
 	{
-		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+		ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 
 		ofXml settings;
 		bool b = settings.load(path);
 
-		if (b) ofLogVerbose(__FUNCTION__) << "Loading: " << g.getName() << " at " << path;
-		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "Loading: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path;
 
 		ofDeserialize(settings, g);
 
@@ -114,8 +116,8 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool saveGroup(ofParameterGroup& g, string path)
 	{
-		ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-		ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+		ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+		ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 
 		//CheckFolder(path);
 
@@ -123,8 +125,8 @@ namespace ofxSurfingHelpers {
 		ofSerialize(settings, g);
 		bool b = settings.save(path);
 
-		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
-		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 		return b;
 	}
 
@@ -137,18 +139,18 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
-		if (path == "") path = g.getName() + "_Settings.json";
+		if (path == "") path = g.getName() + "_Settings.json";// a default filename
 		//if (path == "") path = "settings.json";
 
 		if (debug)
 		{
-			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 		else
 		{
-			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 
 		ofJson settings;
@@ -164,8 +166,8 @@ namespace ofxSurfingHelpers {
 		// returns false if no file preset yet.
 		ofFile f;
 		bool b = f.doesFileExist(path);
-		if (b) ofLogNotice(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
-		else ofLogError(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path << " Not found!";
+		if (b) ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << "Load: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "Error loading: " << g.getName() << " at " << path << " Not found!";
 
 		return b;//returns true if its ok
 	}
@@ -175,16 +177,16 @@ namespace ofxSurfingHelpers {
 	{
 		//if (path == "") path = "settings.json";
 		if (path == "") path = g.getName() + "_Settings.json";
-			ofLogWarning(__FUNCTION__) << "Path is empty! Using a default instead!";
+			ofLogWarning("ofxSurfingHelpers")<<(__FUNCTION__) << "Path is empty! Using a default instead!";
 
 		if (debug) {
-			ofLogNotice(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 		else
 		{
-			ofLogVerbose(__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << g.getName() << " to " << path;
+			ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
 		}
 
 		//ofxSurfingHelpers::CheckFolder(path);
@@ -193,8 +195,8 @@ namespace ofxSurfingHelpers {
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
 
-		if (b) ofLogVerbose(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
-		else ofLogError(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << "Save: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
 
 		return b;
 	}
@@ -224,12 +226,14 @@ namespace ofxSurfingHelpers {
 	//--------------------------------------------------------------
 	inline void CheckFolder(string _path)
 	{
-		//ofLogNotice(__FUNCTION__) << _path;
+		//ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << _path;
+
+		//if (ofFile::doesFileExist(_path)) {
 
 		//// Workaround to avoid error when folders are folder/subfolder
 		//auto _fullPath = ofSplitString(_path, "/");
 		//for (int i = 0; i < _fullPath.size(); i++) {
-		//	ofLogNotice(__FUNCTION__) << ofToString(i) << " " << _fullPath[i];
+		//	ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << ofToString(i) << " " << _fullPath[i];
 		//}
 
 		ofDirectory dataDirectory(ofToDataPath(_path, true));// /bin/data/
@@ -237,7 +241,7 @@ namespace ofxSurfingHelpers {
 		// Check if folder path exist
 		if (!dataDirectory.isDirectory())
 		{
-			ofLogError(__FUNCTION__) << "FOLDER NOT FOUND! TRYING TO CREATE...";
+			ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "FOLDER NOT FOUND! TRYING TO CREATE...";
 
 			// Try to create folder
 			//bool b = dataDirectory.createDirectory(ofToDataPath(_path, true));
@@ -245,12 +249,12 @@ namespace ofxSurfingHelpers {
 			// Added enable recursive to allow create nested subfolders if required
 
 			// Debug if creation has been succeded
-			if (b) ofLogNotice(__FUNCTION__) << "CREATED '" << _path << "' SUCCESSFULLY!";
-			else ofLogError(__FUNCTION__) << "UNABLE TO CREATE '" << _path << "' FOLDER!";
+			if (b) ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << "CREATED '" << _path << "' SUCCESSFULLY!";
+			else ofLogError("ofxSurfingHelpers")<<(__FUNCTION__) << "UNABLE TO CREATE '" << _path << "' FOLDER!";
 		}
 		else
 		{
-			ofLogVerbose(__FUNCTION__) << _path << " Found!";// nothing to do
+			ofLogVerbose("ofxSurfingHelpers")<<(__FUNCTION__) << _path << " Found!";// nothing to do
 		}
 	}
 

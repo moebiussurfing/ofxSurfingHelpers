@@ -239,6 +239,8 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 	ofLogVerbose(__FUNCTION__) << "unable to load : " << filename;
 	rectParam.set(this->getRect());//?
 
+	refreshConstraints();
+
 	return false;
 }
 
