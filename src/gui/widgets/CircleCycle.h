@@ -142,7 +142,8 @@ public:
 
 	void setFont(string str, int size = 10) {
 		fontCycleSize = size;
-		std::string path = "assets/fonts/mono.ttf";
+		//std::string path = "assets/fonts/mono.ttf";
+		std::string path = "assets/fonts/"+ ofToString(FONT_FILE_BIG);
 		if (!fontCycle.loadFont(path, fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	}

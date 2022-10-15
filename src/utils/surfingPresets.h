@@ -171,7 +171,7 @@ public:
 				// Combo
 				ui->AddComboButtonDual(index, filenames, true);
 
-				if (ui->AddButton("NEXT", OFX_IM_BUTTON_SMALL))
+				if (ui->AddButton("NEXT", OFX_IM_BUTTON_MEDIUM))
 				{
 					doLoadNext();
 				};

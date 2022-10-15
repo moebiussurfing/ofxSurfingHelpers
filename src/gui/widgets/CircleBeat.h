@@ -371,7 +371,9 @@ public:
 			ofDrawCircle(position, _radius);
 
 			// shadowed border
-			if (/*!bSmall && */bBorder) {
+			//if (/*!bSmall && */bBorder)
+			if (bBorder)
+			{
 				ofNoFill();
 				static const float thickness = 4.f;
 				//static const float thickness = bSmall ? 1.f : 4.f;
@@ -382,6 +384,7 @@ public:
 				r = _radius;
 				ofSetLineWidth(thickness);
 				ofSetColor(colorBg, a);
+
 				ofDrawCircle(position, r);
 			}
 		}
@@ -399,8 +402,11 @@ public:
 			//ofSetColor(color, alpha);
 			//ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
 
+			ofSetColor(color, MAX(48, alphaMax * 0.1f + alpha * 0.9f));
+			/*
 			if (bBorder) ofSetColor(color, MAX(48, alphaMax * 0.1f + alpha * 0.9f));
 			else ofSetColor(color, alphaMax * 0.1f + alpha * 0.9f);
+			*/
 
 			ofDrawCircle(position, radiusMax);
 		}
@@ -454,9 +460,9 @@ public:
 
 
 		//--
-		// 
+		 
 		// text
-		// 
+		 
 		// name
 		if (bNamed) {
 			ofSetColor(255, 200);

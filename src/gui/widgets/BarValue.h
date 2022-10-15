@@ -141,7 +141,8 @@ public:
 		fontCycleSize = 10;
 
 		//if (!fontCycle.loadFont("assets/fonts/mono.ttf", fontCycleSize))
-		if (!fontCycle.loadFont("assets/fonts/JetBrainsMono-Bold.ttf", fontCycleSize))
+		//if (!fontCycle.loadFont("assets/fonts/JetBrainsMono-Bold.ttf", fontCycleSize))
+		if (!fontCycle.loadFont("assets/fonts/" + ofToString(FONT_FILE_BIG), fontCycleSize))
 			fontCycle.loadFont(OF_TTF_MONO, fontCycleSize);
 	};
 
