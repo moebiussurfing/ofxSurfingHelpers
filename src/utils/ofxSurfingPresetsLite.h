@@ -16,8 +16,13 @@
 //----
 
 /*
-	TODO:
 
+	BUG:
+	Seems that overwrites presets..
+
+	TODO:
+	improve first name.
+		new auto set name to be faster
 	add settings state for gui
 	add auto save
 	add rename preset
@@ -28,16 +33,17 @@
 
 //----
 
-class SurfingPresets
+class ofxSurfingPresetsLite
 {
 
 public:
 
-	SurfingPresets::SurfingPresets()
+	ofxSurfingPresetsLite::ofxSurfingPresetsLite()
 	{
-		ofAddListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
-		ofAddListener(ofEvents().update, this, &SurfingPresets::update);
+		ofAddListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
+		ofAddListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
 
+		params.add(bGui);
 		params.add(vScan);
 		params.add(vDelete);
 		params.add(vSave);
@@ -51,10 +57,10 @@ public:
 		params.add(bExpand);
 	};
 
-	SurfingPresets::~SurfingPresets()
+	ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
 	{
-		ofRemoveListener(params.parameterChangedE(), this, &SurfingPresets::Changed);
-		ofRemoveListener(ofEvents().update, this, &SurfingPresets::update);
+		ofRemoveListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
+		ofRemoveListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
 
 		ofxSurfingHelpers::CheckFolder(pathSettings);
 		ofxSurfingHelpers::saveGroup(params);
@@ -83,9 +89,11 @@ public:
 
 	void drawImGui(bool bWindowed = false)
 	{
+		if (!bGui) return;
+
 		//TODO:
 		// make windowed
-		bool b = true;;
+		bool b = true;
 
 		if (bWindowed) {
 			b = ui->BeginWindow("Presets");
@@ -100,12 +108,14 @@ public:
 			//string s = "presetName";
 			string s = filename;
 
-			static bool bFolder = true;
+			static bool bFolder = !bWindowed;
+			//static bool bFolder = true;
 
-			bool b;
+			bool b = true;
 			if (!bFolder) ui->AddLabelBig("PRESETS", true, true);
 			else b = ui->BeginTree("PRESETS");
-			if (b) {
+			if (b)
+			{
 				ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 				//ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 				//if (!ui->bMinimize)
@@ -194,7 +204,7 @@ public:
 
 				//--
 
-				if (b) ui->EndTree();
+				if (b && bFolder) ui->EndTree();
 			}
 		}
 
@@ -284,6 +294,8 @@ public:
 	ofParameter<void> vReset{ "Reset" };//exposed to trig an external method
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
+	ofParameter<bool> bGui{ "PRESETS", true };
+
 private:
 
 	ofParameter<void> vPrevious{ "<" };
@@ -303,14 +315,14 @@ private:
 
 	void setup()
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		doRefreshFiles();//TODO:
 	}
 
 	void startup()
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		doRefreshFiles();
 
@@ -337,7 +349,7 @@ private:
 
 	void doSave()
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		ofxSurfingHelpers::CheckFolder(pathPresets);
 		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
@@ -345,7 +357,7 @@ private:
 
 	void doLoad()
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		// Load Settings
 		ofxSurfingHelpers::loadGroup(paramsPreset, pathPresets + "/" + filename + ".json");
@@ -353,7 +365,7 @@ private:
 
 	void doReset()
 	{
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		//TODO:
 		//doResetParamsFull(RESET_PARAM_MIN);
@@ -395,28 +407,30 @@ private:
 	void Changed(ofAbstractParameter& e)
 	{
 		string name = e.getName();
-		ofLogNotice("SurfingPresets") << (__FUNCTION__);
-		ofLogNotice("SurfingPresets") << name << " " << e;
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << name << " " << e;
 
 		if (0) {}
 
+		//TODO: BUG: overwrites presets sometimes
 		else if (name == index.getName())
 		{
 			if (filenames.size() == 0) return;
 
-			static int _index;
+			static int _index = -1;//pre
+
 			if (_index != index) {//changed
 				if (bAutoSave)
 				{
-					if (_index < filenames.size()) {
+					if (_index < filenames.size() && _index >= 0) {
 						filename = filenames[_index];
 						doSave();
 					}
 				}
-				_index = index;
+				_index = index;//refresh
 			}
 
-			if (_index < filenames.size()) {
+			if (index < filenames.size() && index >= 0) {
 				filename = filenames[index];
 				doLoad();
 			}
@@ -494,10 +508,10 @@ private:
 
 private:
 
-	ofParameterGroup params{ "SurfingPresets" };
+	ofParameterGroup params{ "ofxSurfingPresetsLite" };
 	ofParameterGroup paramsPreset{ "Preset" };
 
-	string pathPresets = "SurfingPresets";
+	string pathPresets = "ofxSurfingPresetsLite";
 
 	// Files Browser
 	ofDirectory dir;
@@ -521,7 +535,7 @@ private:
 	bool doRefreshFiles()
 	{
 		// Load dragged images folder
-		ofLogNotice("SurfingPresets") << (__FUNCTION__) << "list files " << pathPresets;
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "list files " << pathPresets;
 
 		bool b = false;
 
@@ -534,7 +548,7 @@ private:
 		filenames.clear();
 		for (int i = 0; i < dir.size(); i++)
 		{
-			ofLogNotice("SurfingPresets") << (__FUNCTION__) << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
+			ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
 
 			std::string _name = "NoName"; // without ext
 			auto _names = ofSplitString(dir.getName(i), ".");
