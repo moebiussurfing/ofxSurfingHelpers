@@ -95,8 +95,9 @@ public:
 		// make windowed
 		bool b = true;
 
-		if (bWindowed) {
-			b = ui->BeginWindow("Presets");
+		if (bWindowed)
+		{
+			b = ui->BeginWindow("PRESETS");
 		}
 
 		if (b)
@@ -112,48 +113,79 @@ public:
 			//static bool bFolder = true;
 
 			bool b = true;
-			if (!bFolder) ui->AddLabelBig("PRESETS", true, true);
-			else b = ui->BeginTree("PRESETS");
+
+			string sn = "PRESETS";
+
+			if (!bFolder)
+			{
+				//ui->AddLabelBig(sn, true, true);
+			}
+			else
+			{
+				b = ui->BeginTree(sn);
+			}
+
 			if (b)
 			{
-				ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
+				ui->Add(ui->bMinimize, OFX_IM_TOGGLE_ROUNDED);
+
+				if (!ui->bMinimize) {
+					ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
+					ui->AddSpacing();
+				}
+
 				//ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
-				//if (!ui->bMinimize)
 				if (bExpand)
 				{
-					ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
+					if (!ui->bMinimize) {//maximized
+						ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
-					if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
+						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
+						{
+							bInputText = false;
+							_namePreset = s;
+						};
+
+						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
+						{
+							if (!bInputText) bInputText = true;
+							_namePreset = "";
+							setFilename(_namePreset);
+						};
+
+						ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
+
+						if (ui->Add(vRename, OFX_IM_BUTTON_SMALL, 2, true)) {
+							//delete
+							vDelete.trigger();
+							//create new
+							if (!bInputText) bInputText = true;
+							_namePreset = "";
+							setFilename(_namePreset);
+						};
+
+						ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
+						ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
+						ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL, 2);
+					}
+					else//minimized
 					{
-						bInputText = false;
-						_namePreset = s;
-					};
-
-					if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
-					{
-						if (!bInputText) bInputText = true;
-						_namePreset = "";
-						setFilename(_namePreset);
-					};
-
-					ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
-
-					if (ui->Add(vRename, OFX_IM_BUTTON_SMALL, 2, true)) {
-						//delete
-						vDelete.trigger();
-						//create new
-						if (!bInputText) bInputText = true;
-						_namePreset = "";
-						setFilename(_namePreset);
-					};
-
-					ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
-					ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
-					ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL, 2);
+						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2, true))
+						{
+							bInputText = false;
+							_namePreset = s;
+						};
+						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
+						{
+							if (!bInputText) bInputText = true;
+							_namePreset = "";
+							setFilename(_namePreset);
+						};
+					}
 
 					//--
 
-					ui->AddSpacing();
+					if (!ui->bMinimize) ui->AddSpacing();
 
 					if (bInputText)
 					{
@@ -170,16 +202,21 @@ public:
 						ImGui::PopItemWidth();
 					}
 				}
-				else {
+
+				if (!bExpand /*|| !ui->bMinimize*/)
+				{
 					ui->Add(vSave, OFX_IM_BUTTON_SMALL);
 				}
 
 				//--
 
-				ui->AddSpacingSeparated();
+				if (!ui->bMinimize) ui->AddSpacingSeparated();
 
 				// Combo
-				ui->AddComboButtonDual(index, filenames, true);
+				if (!ui->bMinimize || bExpand)
+				{
+					ui->AddComboButtonDual(index, filenames, true);
+				}
 
 				if (ui->AddButton("NEXT", OFX_IM_BUTTON_MEDIUM))
 				{
@@ -190,7 +227,7 @@ public:
 
 				//--
 
-				ui->AddSpacingSeparated();
+				if (!ui->bMinimize) ui->AddSpacingSeparated();
 
 				drawImGuiClicker();
 
@@ -222,7 +259,7 @@ public:
 	// 2. Presets
 	void drawImGuiClicker(bool bWindowed = false)
 	{
-		ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+		if (!ui->bMinimize) ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 		if (bClicker)
 		{
 			float h = ui->getWidgetsHeightUnit();
@@ -520,7 +557,7 @@ private:
 
 public:
 
-	string filename = "presetName";
+	string filename = "1";
 
 	vector<std::string> filenames;
 
