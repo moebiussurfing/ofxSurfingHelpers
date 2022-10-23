@@ -181,7 +181,7 @@ namespace ofxSurfingHelpers
 	// draws a transparent box with centered text
 	//--------------------------------------------------------------
 //#define BOX_PADDING 50
-	inline void drawTextBoxed(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor fColor = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
+	inline void drawTextBoxed(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor fColorTxt = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false)
 	{
 		int BOX_PADDING = _pad;
 		if (!noPadding)
@@ -254,7 +254,7 @@ namespace ofxSurfingHelpers
 				}
 
 				// Text
-				ofSetColor(fColor);
+				ofSetColor(fColorTxt);
 				font.drawString(text, x, y);
 			}
 		}
@@ -287,7 +287,7 @@ namespace ofxSurfingHelpers
 #define PAD_MINI 12
 //#define PAD_MINI 8
 
-	inline void drawTextBoxedMini(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor fColor = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
+	inline void drawTextBoxedMini(ofTrueTypeFont& font, string text, int x = 0, int y = 0, ofColor fColorTxt = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128)
 	{
 		float _round = 0;
 		int heighForced = -1;
@@ -297,7 +297,7 @@ namespace ofxSurfingHelpers
 		x += PAD_MINI / 2;
 		y -= ((PAD_MINI / 2) - 1);
 
-		drawTextBoxed(font, text, x, y, fColor, colorBackground, useShadow, colorShadow, (int)PAD_MINI, _round, heighForced, noPadding);
+		drawTextBoxed(font, text, x, y, fColorTxt, colorBackground, useShadow, colorShadow, (int)PAD_MINI, _round, heighForced, noPadding);
 	}
 	inline float getWidthBBtextBoxedMini(ofTrueTypeFont& font, string text) {
 		return (font.getStringBoundingBox(text, 0, 0)).getWidth() + (int)PAD_MINI;
