@@ -105,7 +105,7 @@ public:
 			//TODO:
 			static string _namePreset = "";
 			//static bool bTyping = false;
-			static bool bInputText = false;
+			static bool bOverInputText = false;
 			//string s = "presetName";
 			string s = filename;
 
@@ -142,13 +142,13 @@ public:
 
 						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
 						{
-							bInputText = false;
+							bOverInputText = false;
 							_namePreset = s;
 						};
 
 						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
 						{
-							if (!bInputText) bInputText = true;
+							if (!bOverInputText) bOverInputText = true;
 							_namePreset = "";
 							setFilename(_namePreset);
 						};
@@ -159,7 +159,7 @@ public:
 							//delete
 							vDelete.trigger();
 							//create new
-							if (!bInputText) bInputText = true;
+							if (!bOverInputText) bOverInputText = true;
 							_namePreset = "";
 							setFilename(_namePreset);
 						};
@@ -172,12 +172,12 @@ public:
 					{
 						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2, true))
 						{
-							bInputText = false;
+							bOverInputText = false;
 							_namePreset = s;
 						};
 						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
 						{
-							if (!bInputText) bInputText = true;
+							if (!bOverInputText) bOverInputText = true;
 							_namePreset = "";
 							setFilename(_namePreset);
 						};
@@ -187,7 +187,7 @@ public:
 
 					if (!ui->bMinimize) ui->AddSpacing();
 
-					if (bInputText)
+					if (bOverInputText)
 					{
 						int _w = ui->getWidgetsWidth() * 0.9f;
 						ImGui::PushItemWidth(_w);

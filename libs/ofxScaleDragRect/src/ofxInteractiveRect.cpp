@@ -561,7 +561,16 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 
 	float d = 0.1f;
 	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
-	this->scaleFromCenter(s);
+	
+	bool bKeyModShift = ofGetKeyPressed(OF_KEY_LEFT_SHIFT);
+	bool bKeyModCtrl = ofGetKeyPressed(OF_KEY_CONTROL);
+	bool bKeyModAlt = ofGetKeyPressed(OF_KEY_ALT);
+
+	if (bKeyModCtrl) this->scaleFromCenter(s);
+	else if (bKeyModAlt) this->scale(1, s);
+	else if (bKeyModShift) this->scale(s, 1);
+	else this->scale(s);
+
 	if (bLockAspectRatio) height = width / aspectRatio;
 
 	// constraint
