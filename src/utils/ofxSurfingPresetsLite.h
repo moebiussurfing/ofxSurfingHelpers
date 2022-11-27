@@ -194,7 +194,7 @@ public:
 						{
 							bool b = ImGui::InputText("##NAME", &s);
 							if (b) {
-								ofLogNotice("WaveformPlot") << "InputText:" << s.c_str();
+								ofLogNotice("ofxSurfingPresetsLite") << "InputText:" << s.c_str();
 								setFilename(s);
 							}
 						}
@@ -316,7 +316,7 @@ public:
 						}
 					}
 
-					ofLogNotice(__FUNCTION__) << "Picked file " << nameSelected << " > " << index;
+					ofLogNotice("ofxSurfingPresetsLite") << "Picked file " << nameSelected << " > " << index;
 				}
 			}
 			ui->Unindent();
@@ -496,7 +496,7 @@ private:
 			//if (filename_ != filename)
 			if (num != getNumFiles())
 			{
-				ofLogNotice("SmoothChannel") << (__FUNCTION__) << "Reorganize " << dir.size() << " files.";
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "Reorganize " << dir.size() << " files.";
 				for (int i = 0; i < dir.size(); i++)
 				{
 					string n = dir.getName(i);
@@ -631,7 +631,7 @@ private:
 
 	//--------------------------------------------------------------
 	void doResetParamsFull(ResetPramsType MS_type) {
-		ofLogNotice(__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 
 		for (int i = 0; i < paramsPreset.size(); i++)

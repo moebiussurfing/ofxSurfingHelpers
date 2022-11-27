@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "SurfingTimers.h"
 
 #define FONT_FILES_PATH "assets/fonts/"
 #define FONT_FILE_BIG "JetBrainsMonoNL-ExtraBold.ttf"

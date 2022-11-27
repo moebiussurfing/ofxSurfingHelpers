@@ -8,7 +8,6 @@
 //	Updated by moebiusSurfing 2021
 
 #include "ofxInteractiveRect.h"
-#include "ofxSurfingHelpers.h"
 
 //--------------------------------------------------------------
 ofxInteractiveRect::ofxInteractiveRect(string name, string path)
@@ -116,6 +115,7 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 	ofLogNotice(__FUNCTION__) << filename;
 }
 
+//--------------------------------------------------------------
 ofJson ofxInteractiveRect::saveToJson()
 {
 	ofLogNotice(__FUNCTION__);
@@ -132,6 +132,7 @@ ofJson ofxInteractiveRect::saveToJson()
 	return j;
 }
 
+//--------------------------------------------------------------
 void ofxInteractiveRect::loadFromJson(const ofJson& j)
 {
 	ofLogNotice(__FUNCTION__);
@@ -153,6 +154,7 @@ void ofxInteractiveRect::loadFromJson(const ofJson& j)
 	refreshConstraints();
 }
 
+//--------------------------------------------------------------
 ofXml ofxInteractiveRect::saveToXml()
 {
 	ofXml xml;
@@ -169,6 +171,7 @@ ofXml ofxInteractiveRect::saveToXml()
 	return xml;
 }
 
+//--------------------------------------------------------------
 bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 {
 	auto r = xml.getChild("interactiveRect");
@@ -456,45 +459,56 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 	if (!bEditMode) return;
 	//if (!this->isMouseOver()) return;
 
+	float diffx = mouse.x - mousePrev.x;
+	float diffy = mouse.y - mousePrev.y;
+
 	//if (!bLockResize) 
 	{
 		if (bUp && !bLockX)
 		{
-			y += mouse.y - mousePrev.y;
-			height += mousePrev.y - mouse.y;
+			//diffx = ofClamp(diffx, pad, ofGetHeight() - pad);
+			y += diffy;
+			y = ofClamp(y, pad, ofGetHeight() - pad);
+			height += diffy;
 
 			if (bLockAspectRatio) width = aspectRatio * height;
-
 		}
 		else if (bDown && !bLockY)
 		{
-			height += mouse.y - mousePrev.y;
+			height += diffy;
+			height = MIN(height, ofGetHeight() - y - 2 * pad);
 
 			if (bLockAspectRatio) width = aspectRatio * height;
 		}
+
 		if (bLeft && !bLockW)
 		{
-			x += mouse.x - mousePrev.x;
-			width += mousePrev.x - mouse.x;
+			x += diffx;
+			x = ofClamp(x, pad, ofGetWidth() - pad);
+			width += diffx;
 
 			if (bLockAspectRatio) height = width / aspectRatio;
 		}
 		else if (bRight && !bLockH)
 		{
-			width += mouse.x - mousePrev.x;
+			width += diffx;
+			width = MIN(width, ofGetWidth() - x - 2 * pad);
 
 			if (bLockAspectRatio) height = width / aspectRatio;
 		}
-
-		// constraint
-		refreshConstraints();
 	}
 
 	if (bMove)
 	{
-		x += mouse.x - mousePrev.x;
-		y += mouse.y - mousePrev.y;
+		x += diffx;
+		y += diffy;
+
+		//x = ofClamp(x, pad, ofGetWidth() - pad);
+		//y = ofClamp(y, pad, ofGetHeight() - pad);
 	}
+
+	// constraint
+	refreshConstraints();
 
 	mousePrev = mouse;
 }
@@ -517,15 +531,77 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	bPressed = false;
 
 	// clamp inside the window
-	int _min = 20;
+	int _min = 20;//min size
 	width = ofClamp(width, _min, ofGetWidth());
 	height = ofClamp(height, _min, ofGetHeight());
+
+	width = MIN(width, ofGetWidth() - x - 2 * pad);
+	height = MIN(height, ofGetHeight() - y - 2 * pad);
 
 	// constraint
 	refreshConstraints();
 
 	rectParam.setWithoutEventNotifications(this->getRect());
 }
+
+//--------------------------------------------------------------
+void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
+	if (!bEnableMouseWheel) return;
+	if (!bEditMode) return;
+	if (!this->isMouseOver()) return;
+	if (bLockResize) return;
+
+	//if (width <= shapeConstraintMin.x + 20 || height <= shapeConstraintMin.y + 20) {
+	//	return;
+	//	// skip to avoid move
+	//}
+
+	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
+	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
+
+	float d = 0.1f;
+	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
+	
+	bool bKeyModShift = ofGetKeyPressed(OF_KEY_LEFT_SHIFT);
+	bool bKeyModCtrl = ofGetKeyPressed(OF_KEY_CONTROL);
+	bool bKeyModAlt = ofGetKeyPressed(OF_KEY_ALT);
+
+	if (bKeyModCtrl && !bLockW && !bLockH) this->scaleFromCenter(s);
+	else if (bKeyModShift && !bLockW) this->scale(s, 1);
+	else if (bKeyModAlt && !bLockH) this->scale(1, s);
+	else if(!bLockW && !bLockH) this->scale(s);
+
+	if (bLockAspectRatio) height = width / aspectRatio;
+
+	// constraint
+	refreshConstraints();
+}
+
+//--------------------------------------------------------------
+void ofxInteractiveRect::refreshConstraints() {
+
+	// apply constraints if defined
+	if (bConstrainedMin)
+	{
+		this->width = MAX(width, shapeConstraintMin.x);
+		this->height = MAX(height, shapeConstraintMin.y);
+	}
+	if (bConstrainedMax)
+	{
+		this->width = MIN(width, shapeConstraintMax.x);
+		this->height = MIN(height, shapeConstraintMax.y);
+	}
+
+	//// clamp pad to borders
+	//x = ofClamp(x, pad, ofGetWidth() - pad);
+	//y = ofClamp(y, pad, ofGetHeight() - pad);
+
+	//width = MIN(width, ofGetWidth() - x - 2 * pad);
+	//height = MIN(height, ofGetHeight() - y - 2 * pad);
+} 
+
+void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
+void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}
 
 //--------------------------------------------------------------
 void ofxInteractiveRect::Changed_EditMode(bool& b)
@@ -544,54 +620,3 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 
 	refreshConstraints();
 }
-
-//--------------------------------------------------------------
-void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
-	if (!bEnableMouseWheel) return;
-	if (!bEditMode) return;
-	if (!this->isMouseOver()) return;
-
-	//if (width <= shapeConstraintMin.x + 20 || height <= shapeConstraintMin.y + 20) {
-	//	return;
-	//	// skip to avoid move
-	//}
-
-	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
-	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
-
-	float d = 0.1f;
-	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
-	
-	bool bKeyModShift = ofGetKeyPressed(OF_KEY_LEFT_SHIFT);
-	bool bKeyModCtrl = ofGetKeyPressed(OF_KEY_CONTROL);
-	bool bKeyModAlt = ofGetKeyPressed(OF_KEY_ALT);
-
-	if (bKeyModCtrl) this->scaleFromCenter(s);
-	else if (bKeyModAlt) this->scale(1, s);
-	else if (bKeyModShift) this->scale(s, 1);
-	else this->scale(s);
-
-	if (bLockAspectRatio) height = width / aspectRatio;
-
-	// constraint
-	refreshConstraints();
-}
-
-//--------------------------------------------------------------
-void ofxInteractiveRect::refreshConstraints() {
-
-	if (bConstrainedMin)
-	{
-		this->width = MAX(width, shapeConstraintMin.x);
-		this->height = MAX(height, shapeConstraintMin.y);
-	}
-
-	if (bConstrainedMax)
-	{
-		this->width = MIN(width, shapeConstraintMax.x);
-		this->height = MIN(height, shapeConstraintMax.y);
-	}
-} 
-
-void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
-void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}

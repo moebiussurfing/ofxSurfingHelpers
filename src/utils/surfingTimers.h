@@ -78,6 +78,11 @@ namespace ofxSurfingHelpers
 	//----
 
 	// Simple Smooth
+	/*
+	Example use:
+
+	*/
+
 	//--------------------------------------------------------------
 	template <typename T>
 	inline void ofxKuValueSmooth(T& value, T target, float smooth) {

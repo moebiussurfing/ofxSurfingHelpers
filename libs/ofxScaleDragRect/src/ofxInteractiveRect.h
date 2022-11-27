@@ -33,7 +33,9 @@
 
 #include "ofMain.h"
 
-#define BORDER_DRAG_SIZE 11
+#include "ofxSurfingHelpers.h"
+
+#define BORDER_DRAG_SIZE 11 // Size of draggable and drawn zone
 
 //--
 
@@ -101,6 +103,8 @@ private:
 	float rounded = 0.0f;
 	//float rounded = 5.0;
 
+	int pad = 4;
+
 public:
 
 	//--------------------------------------------------------------
@@ -109,8 +113,6 @@ public:
 		else bRounded = false;
 		rounded = r;
 	}
-
-	//TODO:
 
 private:
 
@@ -194,13 +196,14 @@ public:
 	}
 
 	ofxInteractiveRect(string name, string path = "");
+
 	virtual ~ofxInteractiveRect();
 
 	void enableEdit(bool enable = true);
 	void disableEdit();
 	void toggleEdit();
 
-	//bool isEditing() { return bIsEditing; }
+	//--------------------------------------------------------------
 	bool isEditing() 
 	{ 
 		if (bIsEditing) return true;
@@ -233,7 +236,6 @@ public:
 	}
 
 public:
-	//private:
 
 	void mouseMoved(ofMouseEventArgs& mouse);
 	void mousePressed(ofMouseEventArgs& mouse);
@@ -270,6 +272,8 @@ public:
 		else this->width = MAX(width, shapeConstraintMin.x);
 		if(!bConstrainedMin) this->height = height;
 		else this->height = MAX(height, shapeConstraintMin.y);
+
+		refreshConstraints();
 	}
 
 	//--
@@ -336,15 +340,15 @@ public:
 		setPosition(ofGetWidth() / 2 - getWidth() / 2, ofGetHeight() / 2 - getHeight() / 2);
 	}
 	//--------------------------------------------------------------
-	void setRestoreSize()
+	void setResetSize()
 	{
 		setWidth(800);
 		setHeight(800 / (16 / 9.f));
 	}
 	//--------------------------------------------------------------
-	void setRestore()
+	void setReset()
 	{
-		setRestoreSize();
+		setResetSize();
 		setCentered();
 	}
 };

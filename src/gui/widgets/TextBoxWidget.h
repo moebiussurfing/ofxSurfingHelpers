@@ -168,8 +168,8 @@ public:
 	{
 		return rect_HelpTextBox;
 	}
-	
-		ofParameter<bool> bGui{ "Show TextBox", true };
+
+	ofParameter<bool> bGui{ "Show TextBox", true };
 
 private:
 
@@ -534,8 +534,10 @@ private:
 		//--
 
 		// 3. left pressed + right click : close box!
-		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick()) {
-			//if (doubleClicker.isMouseRightPressedThenPressedLeft()) {
+		//if (ofGetMousePressed(0) && isMouseRightClick())
+		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick())
+		//if (doubleClicker.isMouseRightPressedThenPressedLeft()) 
+		{
 			ofLogWarning("TextBoxWidget") << (__FUNCTION__);
 			bGui = false;
 		}
