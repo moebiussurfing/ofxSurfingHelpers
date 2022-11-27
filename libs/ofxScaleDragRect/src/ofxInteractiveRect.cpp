@@ -314,6 +314,8 @@ void ofxInteractiveRect::draw()
 
 		ofFill();
 
+		bool bDual = (bUp || bDown) && (bLeft || bRight);
+
 		if (bMove) // when moving
 		{
 			ofSetColor(colorEditingMoving);
@@ -327,25 +329,87 @@ void ofxInteractiveRect::draw()
 
 			ofSetColor(colorBorderDraggable.r, colorBorderDraggable.g, colorBorderDraggable.b, colorBorderDraggable.a * 0.5);
 
+			float xx, yy, ww, hh;
+
+			// height
 			if (bUp)
 			{
-				if (bRounded) ofDrawRectRounded(x, y, width, BORDER_DRAG_SIZE, rounded);
-				else ofDrawRectangle(x, y, width, BORDER_DRAG_SIZE);
+				//x,y,width, here are "inherited" from ofRectangle
+				ww = width;
+				hh = height;
+				xx = x;
+				yy = y;
+
+				//if (bDual) 
+				//{
+				//	if (bLeft) xx = x + BORDER_DRAG_SIZE;
+				//	else if(bRight) ww = ww - BORDER_DRAG_SIZE;
+				//}
+
+				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
+				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
 			}
 			else if (bDown)
 			{
-				if (bRounded) ofDrawRectRounded(x, y + height - BORDER_DRAG_SIZE, width, BORDER_DRAG_SIZE, rounded);
-				else ofDrawRectangle(x, y + height - BORDER_DRAG_SIZE, width, BORDER_DRAG_SIZE);
+				ww = width;
+				hh = height;
+				xx = x;
+				yy = y + hh - BORDER_DRAG_SIZE;
+
+				//if (bDual)
+				//{
+				//	if (bLeft) xx = x + BORDER_DRAG_SIZE;
+				//	else if (bRight) ww = ww - BORDER_DRAG_SIZE;
+				//}
+
+				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
+				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
 			}
+
+			// width
 			if (bLeft)
 			{
-				if (bRounded) ofDrawRectRounded(x, y, BORDER_DRAG_SIZE, height, rounded);
-				else ofDrawRectangle(x, y, BORDER_DRAG_SIZE, height);
+				ww = width;
+				hh = height;
+				xx = x;
+				yy = y;
+
+				if (bDual)
+				{
+					if (bUp) {
+						yy = y + BORDER_DRAG_SIZE;
+						hh = height - BORDER_DRAG_SIZE;
+					}
+					else if (bDown) {
+						yy = y;
+						hh = height - BORDER_DRAG_SIZE;
+					}
+				}
+
+				if (bRounded) ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
+				else ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
 			}
 			else if (bRight)
 			{
-				if (bRounded) ofDrawRectRounded(x + width - BORDER_DRAG_SIZE, y, BORDER_DRAG_SIZE, height, rounded);
-				else ofDrawRectangle(x + width - BORDER_DRAG_SIZE, y, BORDER_DRAG_SIZE, height);
+				ww = width;
+				hh = height;
+				xx = x + width - BORDER_DRAG_SIZE;
+				yy = y;
+
+				if (bDual)
+				{
+					if (bUp) {
+						yy = y + BORDER_DRAG_SIZE;
+						hh = height - BORDER_DRAG_SIZE;
+					}
+					else if (bDown) {
+						yy = y;
+						hh = height - BORDER_DRAG_SIZE;
+					}
+				}
+
+				if (bRounded) ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
+				else ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
 			}
 		}
 
@@ -573,8 +637,8 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	else if (bKeyModShift && !bLockW) this->scale(s, 1);
 	else if (bKeyModAlt && !bLockH) this->scale(1, s);
 	else {
-		if (!bLockW ) this->scale(s, 1);
-		if (!bLockH) this->scale(1,s);
+		if (!bLockW) this->scale(s, 1);
+		if (!bLockH) this->scale(1, s);
 	}
 
 	if (bLockAspectRatio) height = width / aspectRatio;
