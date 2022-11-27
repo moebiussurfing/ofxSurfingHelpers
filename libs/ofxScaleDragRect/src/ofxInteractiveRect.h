@@ -35,7 +35,9 @@
 
 #include "ofxSurfingHelpers.h"
 
-#define BORDER_DRAG_SIZE 11 // Size of draggable and drawn zone
+// Size of draggable and drawn zone
+//#define BORDER_DRAG_SIZE 11 
+#define BORDER_DRAG_SIZE 13 
 
 //--
 
@@ -312,7 +314,7 @@ private:
 
 public:
 
-	ofParameter<bool> bEditMode{ "EDIT BOX", false };
+	ofParameter<bool> bEditMode{ "Edit", false };
 	void Changed_EditMode(bool& b);
 
 protected:

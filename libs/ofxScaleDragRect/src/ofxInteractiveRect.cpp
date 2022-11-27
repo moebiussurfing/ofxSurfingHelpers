@@ -51,7 +51,7 @@ ofxInteractiveRect::~ofxInteractiveRect()
 //--------------------------------------------------------------
 void ofxInteractiveRect::enableEdit(bool enable)
 {
-	ofLogVerbose(__FUNCTION__) << "Rect " << this->name << " edit : " << (string)(enable ? "true" : "false");
+	ofLogVerbose("ofxInteractiveRect") << " " << (__FUNCTION__) << "Rect " << this->name << " edit : " << (string)(enable ? "true" : "false");
 
 	if (enable != bIsEditing)
 	{
@@ -101,7 +101,8 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 		this->path = path;
 	}
 
-	string filename = this->path + prefixName + this->name;
+	//string filename = this->path + prefixName + this->name;
+	string filename = this->path + this->name + "_" + prefixName;
 
 	if (saveJson) {
 		filename += ".json";
@@ -112,13 +113,13 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 		saveToXml().save(filename);
 	}
 
-	ofLogNotice(__FUNCTION__) << filename;
+	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__) << filename;
 }
 
 //--------------------------------------------------------------
 ofJson ofxInteractiveRect::saveToJson()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__);
 
 	ofJson j;//("interactiveRect");
 
@@ -135,7 +136,7 @@ ofJson ofxInteractiveRect::saveToJson()
 //--------------------------------------------------------------
 void ofxInteractiveRect::loadFromJson(const ofJson& j)
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__);
 
 	if (j == nullptr) return;//TODO: crash
 
@@ -206,7 +207,8 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 		this->path = path;
 	}
 
-	string filename = this->path + prefixName + this->name;
+	//string filename = this->path + prefixName + this->name;
+	string filename = this->path + this->name + "_" + prefixName;
 
 	if (loadJson)
 	{
@@ -221,7 +223,8 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 		return true;
 
 	}
-	else {
+	else
+	{
 		filename += ".xml";
 
 		//avoid crash
@@ -239,7 +242,7 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 		}
 	}
 
-	ofLogVerbose(__FUNCTION__) << "unable to load : " << filename;
+	ofLogVerbose("ofxInteractiveRect") << " " << (__FUNCTION__) << "unable to load : " << filename;
 	rectParam.set(this->getRect());//?
 
 	refreshConstraints();
@@ -253,7 +256,7 @@ void ofxInteractiveRect::drawBorder()
 {
 	if (bTransparent) return;
 
-	//-
+	//--
 
 	ofPushStyle();
 	ofNoFill();
@@ -270,7 +273,7 @@ void ofxInteractiveRect::draw()
 {
 	if (bTransparent) return;
 
-	//-
+	//--
 
 	if (bIsEditing)
 	{
@@ -464,7 +467,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 	//if (!bLockResize) 
 	{
-		if (bUp && !bLockX)
+		if (bUp && !bLockY)
 		{
 			//diffx = ofClamp(diffx, pad, ofGetHeight() - pad);
 			y += diffy;
@@ -473,7 +476,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 			if (bLockAspectRatio) width = aspectRatio * height;
 		}
-		else if (bDown && !bLockY)
+		else if (bDown && !bLockH)
 		{
 			height += diffy;
 			height = MIN(height, ofGetHeight() - y - 2 * pad);
@@ -481,7 +484,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 			if (bLockAspectRatio) width = aspectRatio * height;
 		}
 
-		if (bLeft && !bLockW)
+		if (bLeft && !bLockX)
 		{
 			x += diffx;
 			x = ofClamp(x, pad, ofGetWidth() - pad);
@@ -489,7 +492,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 			if (bLockAspectRatio) height = width / aspectRatio;
 		}
-		else if (bRight && !bLockH)
+		else if (bRight && !bLockW)
 		{
 			width += diffx;
 			width = MIN(width, ofGetWidth() - x - 2 * pad);
@@ -557,11 +560,11 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	//}
 
 	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
-	//ofLogNotice(__FUNCTION__) << mouse.scrollY;
+	//ofLogNotice("ofxInteractiveRect")<<(__FUNCTION__) << mouse.scrollY;
 
 	float d = 0.1f;
 	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
-	
+
 	bool bKeyModShift = ofGetKeyPressed(OF_KEY_LEFT_SHIFT);
 	bool bKeyModCtrl = ofGetKeyPressed(OF_KEY_CONTROL);
 	bool bKeyModAlt = ofGetKeyPressed(OF_KEY_ALT);
@@ -569,7 +572,10 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	if (bKeyModCtrl && !bLockW && !bLockH) this->scaleFromCenter(s);
 	else if (bKeyModShift && !bLockW) this->scale(s, 1);
 	else if (bKeyModAlt && !bLockH) this->scale(1, s);
-	else if(!bLockW && !bLockH) this->scale(s);
+	else {
+		if (!bLockW ) this->scale(s, 1);
+		if (!bLockH) this->scale(1,s);
+	}
 
 	if (bLockAspectRatio) height = width / aspectRatio;
 
@@ -593,12 +599,12 @@ void ofxInteractiveRect::refreshConstraints() {
 	}
 
 	//// clamp pad to borders
-	//x = ofClamp(x, pad, ofGetWidth() - pad);
-	//y = ofClamp(y, pad, ofGetHeight() - pad);
+	//x = ofClamp(x, pad, ofGetWidth() - pad - width);
+	//y = ofClamp(y, pad, ofGetHeight() - pad - height);
 
 	//width = MIN(width, ofGetWidth() - x - 2 * pad);
 	//height = MIN(height, ofGetHeight() - y - 2 * pad);
-} 
+}
 
 void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
 void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}
@@ -606,7 +612,7 @@ void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}
 //--------------------------------------------------------------
 void ofxInteractiveRect::Changed_EditMode(bool& b)
 {
-	ofLogNotice(__FUNCTION__) << b;
+	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__) << b;
 
 	enableEdit(b);
 }
@@ -614,7 +620,7 @@ void ofxInteractiveRect::Changed_EditMode(bool& b)
 //--------------------------------------------------------------
 void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 {
-	ofLogNotice(__FUNCTION__) << r;
+	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__) << r;
 
 	this->set(r);
 
