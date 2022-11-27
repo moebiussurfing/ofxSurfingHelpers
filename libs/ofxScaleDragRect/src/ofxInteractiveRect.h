@@ -105,9 +105,22 @@ private:
 	float rounded = 0.0f;
 	//float rounded = 5.0;
 
-	int pad = 4;
+	float xpad = 0;
+	float ypad = 0;
 
 public:
+
+	float diffx;
+	float diffy;
+	//TODO:
+	float __diffx;
+	float __diffy;
+
+	//--------------------------------------------------------------
+	void setPads(float x, float y) {
+		xpad = x;
+		ypad = y;
+	}
 
 	//--------------------------------------------------------------
 	void setRounded(float r) {
@@ -215,11 +228,8 @@ public:
 	void draw();
 	void drawBorder();
 
-	bool loadSettings(string name = "", string path = "", bool loadJson = false);
-	void saveSettings(string name = "", string path = "", bool saveJson = false);
-
-	//TODO:
-	//store name and path to allow auto save..
+	bool loadSettings(string name = "", string path = "", bool bUseJson = false);
+	void saveSettings(string name = "", string path = "", bool bUseJson = false);
 
 private:
 
@@ -275,7 +285,7 @@ public:
 		if(!bConstrainedMin) this->height = height;
 		else this->height = MAX(height, shapeConstraintMin.y);
 
-		refreshConstraints();
+		doConstraints();
 	}
 
 	//--
@@ -287,7 +297,7 @@ private:
 	bool bConstrainedMin = false;
 	bool bConstrainedMax = false;
 
-	void refreshConstraints();
+	void doConstraints();
 	
 public:
 
@@ -312,6 +322,8 @@ private:
 	ofXml saveToXml();
 	bool loadFromXml(const ofXml& x);
 
+	//--
+
 public:
 
 	ofParameter<bool> bEditMode{ "Edit", false };
@@ -326,9 +338,7 @@ protected:
 	bool bPressed;
 	glm::vec2 mousePrev;
 
-	//TODO:
 	std::string prefixName = "Rect";
-	//std::string prefixName = "Rectangle_";
 
 	//--
 
@@ -339,13 +349,13 @@ public:
 	//--------------------------------------------------------------
 	void setCentered()
 	{
-		setPosition(ofGetWidth() / 2 - getWidth() / 2, ofGetHeight() / 2 - getHeight() / 2);
+		setPosition(ofGetWidth() / 2.f - getWidth() / 2.f, ofGetHeight() / 2.f - getHeight() / 2.f);
 	}
 	//--------------------------------------------------------------
-	void setResetSize()
+	void setResetSize(int sz = 800)
 	{
-		setWidth(800);
-		setHeight(800 / (16 / 9.f));
+		setWidth(sz);
+		setHeight(sz / (16 / 9.f));
 	}
 	//--------------------------------------------------------------
 	void setReset()

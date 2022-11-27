@@ -207,12 +207,12 @@ private:
 	bool bNoText = false;
 
 	// Fit Marks
-	int xcenter;
-	int ycenter;
-	int xleft;
-	int xright;
-	int ytop;
-	int ybottom;
+	float xcenter;
+	float ycenter;
+	float xleft;
+	float xright;
+	float ytop;
+	float ybottom;
 
 	//--------------------------------------------------------------
 	void doForceFitOnWindow()

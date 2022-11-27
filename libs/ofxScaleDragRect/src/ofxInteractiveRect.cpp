@@ -36,7 +36,7 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 	setColorEditingPressedBorder(ofColor(0, 128));
 	setColorEditingMoving(ofColor(128, 32));
 
-	refreshConstraints();
+	doConstraints();
 }
 
 //--------------------------------------------------------------
@@ -89,7 +89,7 @@ ofRectangle ofxInteractiveRect::getRect()
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
+void ofxInteractiveRect::saveSettings(string name, string path, bool bUseJson)
 {
 	if (name != "")
 	{
@@ -101,10 +101,9 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool saveJson)
 		this->path = path;
 	}
 
-	//string filename = this->path + prefixName + this->name;
 	string filename = this->path + this->name + "_" + prefixName;
 
-	if (saveJson) {
+	if (bUseJson) {
 		filename += ".json";
 		ofSaveJson(filename, saveToJson());
 	}
@@ -130,6 +129,7 @@ ofJson ofxInteractiveRect::saveToJson()
 	j["name"] = this->name;
 	j["path"] = this->path;
 	j["isEditing"] = this->bIsEditing;
+
 	return j;
 }
 
@@ -151,8 +151,7 @@ void ofxInteractiveRect::loadFromJson(const ofJson& j)
 	j["isEditing"].get_to(editing);
 	enableEdit(editing);
 
-	// constraint
-	refreshConstraints();
+	doConstraints();
 }
 
 //--------------------------------------------------------------
@@ -186,8 +185,7 @@ bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 		this->name = r.getChild("name").getValue();
 		enableEdit(r.getChild("isEditing").getBoolValue());
 
-		// constraint
-		refreshConstraints();
+		doConstraints();
 
 		return true;
 	}
@@ -196,7 +194,7 @@ bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 }
 
 //--------------------------------------------------------------
-bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
+bool ofxInteractiveRect::loadSettings(string name, string path, bool bUseJson)
 {
 	if (name != "")
 	{
@@ -210,7 +208,7 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 	//string filename = this->path + prefixName + this->name;
 	string filename = this->path + this->name + "_" + prefixName;
 
-	if (loadJson)
+	if (bUseJson)
 	{
 		filename += ".json";
 
@@ -245,7 +243,7 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool loadJson)
 	ofLogVerbose("ofxInteractiveRect") << " " << (__FUNCTION__) << "unable to load : " << filename;
 	rectParam.set(this->getRect());//?
 
-	refreshConstraints();
+	doConstraints();
 
 	return false;
 }
@@ -263,8 +261,10 @@ void ofxInteractiveRect::drawBorder()
 	ofSetLineWidth(2.0);
 	if (bEditMode) ofSetColor(ofColor(colorEditingMoving.r, colorEditingMoving.g, colorEditingMoving.b, colorEditingMoving.a * Bounce()));
 	else ofSetColor(colorEditingMoving);
+
 	if (bRounded) ofDrawRectRounded(*this, rounded);
 	else ofDrawRectangle(*this);
+
 	ofPopStyle();
 }
 
@@ -334,17 +334,11 @@ void ofxInteractiveRect::draw()
 			// height
 			if (bUp)
 			{
-				//x,y,width, here are "inherited" from ofRectangle
+				// x, y, width, here are "inherited" from ofRectangle
 				ww = width;
 				hh = height;
 				xx = x;
 				yy = y;
-
-				//if (bDual) 
-				//{
-				//	if (bLeft) xx = x + BORDER_DRAG_SIZE;
-				//	else if(bRight) ww = ww - BORDER_DRAG_SIZE;
-				//}
 
 				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
 				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
@@ -355,12 +349,6 @@ void ofxInteractiveRect::draw()
 				hh = height;
 				xx = x;
 				yy = y + hh - BORDER_DRAG_SIZE;
-
-				//if (bDual)
-				//{
-				//	if (bLeft) xx = x + BORDER_DRAG_SIZE;
-				//	else if (bRight) ww = ww - BORDER_DRAG_SIZE;
-				//}
 
 				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
 				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
@@ -524,58 +512,99 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 {
 	if (bLock) return;
 	if (!bEditMode) return;
-	//if (!this->isMouseOver()) return;
 
-	float diffx = mouse.x - mousePrev.x;
-	float diffy = mouse.y - mousePrev.y;
+	float _x = mouse.x;
+	float _y = mouse.y;
+
+	// skip
+	if (_x < 0 || _y < 0) {
+		mousePrev = mouse;
+		return;
+	}
+	if (_x > ofGetWidth() || _y > ofGetHeight()) {
+		mousePrev = mouse;
+		return;
+	}
+
+	////TODO:
+	//_x = MAX(0, _x);
+	//_y = MAX(0, _y);
+	//cout << _x << "," << _y << endl;
+
+	//_x = ofClamp(_x, xpad, ofGetWidth() - xpad);
+	//_y = ofClamp(_y, ypad, ofGetHeight() - ypad);
+
+	diffx = _x - mousePrev.x;
+	diffy = _y - mousePrev.y;
+
+	//TODO:
+	// fix weird behavior
+	// try to limit diff previously
+	//diffx = ofClamp(diffx, xpad, ofGetHeight() - xpad);
+
+	//--
 
 	//if (!bLockResize) 
 	{
 		if (bUp && !bLockY)
 		{
-			//diffx = ofClamp(diffx, pad, ofGetHeight() - pad);
 			y += diffy;
-			y = ofClamp(y, pad, ofGetHeight() - pad);
-			height += diffy;
+
+			y = ofClamp(y, ypad, ofGetHeight() - ypad);
+
+			height -= diffy;
 
 			if (bLockAspectRatio) width = aspectRatio * height;
 		}
 		else if (bDown && !bLockH)
 		{
 			height += diffy;
-			height = MIN(height, ofGetHeight() - y - 2 * pad);
+			height = MIN(height, ofGetHeight() - y - 2 * ypad);
 
 			if (bLockAspectRatio) width = aspectRatio * height;
 		}
 
+		//--
+
 		if (bLeft && !bLockX)
 		{
 			x += diffx;
-			x = ofClamp(x, pad, ofGetWidth() - pad);
-			width += diffx;
+
+			x = ofClamp(x, xpad, ofGetWidth() - xpad);
+
+			width += -diffx;
 
 			if (bLockAspectRatio) height = width / aspectRatio;
 		}
 		else if (bRight && !bLockW)
 		{
+			if (diffx + width > (x + width + diffx))
+			{
+
+			}
+
 			width += diffx;
-			width = MIN(width, ofGetWidth() - x - 2 * pad);
+			//width = MIN(width, ofGetWidth() - x - 2 * xpad);
 
 			if (bLockAspectRatio) height = width / aspectRatio;
 		}
 	}
+
+	//--
 
 	if (bMove)
 	{
 		x += diffx;
 		y += diffy;
 
-		//x = ofClamp(x, pad, ofGetWidth() - pad);
-		//y = ofClamp(y, pad, ofGetHeight() - pad);
+		// clamp
+		x = ofClamp(x, xpad, ofGetWidth() - xpad);
+		y = ofClamp(y, ypad, ofGetHeight() - ypad);
 	}
 
-	// constraint
-	refreshConstraints();
+	doConstraints();
+
+	//--
 
 	mousePrev = mouse;
 }
@@ -594,37 +623,41 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 		bUp = false;
 		bDown = false;
 	}
+
 	bMove = false;
 	bPressed = false;
 
-	// clamp inside the window
-	int _min = 20;//min size
-	width = ofClamp(width, _min, ofGetWidth());
-	height = ofClamp(height, _min, ofGetHeight());
-
-	width = MIN(width, ofGetWidth() - x - 2 * pad);
-	height = MIN(height, ofGetHeight() - y - 2 * pad);
-
-	// constraint
-	refreshConstraints();
+	doConstraints();
 
 	rectParam.setWithoutEventNotifications(this->getRect());
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
+void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse)
+{
 	if (!bEnableMouseWheel) return;
 	if (!bEditMode) return;
 	if (!this->isMouseOver()) return;
 	if (bLockResize) return;
 
-	//if (width <= shapeConstraintMin.x + 20 || height <= shapeConstraintMin.y + 20) {
-	//	return;
-	//	// skip to avoid move
-	//}
+	//--
 
-	//glm::vec2 p = glm::vec2(mouse.x, mouse.y);
-	//ofLogNotice("ofxInteractiveRect")<<(__FUNCTION__) << mouse.scrollY;
+	// Skip window oversize
+	//TODO: workaround
+	const float gap = 20;
+	float xgap = 2 * xpad + gap;
+	float ygap = 2 * ypad + gap;
+	if (mouse.scrollY > 0)
+	{
+		if ((width >= ofGetWidth() - xgap) || (height >= ofGetHeight() - ygap))
+		{
+			if (bLockAspectRatio) height = width / aspectRatio;
+			doConstraints();
+			return;
+		}
+	}
+
+	//--
 
 	float d = 0.1f;
 	float s = ofMap(mouse.scrollY, -2, 2, 1.f - d, 1.f + d);
@@ -636,21 +669,21 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse) {
 	if (bKeyModCtrl && !bLockW && !bLockH) this->scaleFromCenter(s);
 	else if (bKeyModShift && !bLockW) this->scale(s, 1);
 	else if (bKeyModAlt && !bLockH) this->scale(1, s);
-	else {
+	else//no mod
+	{
 		if (!bLockW) this->scale(s, 1);
 		if (!bLockH) this->scale(1, s);
 	}
 
 	if (bLockAspectRatio) height = width / aspectRatio;
 
-	// constraint
-	refreshConstraints();
+	doConstraints();
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::refreshConstraints() {
+void ofxInteractiveRect::doConstraints() {
 
-	// apply constraints if defined
+	// Apply constraints if defined
 	if (bConstrainedMin)
 	{
 		this->width = MAX(width, shapeConstraintMin.x);
@@ -662,12 +695,17 @@ void ofxInteractiveRect::refreshConstraints() {
 		this->height = MIN(height, shapeConstraintMax.y);
 	}
 
-	//// clamp pad to borders
-	//x = ofClamp(x, pad, ofGetWidth() - pad - width);
-	//y = ofClamp(y, pad, ofGetHeight() - pad - height);
+	// Clamp pad to borders
+	this->x = ofClamp(x, xpad, ofGetWidth() - xpad - width);
+	this->y = ofClamp(y, ypad, ofGetHeight() - ypad - height);
 
-	//width = MIN(width, ofGetWidth() - x - 2 * pad);
-	//height = MIN(height, ofGetHeight() - y - 2 * pad);
+	// Clamp size
+	if (this->getWidth() > ofGetWidth() - 2 * xpad) {
+		this->setWidth(ofGetWidth() - 2 * xpad);
+	}
+	else if (this->getHeight() > ofGetHeight() - 2 * ypad) {
+		this->setHeight(ofGetHeight() - 2 * ypad);
+	}
 }
 
 void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
@@ -688,5 +726,5 @@ void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
 
 	this->set(r);
 
-	refreshConstraints();
+	doConstraints();
 }
