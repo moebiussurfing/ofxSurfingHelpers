@@ -544,7 +544,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 	//--
 
-	//if (!bLockResize) 
+	if (!bLockResize) //
 	{
 		if (bUp && !bLockY)
 		{
@@ -616,7 +616,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	if (!bEditMode) return;
 	//if (!this->isMouseOver()) return;
 
-	//if (!bLockResize) 
+	if (!bLockResize) 
 	{
 		bLeft = false;
 		bRight = false;
@@ -695,10 +695,6 @@ void ofxInteractiveRect::doConstraints() {
 		this->height = MIN(height, shapeConstraintMax.y);
 	}
 
-	// Clamp pad to borders
-	this->x = ofClamp(x, xpad, ofGetWidth() - xpad - width);
-	this->y = ofClamp(y, ypad, ofGetHeight() - ypad - height);
-
 	// Clamp size
 	if (this->getWidth() > ofGetWidth() - 2 * xpad) {
 		this->setWidth(ofGetWidth() - 2 * xpad);
@@ -706,6 +702,13 @@ void ofxInteractiveRect::doConstraints() {
 	else if (this->getHeight() > ofGetHeight() - 2 * ypad) {
 		this->setHeight(ofGetHeight() - 2 * ypad);
 	}
+
+	//// Clamp pad to borders //fails on text widget
+	//this->x = ofClamp(x, xpad, ofGetWidth() - xpad - width);
+	//this->y = ofClamp(y, ypad, ofGetHeight() - ypad - height);
+	// Clamp pad to borders
+	this->x = ofClamp(x, xpad, ofGetWidth());
+	this->y = ofClamp(y, ypad, ofGetHeight());
 }
 
 void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}

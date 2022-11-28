@@ -190,8 +190,8 @@ namespace ofxSurfingHelpers
 			y += 33;
 		}
 
-		//int _padx = _pad/2;
-		//int _pady = _pad/2;
+		//int xpad = _pad/2;
+		//int ypad = _pad/2;
 
 		//int _pad = 50;
 		//float _round = 5;
