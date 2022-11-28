@@ -31,7 +31,7 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 	setRect(10, 10, 400, 400);
 	if (bAutoSave) loadSettings();
 
-	// Some grey coloring
+	// Some gray coloring
 	setColorBorderDraggable(ofColor(0, 128));
 	setColorEditingPressedBorder(ofColor(0, 128));
 	setColorEditingMoving(ofColor(128, 32));

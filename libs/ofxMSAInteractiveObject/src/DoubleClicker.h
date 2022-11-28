@@ -122,7 +122,7 @@ public:
 	{
 		if (bDoubleClicked) {
 			bDoubleClicked = false;
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__);
+			ofLogNotice("ofxMSAInteractiveObject") << (__FUNCTION__);
 			return true;
 		}
 		else return false;
@@ -132,7 +132,7 @@ public:
 	{
 		if (bTripleClicked) {
 			bTripleClicked = false;
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__);
+			ofLogNotice("ofxMSAInteractiveObject") << (__FUNCTION__);
 			return true;
 		}
 		else return false;
@@ -142,7 +142,7 @@ public:
 	{
 		if (bMouseRightJustPressed) {
 			bMouseRightJustPressed = false;
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__);
+			ofLogNotice("ofxMSAInteractiveObject") << (__FUNCTION__);
 
 			//ignore if left pressed
 			if (bMouseLeftPressed) return false;
@@ -165,17 +165,19 @@ public:
 		DOUBLE4_COLOR = ofColor(ofColor::black, alpha);
 		RIGHT_COLOR = ofColor(ofColor::orange, alpha);
 
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << "hello!\n";
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__);
 
 		enableMouseEvents();
 		enableKeyEvents();
 	}
 
+	//--------------------------------------------------------------
 	void exit()
 	{
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << "goodbye!\n";
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__);
 	}
 
+	//--------------------------------------------------------------
 	void update()
 	{
 		auto t = ofGetElapsedTimeMillis();
@@ -223,6 +225,7 @@ public:
 		}
 	}
 
+	//--------------------------------------------------------------
 	void draw()
 	{
 		// debug
@@ -234,10 +237,10 @@ public:
 			if (isMousePressed()) ofSetColor(DOWN_COLOR);
 			else if (isMouseOver()) ofSetColor(OVER_COLOR);
 
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__);
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__) << "bMouseLeftPressed:" << bMouseLeftPressed;
-			ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__) << "bMouseRightPressed:" << bMouseRightPressed;
-			if (bMouseRightJustPressed) ofLogNotice("ofxMSAInteractiveObject")<<(__FUNCTION__) << "bMouseRightJustPressed:" << bMouseRightJustPressed;
+			ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__);
+			ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << "bMouseLeftPressed:" << bMouseLeftPressed;
+			ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << "bMouseRightPressed:" << bMouseRightPressed;
+			if (bMouseRightJustPressed) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << "bMouseRightJustPressed:" << bMouseRightJustPressed;
 
 			//--
 
@@ -261,27 +264,27 @@ public:
 	}
 
 	virtual void onRollOver(int x, int y) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y;
 	}
 
 	virtual void onRollOut() {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__);
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__);
 	}
 
 	virtual void onMouseMove(int x, int y) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y;
 	}
 
 	virtual void onDragOver(int x, int y, int button) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y << button;
 	}
 
 	virtual void onDragOutside(int x, int y, int button) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y << button;
 	}
 
 	virtual void onPress(int x, int y, int button) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y << button;
 
 		//--
 
@@ -335,7 +338,7 @@ public:
 	}
 
 	virtual void onRelease(int x, int y, int button) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y << button;
 
 		if (button == 0) bMouseLeftPressed = false;
 		if (button == 2) bMouseRightPressed = false;
@@ -344,7 +347,7 @@ public:
 	//TODO: BUG:
 	// called when mouse releases outside of object after being pressed on object
 	virtual void onReleaseOutside(int x, int y, int button) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << x << y << button;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << x << y << button;
 
 		//TODO:
 		// fix
@@ -359,11 +362,11 @@ public:
 	}
 
 	virtual void keyPressed(int key) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << key;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << key;
 	}
 
 	virtual void keyReleased(int key) {
-		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject")<<(__FUNCTION__) << key;
+		if (bDebug) ofLogVerbose("ofxMSAInteractiveObject") << (__FUNCTION__) << key;
 	}
 
 };
