@@ -1,5 +1,15 @@
 #pragma once
 
+/*
+
+	TODO
+
+	add copy/swap with control/alt codifiers when click
+
+*/
+
+//--
+
 #include "ofMain.h"
 
 #include "ofxSurfingHelpers.h"
@@ -10,6 +20,29 @@
 /*
 
 	Simple Presets Manager
+
+*/
+
+/*
+
+EXAMPLE
+
+#ifdef USE_ofxSurfingPresetsLite
+
+	#include "ofxSurfingPresetsLite.h"
+	ofxSurfingPresetsLite presetsManager;
+
+	// Setup
+	presetsManager.setUiPtr(&ui);
+	presetsManager.setPath(path_GLOBAL_Folder);
+	presetsManager.AddGroup(params_Preset);
+
+	// Draw
+	// ImGui widgets not windowed
+	ui.AddSpacingSeparated();
+	presetsManager.drawImGui();
+
+#endif
 
 */
 
@@ -55,6 +88,7 @@ public:
 		params.add(bAutoSave);
 		params.add(bClicker);
 		params.add(bExpand);
+		params.add(amnt);
 	};
 
 	ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
@@ -87,7 +121,7 @@ public:
 
 	// Presets
 
-	void drawImGui(bool bWindowed = false)
+	void drawImGui(bool bWindowed = false, bool bShowMinimizer = false)
 	{
 		if (!bGui) return;
 
@@ -123,11 +157,12 @@ public:
 			else
 			{
 				b = ui->BeginTree(sn);
+				ui->AddSpacing();
 			}
 
 			if (b)
 			{
-				ui->Add(ui->bMinimize, OFX_IM_TOGGLE_ROUNDED);
+				if (bShowMinimizer) ui->Add(ui->bMinimize, OFX_IM_TOGGLE_ROUNDED);
 
 				if (!ui->bMinimize) {
 					ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
@@ -140,18 +175,45 @@ public:
 					if (!ui->bMinimize) {//maximized
 						ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
-						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2))
+						//if (ui->Add(vSave, OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
+						if (ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
+
+							//SurfingGuiTypes s = (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
+							//bool b;
+							//b = (ui->Add(vSave, s, 2));
+							//if(b)
+
 						{
 							bOverInputText = false;
 							_namePreset = s;
 						};
 
-						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2, true))
+						if (!bOverInputText) {
+							if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
+							{
+								if (!bOverInputText) bOverInputText = true;
+
+								//default name
+								_namePreset = "";
+
+								//autoname
+								string _n = ofToString(dir.size());
+								bool bAvoidOverWrite = false;
+								for (int i = 0; i < dir.size(); i++)
+								{
+									if (_n == dir.getName(i)) bAvoidOverWrite = true;
+								}
+								if (!bAvoidOverWrite) _namePreset = _n;
+
+								setFilename(_namePreset);
+							}
+						}
+						else
 						{
-							if (!bOverInputText) bOverInputText = true;
-							_namePreset = "";
-							setFilename(_namePreset);
-						};
+							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL, 2))
+								bOverInputText = false;
+						}
+						ui->SameLine();
 
 						ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
 
@@ -166,7 +228,7 @@ public:
 
 						ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
 						ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
-						ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL, 2);
+						ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL_BORDER_BLINK, 2);
 					}
 					else//minimized
 					{
@@ -175,20 +237,40 @@ public:
 							bOverInputText = false;
 							_namePreset = s;
 						};
-						if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
+
+						if (!bOverInputText) {
+							if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
+							{
+								if (!bOverInputText) bOverInputText = true;
+
+								//default name
+								_namePreset = "";
+
+								//autoname
+								string _n = ofToString(dir.size());
+								bool bAvoidOverWrite = false;
+								for (int i = 0; i < dir.size(); i++)
+								{
+									if (_n == dir.getName(i)) bAvoidOverWrite = true;
+								}
+								if (!bAvoidOverWrite) _namePreset = _n;
+
+								setFilename(_namePreset);
+							}
+						}
+						else
 						{
-							if (!bOverInputText) bOverInputText = true;
-							_namePreset = "";
-							setFilename(_namePreset);
-						};
+							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL, 2))
+								bOverInputText = false;
+						}
 					}
 
 					//--
 
-					if (!ui->bMinimize) ui->AddSpacing();
-
 					if (bOverInputText)
 					{
+						if (!ui->bMinimize) ui->AddSpacing();
+
 						int _w = ui->getWidgetsWidth() * 0.9f;
 						ImGui::PushItemWidth(_w);
 						{
@@ -197,16 +279,27 @@ public:
 								ofLogNotice("ofxSurfingPresetsLite") << "InputText:" << s.c_str();
 								setFilename(s);
 							}
+							if (ImGui::IsItemDeactivated() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
+								bOverInputText = false;
 						}
-
 						ImGui::PopItemWidth();
 					}
 				}
 
-				if (!bExpand /*|| !ui->bMinimize*/)
+				bool bMinExpd = (ui->bMinimize && !bExpand);
+				if (bMinExpd)
 				{
-					ui->Add(vSave, OFX_IM_BUTTON_SMALL);
+					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
+					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
+					{
+						doLoadNext();
+					};
 				}
+
+				//if (!bExpand /*|| !ui->bMinimize*/)
+				//{
+				//	ui->Add(vSave, OFX_IM_BUTTON_SMALL);
+				//}
 
 				//--
 
@@ -218,10 +311,14 @@ public:
 					ui->AddComboButtonDual(index, filenames, true);
 				}
 
-				if (ui->AddButton("NEXT", OFX_IM_BUTTON_MEDIUM))
+				if(!bExpand && !ui->bMinimize)
 				{
-					doLoadNext();
-				};
+					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
+					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
+					{
+						doLoadNext();
+					};
+				}
 
 				//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
 
@@ -245,6 +342,7 @@ public:
 			}
 		}
 
+
 		if (bWindowed && b) {
 			ui->EndWindow();
 		}
@@ -263,7 +361,9 @@ public:
 		if (bClicker)
 		{
 			float h = ui->getWidgetsHeightUnit();
-			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, 1, true, h);
+
+			if (!ui->bMinimize) ui->Add(amnt, OFX_IM_STEPPER);
+			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h);
 
 			/*
 			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&_index,
@@ -332,6 +432,7 @@ public:
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
 	ofParameter<bool> bGui{ "PRESETS", true };
+	ofParameter<int> amnt{ "Amount", 1, 1, 4 };
 
 private:
 
