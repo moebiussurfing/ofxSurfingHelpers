@@ -18,7 +18,8 @@ Look to the available classes in **OF_ADDON/src/** for details.
 ## Examples
 
 ### PresetsLite
-![](Examples/PresetsLite/Capture.PNG)  
+![](Examples/PresetsLite/Capture1.PNG)  
+![](Examples/PresetsLite/Capture2.PNG)  
 
 --------------------------
 
