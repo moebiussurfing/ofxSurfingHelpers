@@ -39,7 +39,7 @@ public:
 	};
 	
 	//--------------------------------------------------------------
-	void doReset() {
+	void doResetParams() {
 		doResetParamsFull(RESET_PARAM_FULL_CENTER);
 	};
 

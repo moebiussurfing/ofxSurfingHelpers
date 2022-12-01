@@ -75,6 +75,7 @@ public:
 	{
 		ofAddListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
 		ofAddListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
+		addKeysListeners();
 
 		params.add(bGui);
 		params.add(vScan);
@@ -84,8 +85,9 @@ public:
 		params.add(vNew);
 		params.add(vRename);
 		params.add(vReset);
+		params.add(vRandom);
 		params.add(index);
-		params.add(bAutoSave);
+		params.add(bAutoSave);//edit
 		params.add(bClicker);
 		params.add(bExpand);
 		params.add(amnt);
@@ -95,6 +97,7 @@ public:
 	{
 		ofRemoveListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
+		removeKeysListeners();
 
 		ofxSurfingHelpers::CheckFolder(pathSettings);
 		ofxSurfingHelpers::saveGroup(params);
@@ -114,6 +117,10 @@ public:
 
 private:
 	string pathSettings = "ofApp";
+
+
+	bool bKeyCtrl = false;
+	bool bKeyAlt = false;
 
 	//----
 
@@ -143,8 +150,8 @@ public:
 			//string s = "presetName";
 			string s = filename;
 
-			static bool bFolder = !bWindowed;
-			//static bool bFolder = true;
+			bool bFolder = !bWindowed;
+			//bool bFolder = true;
 
 			bool b = true;
 
@@ -176,7 +183,8 @@ public:
 						ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
 						//if (ui->Add(vSave, OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
-						if (ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
+						if (ui->Add(vSave,
+							((bAutoSave || !bOverInputText) ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
 
 							//SurfingGuiTypes s = (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
 							//bool b;
@@ -188,7 +196,8 @@ public:
 							_namePreset = s;
 						};
 
-						if (!bOverInputText) {
+						if (!bOverInputText)
+						{
 							if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
 							{
 								if (!bOverInputText) bOverInputText = true;
@@ -204,18 +213,18 @@ public:
 									if (_n == dir.getName(i)) bAvoidOverWrite = true;
 								}
 								if (!bAvoidOverWrite) _namePreset = _n;
+								//TODO: should rename if file is already there!
 
 								setFilename(_namePreset);
 							}
 						}
 						else
 						{
-							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL, 2))
+							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
 								bOverInputText = false;
 						}
 						ui->SameLine();
-
-						ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2);
+						ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
 
 						if (ui->Add(vRename, OFX_IM_BUTTON_SMALL, 2, true)) {
 							//delete
@@ -225,14 +234,16 @@ public:
 							_namePreset = "";
 							setFilename(_namePreset);
 						};
-
-						ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
-						ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2, true);
 						ui->Add(bAutoSave, OFX_IM_TOGGLE_SMALL_BORDER_BLINK, 2);
+
+						ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2, true);
+						ui->Add(vRandom, OFX_IM_BUTTON_SMALL, 2);
+
+						//ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2);//should be automatic!
 					}
 					else//minimized
 					{
-						if (ui->Add(vSave, OFX_IM_BUTTON_SMALL, 2, true))
+						if (ui->Add(vSave, bOverInputText ? OFX_IM_BUTTON_SMALL_BORDER_BLINK : OFX_IM_BUTTON_SMALL, 2, true))
 						{
 							bOverInputText = false;
 							_namePreset = s;
@@ -260,7 +271,8 @@ public:
 						}
 						else
 						{
-							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL, 2))
+							if (ui->AddButton("Cancel",
+								OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
 								bOverInputText = false;
 						}
 					}
@@ -296,11 +308,6 @@ public:
 					};
 				}
 
-				//if (!bExpand /*|| !ui->bMinimize*/)
-				//{
-				//	ui->Add(vSave, OFX_IM_BUTTON_SMALL);
-				//}
-
 				//--
 
 				if (!ui->bMinimize) ui->AddSpacingSeparated();
@@ -308,33 +315,49 @@ public:
 				// Combo
 				if (!ui->bMinimize || bExpand)
 				{
-					ui->AddComboButtonDual(index, filenames, true);
+					//ui->AddComboButtonDual(index, filenames, true);
+
+					float p = ui->getWidgetsSpacingX();
+					float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
+					ImGui::PushItemWidth(w);
+					ui->AddCombo(index, filenames, true);
+					ImGui::PopItemWidth();
+
+					ui->SameLine();
+					if (ui->bMinimize) {
+						if (ui->AddButton("Next", OFX_IM_BUTTON_SMALL, 2))
+						{
+							doLoadNext();
+						}
+					}
+					else
+					{
+						ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2);
+					}
 				}
 
-				if(!bExpand && !ui->bMinimize)
+				if (!bExpand && !ui->bMinimize)
 				{
-					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
+					//ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
+
+					if (ui->AddButton("Prev", OFX_IM_BUTTON_MEDIUM, 2, true))
+					{
+						doLoadPrevious();
+					};
+
 					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
 					{
 						doLoadNext();
 					};
 				}
 
-				//ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED);
-
 				//--
 
 				if (!ui->bMinimize) ui->AddSpacingSeparated();
 
-				drawImGuiClicker();
+				//--
 
-				/*
-				if (!ui->bMinimize)
-				{
-					// preset name
-					if (_namePreset != "") ui->AddLabel(_namePreset.c_str());
-				}
-				*/
+				drawImGuiClicker();
 
 				//--
 
@@ -357,16 +380,29 @@ public:
 	// 2. Presets
 	void drawImGuiClicker(bool bWindowed = false)
 	{
-		if (!ui->bMinimize) ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+		if (!ui->bMinimize) {
+			ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
+
+			ui->AddSpacing();
+		}
 		if (bClicker)
 		{
 			float h = ui->getWidgetsHeightUnit();
 
-			if (!ui->bMinimize) ui->Add(amnt, OFX_IM_STEPPER);
-			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h);
+			string toolTip = "";
+			if (bKeyCtrl) toolTip = "Copy To";
+			else if (bKeyAlt) toolTip = "Swap With";
+			bool bSpaced = true;
+
+			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h, bSpaced, toolTip);
+
+			//ofxImGuiSurfing::AddMatrixClickerLabels(index, filenames, true, amnt, true, h, toolTip);
+
+			ui->AddSpacing();
+			if (!ui->bMinimize) ui->Add(amnt, OFX_IM_STEPPER, 2);
 
 			/*
-			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&_index,
+			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&index_PRE,
 			const std::vector<string> labels, bool bResponsive = true, int amountBtRow = 3, const bool bDrawBorder = true, float __h = -1, bool bSpaced = true, string toolTip = "")
 			*/
 
@@ -428,7 +464,10 @@ public:
 
 public:
 
-	ofParameter<void> vReset{ "Reset" };//exposed to trig an external method
+	//exposed to trig an external method
+	ofParameter<void> vReset{ "Reset" };
+	ofParameter<void> vRandom{ "Random" };
+
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
 	ofParameter<bool> bGui{ "PRESETS", true };
@@ -444,6 +483,7 @@ private:
 	ofParameter<void> vSave{ "Save" };
 	ofParameter<void> vLoad{ "Load" };
 	ofParameter<void> vNew{ "New" };
+
 	ofParameter<bool> bClicker{ "CLICKER", false };
 	ofParameter<bool> bAutoSave{ "AutoSave", true };
 	ofParameter<bool> bExpand{ "Expand", true };
@@ -490,7 +530,7 @@ private:
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		ofxSurfingHelpers::CheckFolder(pathPresets);
-		ofxSurfingHelpers::saveGroup(paramsPreset, pathPresets + "/" + filename + ".json");
+		ofxSurfingHelpers::saveGroup(params_Preset, pathPresets + "/" + filename + ".json");
 	}
 
 	void doLoad()
@@ -498,16 +538,27 @@ private:
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		// Load Settings
-		ofxSurfingHelpers::loadGroup(paramsPreset, pathPresets + "/" + filename + ".json");
+		ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
 	}
 
-	void doReset()
-	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
-		//TODO:
-		//doResetParamsFull(RESET_PARAM_MIN);
-	}
+
+	//void load(string path)
+	//{
+	//	ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+
+	//	// Load Settings
+	//	ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
+	//}
+
+
+	//void doResetParams()
+	//{
+	//	ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+	//	//TODO:
+	//	//doResetParamsFull(RESET_PARAM_MIN);
+	//	doResetParams();
+	//}
 
 	//-
 
@@ -521,7 +572,7 @@ public:
 		bool isGroup = ptype == typeid(ofParameterGroup).name();
 		if (isGroup)
 		{
-			paramsPreset = group;
+			params_Preset = group;
 		}
 
 		setup();
@@ -533,6 +584,11 @@ public:
 
 	void setFilename(string p) {
 		filename = p;
+	}
+
+	void doLoadPrevious() {
+		if (index > index.getMin()) index--;
+		else if (index == index.getMin()) index = index.getMax();
 	}
 
 	void doLoadNext() {
@@ -555,23 +611,135 @@ private:
 		{
 			if (filenames.size() == 0) return;
 
-			static int _index = -1;//pre
+			static int index_PRE = -1;//pre
 
-			if (_index != index) {//changed
-				if (bAutoSave)
+			index = ofClamp(index.get(), index.getMin(), index.getMax()); // clamp inside dir files amount limits
+
+			// Changed?
+			if (index.get() != index_PRE)
+			{
+				if (index_PRE != -1)
 				{
-					if (_index < filenames.size() && _index >= 0) {
-						filename = filenames[_index];
-						doSave();
+					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "\n\n  Changed \n  Preset Index : "
+						<< ofToString(index_PRE) << " > " << ofToString(index)
+						<< "      \t(" <<
+						ofToString(filenames[index_PRE]) << " > " <<
+						ofToString(filenames[index]) << ")"
+						<< "\n";
+				}
+
+
+				//--
+
+				// 1. Common Load but AutoSave
+
+				if (!bKeyCtrl && !bKeyAlt) // Ctrl nor Alt not pressed
+				{
+					// Autosave
+
+					if (bAutoSave)
+					{
+						if (dir.size() > 0 && index_PRE < dir.size())
+						{
+							filename = filenames[index_PRE];
+							doSave();
+						}
+						else { ofLogError("ofxSurfingPresetsLite") << "Preset Index points an out of range file!"; }
+					}
+
+					index_PRE = index;
+
+					//--
+
+					// Load
+
+					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << index.getName() + " : " << ofToString(index);
+
+					if (dir.size() > 0 && index < dir.size())
+					{
+						filename = filenames[index_PRE];
+						doLoad();
+					}
+					else
+					{
+						ofLogError("ofxSurfingPresetsLite") << "File out of range";
 					}
 				}
-				_index = index;//refresh
+
+				//--
+
+				// 2. Save / Copy
+
+				// Save to clicked preset index
+				// Ctrl pressed. Alt not pressed
+
+				else if (bKeyCtrl && !bKeyAlt)
+				{
+					filename = filenames[index_PRE];
+					doSave();
+
+					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET COPY!";
+
+					index_PRE = index;
+				}
+
+				//--
+
+				//TODO:
+
+				// 3. Swap
+
+				// (from/to) pre/current index
+				// Ctrl not pressed. Alt pressed
+
+				else if (!bKeyCtrl && bKeyAlt)
+				{
+					// Rename target to source
+					string _fFrom = filenames[index_PRE];
+					string _fTo = filenames[index];
+					ofFile f;
+
+					_fTo = pathPresets + "/" + _fTo + ".json";
+					_fFrom = pathPresets + "/" + _fFrom + ".json";
+
+					bool bf = f.open(_fTo);
+					bool bt = f.renameTo(_fFrom, true, true);
+
+					// Save current to
+					filename = _fTo;
+					doSave();
+
+					if (bf && bt) {
+						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET SWAP!";
+						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << _fFrom << " <-> " << _fTo;
+					}
+					else {
+						ofLogError("ofxSurfingPresetsLite") << "WRONG SWAP!";
+					}
+
+					index_PRE = index;
+				}
 			}
 
-			if (index < filenames.size() && index >= 0) {
-				filename = filenames[index];
-				doLoad();
-			}
+			//----
+
+			//TODO:
+			// changed
+			//if (index_PRE != index) {
+			//	if (bAutoSave)
+			//	{
+			//		if (index_PRE < filenames.size() && index_PRE >= 0) {
+			//			filename = filenames[index_PRE];
+			//			doSave();
+			//		}
+			//	}
+			//	index_PRE = index;//refresh
+			//}
+
+			//if (index < filenames.size() && index >= 0) {
+			//	filename = filenames[index];
+			//	doLoad();
+			//}
 		}
 
 		else if (name == vLoad.getName())
@@ -581,7 +749,12 @@ private:
 
 		else if (name == vReset.getName())
 		{
-			doReset();
+			doResetParams();
+		}
+
+		else if (name == vRandom.getName())
+		{
+			doRandomizeParams();
 		}
 
 		else if (name == vSave.getName())
@@ -647,7 +820,7 @@ private:
 private:
 
 	ofParameterGroup params{ "ofxSurfingPresetsLite" };
-	ofParameterGroup paramsPreset{ "Preset" };
+	ofParameterGroup params_Preset{ "Preset" };
 
 	string pathPresets = "ofxSurfingPresetsLite";
 
@@ -714,12 +887,15 @@ private:
 		return b;
 	}
 
-	//--
+	//----
 
-	// Resets
+	// Resets Engine
+	// 
 	//TODO:
+
 private:
 
+	/*
 	enum ResetPramsType
 	{
 		RESET_PARAM_MIN = 0,
@@ -735,7 +911,7 @@ private:
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 
-		for (int i = 0; i < paramsPreset.size(); i++)
+		for (int i = 0; i < params_Preset.size(); i++)
 			//for (auto p : editorEnablers)
 		{
 			auto p = true;//only reset this iterated param if it's enabled
@@ -743,12 +919,12 @@ private:
 			//-
 
 			//std::string name = p.getName();//name
-			std::string name = paramsPreset[i].getName();//name
-			//auto& g = paramsPreset.getGroup(name);//ofParameterGroup
-			//auto& g = paramsPreset.getGroup(name);//ofParameterGroup
-			auto& g = paramsPreset;//ofParameterGroup
+			std::string name = params_Preset[i].getName();//name
+			//auto& g = params_Preset.getGroup(name);//ofParameterGroup
+			//auto& g = params_Preset.getGroup(name);//ofParameterGroup
+			auto& g = params_Preset;//ofParameterGroup
 			auto& e = g.get(name);//ofAbstractParameter
-			//auto& e = paramsPreset.get(name);//ofAbstractParameter
+			//auto& e = params_Preset.get(name);//ofAbstractParameter
 
 			auto type = e.type();
 			bool isFloat = type == typeid(ofParameter<float>).name();
@@ -921,6 +1097,136 @@ private:
 				//}
 			}
 		}
+	}
+	*/
+
+	// Random simple
+	//--------------------------------------------------------------
+	void doRandomizeParams(bool bSilent = false) {
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+
+		//TODO:
+		// this is not recursive inside the group content!
+		// get from ImHelpers. AddGroup iterate groups
+
+		for (int i = 0; i < params_Preset.size(); i++)
+		{
+			auto& p = params_Preset[i];
+
+			if (p.type() == typeid(ofParameter<float>).name())
+			{
+				ofParameter<float> pr = p.cast<float>();
+				float v = ofRandom(pr.getMin(), pr.getMax());
+				if (bSilent) pr.setWithoutEventNotifications(v);
+				else pr.set(v);
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+			}
+
+			else if (p.type() == typeid(ofParameter<int>).name())
+			{
+				ofParameter<int> pr = p.cast<int>();
+				int v = ofRandom(pr.getMin(), pr.getMax());
+				if (bSilent) pr.setWithoutEventNotifications(v);
+				else pr.set(v);
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+			}
+
+			// include booleans
+			else if (p.type() == typeid(ofParameter<bool>).name())
+			{
+				ofParameter<bool> pr = p.cast<bool>();
+				bool b = (ofRandom(1.f) >= 0.5f);
+				if (bSilent) pr.setWithoutEventNotifications(b);
+				else pr.set(b);
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+			}
+		}
+	}
+
+	// Reset Simple
+	//--------------------------------------------------------------
+	void doResetParams(bool bSilent = false) {
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+
+		for (int i = 0; i < params_Preset.size(); i++)
+		{
+			auto& p = params_Preset[i];
+
+			if (p.type() == typeid(ofParameter<float>).name())
+			{
+				ofParameter<float> pr = p.cast<float>();
+				if (bSilent) pr.setWithoutEventNotifications(pr.getMin());
+				else pr.set(pr.getMin());
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+
+			}
+
+			else if (p.type() == typeid(ofParameter<int>).name())
+			{
+				ofParameter<int> pr = p.cast<int>();
+				if (bSilent) pr.setWithoutEventNotifications(pr.getMin());
+				else pr.set(pr.getMin());
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+			}
+
+			// include booleans
+			else if (p.type() == typeid(ofParameter<bool>).name())
+			{
+				ofParameter<bool> pr = p.cast<bool>();
+				bool b = false;
+				if (bSilent) pr.setWithoutEventNotifications(b);
+				else pr.set(b);
+				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+			}
+		}
+
+		//if (!bSilent) bIsRetrigged = true;
+	}
+
+	//--------------------------------------------------------------
+	void keyPressed(ofKeyEventArgs& eventArgs)
+	{
+		const int& key = eventArgs.key;
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
+
+		// Modifiers
+		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+		bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+		bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+		bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+
+		if (mod_CONTROL) bKeyCtrl = true;
+		if (mod_ALT) bKeyAlt = true;
+	}
+
+	//--------------------------------------------------------------
+	void keyReleased(ofKeyEventArgs& eventArgs)
+	{
+		const int& key = eventArgs.key;
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
+
+		// Modifiers
+		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
+		bool mod_CONTROL = eventArgs.hasModifier(OF_KEY_CONTROL);
+		bool mod_ALT = eventArgs.hasModifier(OF_KEY_ALT);
+		bool mod_SHIFT = eventArgs.hasModifier(OF_KEY_SHIFT);
+
+		if (!mod_CONTROL) bKeyCtrl = false;
+		if (!mod_ALT) bKeyAlt = false;
+
+		//if (!bKeys) return;
+	}
+	//--------------------------------------------------------------
+	void addKeysListeners()
+	{
+		ofAddListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
+		ofAddListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
+	}
+	//--------------------------------------------------------------
+	void removeKeysListeners()
+	{
+		ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
+		ofRemoveListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
 	}
 };
 

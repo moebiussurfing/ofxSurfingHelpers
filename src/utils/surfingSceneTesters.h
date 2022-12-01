@@ -21,82 +21,54 @@ namespace ofxSurfingHelpers {
 
 class surfingSceneTesters
 {
-private:
-
-	ofColor c1 = ofColor::blue;
-	ofColor c2 = ofColor::white;
-
 public:
+
+	ofParameter<int> amount{ "Amount", 10, 1, 100 };
+	ofParameter<float> scale{ "Scale", 0, -1, 1 };
+	ofParameter<float> speed{ "Speed", 0, 0, 1 };
+	ofParameter<ofColor> c1{ "Color 1",ofColor::blue, ofColor(0), ofColor(255) };
+	ofParameter<ofColor> c2{ "Color 2",ofColor::white, ofColor(0), ofColor(255) };
+	ofParameter<bool> bNoise{ "Noise", false };
+	ofParameterGroup params{ "Scene", amount, scale, speed, bNoise , c1, c2 };
 
 	void setColor1(ofColor c) { c1 = c; };
 	void setColor2(ofColor c) { c2 = c; };
 
-	//--------------------------------------------------------------
-	void drawScene()
+	void draw()
 	{
-		float sz = max(ofGetWidth(), ofGetHeight());
+		ofPushStyle();
+		ofFill();
+		ofSetCircleResolution(200);
+
+		float sc = 4;
+		float s = ofMap(scale, -1, 1, 1.f / sc, sc);
+
+		float sz = s * max(ofGetWidth(), ofGetHeight());
+
 		float x = ofGetWidth() * 0.5f;
 		float y = ofGetHeight() * 0.5f;
 		int a = 255;
 
-		// a.
-		//const int d = 30;
-		//int f = ofGetFrameNum() % d;
-		//float r0 = ofMap(f, 0, d, 0, 1, true);
+		float _speed = ofMap(speed, 0, 1, 2, 0.3, true);
+		float r0 = 0.75 + ofxSurfingHelpers::Bounce(_speed);
 
-		// b.
-		float r0 = 0.75 + ofxSurfingHelpers::Bounce();
-		//float r0 = ofxSurfingHelpers::Noise() * 0.75 + Bounce();
-		//float r0 = ofxSurfingHelpers::Noise();
+		float _d = 1;
+		float d0 = 1.f / (float)amount;
 
-		/*
+		float _n = ofMap(ofxSurfingHelpers::Noise(), 0, 1, 0.95, 1.05, true);
+		if (bNoise) d0 = d0 * _n;
+
+		for (int i = 0; i < amount; i++)
 		{
-			ofPushStyle();
-			ofFill();
+			_d = _d - d0;
+			float _r = r0 * sz * _d;
 
-			float r1 = r0 * sz;
-			float r2 = r0 * sz * 0.2;
-			float r3 = r0 * sz * 0.025;
-			float r4 = r0 * sz * 0.005;
-
-			ofSetColor(c2, a);
-			ofDrawCircle(x, y, 0, r1);
-			ofSetColor(c1, a);
-			ofDrawCircle(x, y, 0, r2);
-			ofSetColor(c2, a);
-			ofDrawCircle(x, y, 0, r3);
-			ofSetColor(c1, a);
-			ofDrawCircle(x, y, 0, r4);
-
-			ofPopStyle();
+			bool _b = (i % 2 == 0);//odd/even
+			ofSetColor(_b ? c1 : c2, a);
+			ofDrawCircle(x, y, 0, _r);
 		}
-		*/
 
-		///*
-		{
-			ofPushStyle();
-			ofFill();
-			ofSetCircleResolution(200);
-
-			//int amt = 100 * Noise();
-			int amt = 10;
-			float _d = 1;
-			float d0 = 1.f / (float)amt;
-			//float d0 = 1.f / ((float)amt * Noise());
-
-			for (int i = 0; i < amt; i++)
-			{
-				_d = _d - d0;
-				float _r = r0 * sz * _d;
-
-				bool _b = (i % 2 == 0);//odd/even
-				ofSetColor(_b ? c1 : c2, a);
-				ofDrawCircle(x, y, 0, _r);
-			}
-
-			ofPopStyle();
-		}
-		//*/
+		ofPopStyle();
 	}
 
 };
