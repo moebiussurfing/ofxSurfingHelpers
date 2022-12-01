@@ -11,15 +11,15 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 
 Look to the available classes in **OF_ADDON/src/** for details.
 
-![](/Capture.PNG)  
+![](/Capture1.PNG)  
+![](/Capture2.PNG)  
 
 --------------------------
 
 ## Examples
 
 ### PresetsLite
-![](Examples/PresetsLite/Capture1.PNG)  
-![](Examples/PresetsLite/Capture2.PNG)  
+![](Examples/PresetsLite/Capture.PNG)  
 
 --------------------------
 
