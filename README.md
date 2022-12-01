@@ -3,21 +3,33 @@ ofxSurfingHelpers
 
 # Overview
 
-**ofxSurfingHelpers** is a (WIP) personal collection of some useful stuff form **openFrameworks**:  
+**ofxSurfingHelpers** is a (**WIP**) personal collection of some useful stuff for **openFrameworks**:  
 
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / Native UI Widgets ...etc.
 
 ## Features
 
-Look to the available classes into **OF_ADDON/src/** for details.
+Look to the available classes in **OF_ADDON/src/** for details.
 
-## Third Party add-ons bundled into **OF_ADDON/libs/**
-Already added to `OFX_ADDON/libs/`. No need to clone nor add into **PROJECT GENERATOR**.  
-* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
-* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
+## Examples
+
+### PresetsLite
+[](Examples/PresetsLite/Capture.PNG)  
 
 <details>
-  <summary>Other MISC OF-Util Add-ons / Resources</summary>
+  <summary>Third Party add-ons</summary>
+  <p>
+## Bundled into **OF_ADDON/libs/**
+Already added to `OFX_ADDON/libs/`.  
+No need to clone nor add into **PROJECT GENERATOR**.  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
+* [ofxSerializer](https://github.com/bakercp/ofxSerializer)
+  </p>
+</details>
+
+<details>
+  <summary>Other References / Resources</summary>
   <p>
 
 https://github.com/FilikaDesign/ofxFilika   
@@ -48,7 +60,7 @@ _Some of the bundled classes here may have been "stolen" from the above reposito
 An addon by **@moebiusSurfing**  
 *( ManuMolina ) 2019-2022*  
 
-### Contact / Tune
+## Contact / Tune
 <p>
 <a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
 <a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
@@ -56,5 +68,5 @@ An addon by **@moebiusSurfing**
 <a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> 
 </p>
 
-### License
+## License
 MIT License
