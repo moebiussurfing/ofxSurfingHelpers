@@ -11,10 +11,16 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 
 Look to the available classes in **OF_ADDON/src/** for details.
 
+![](/Capture.PNG)  
+
+--------------------------
+
 ## Examples
 
 ### PresetsLite
 ![](Examples/PresetsLite/Capture.PNG)  
+
+--------------------------
 
 <details>
   <summary>Third Party add-ons</summary>
