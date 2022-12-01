@@ -14,11 +14,12 @@ Look to the available classes in **OF_ADDON/src/** for details.
 ## Examples
 
 ### PresetsLite
-[](Examples/PresetsLite/Capture.PNG)  
+![](Examples/PresetsLite/Capture.PNG)  
 
 <details>
   <summary>Third Party add-ons</summary>
   <p>
+
 ## Bundled into **OF_ADDON/libs/**
 Already added to `OFX_ADDON/libs/`.  
 No need to clone nor add into **PROJECT GENERATOR**.  
