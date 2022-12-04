@@ -4,9 +4,11 @@
 
 	TODO
 
-	add copy/swap with control/alt codifiers when click
+	BUG
+	autosave required to ctrl + copy
 
 */
+
 
 //--
 
@@ -171,7 +173,8 @@ public:
 			{
 				if (bShowMinimizer) ui->Add(ui->bMinimize, OFX_IM_TOGGLE_ROUNDED);
 
-				if (!ui->bMinimize) {
+				if (!ui->bMinimize) 
+				{
 					ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 					ui->AddSpacing();
 				}
@@ -183,18 +186,25 @@ public:
 						ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
 						//if (ui->Add(vSave, OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
-						if (ui->Add(vSave,
-							((bAutoSave || !bOverInputText) ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
 
-							//SurfingGuiTypes s = (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
-							//bool b;
-							//b = (ui->Add(vSave, s, 2));
-							//if(b)
-
+						if (ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
 						{
 							bOverInputText = false;
 							_namePreset = s;
 						};
+
+						//if (ui->Add(vSave,
+						//	((bAutoSave || !bOverInputText) ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2))
+
+						//	//SurfingGuiTypes s = (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
+						//	//bool b;
+						//	//b = (ui->Add(vSave, s, 2));
+						//	//if(b)
+
+						//{
+						//	bOverInputText = false;
+						//	_namePreset = s;
+						//};
 
 						if (!bOverInputText)
 						{
@@ -298,8 +308,7 @@ public:
 					}
 				}
 
-				bool bMinExpd = (ui->bMinimize && !bExpand);
-				if (bMinExpd)
+				if (ui->bMinimize && !bExpand)
 				{
 					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
 					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
@@ -313,18 +322,20 @@ public:
 				if (!ui->bMinimize) ui->AddSpacingSeparated();
 
 				// Combo
-				if (!ui->bMinimize || bExpand)
+				//if (!ui->bMinimize && bExpand)
+				if (bExpand)
 				{
 					//ui->AddComboButtonDual(index, filenames, true);
 
-					float p = ui->getWidgetsSpacingX();
-					float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
-					ImGui::PushItemWidth(w);
-					ui->AddCombo(index, filenames, true);
-					ImGui::PopItemWidth();
+					if (ui->bMinimize)
+					{
+						float p = ui->getWidgetsSpacingX();
+						float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
+						ImGui::PushItemWidth(w);
+						ui->AddCombo(index, filenames, true);
+						ImGui::PopItemWidth();
 
-					ui->SameLine();
-					if (ui->bMinimize) {
+						ui->SameLine();
 						if (ui->AddButton("Next", OFX_IM_BUTTON_SMALL, 2))
 						{
 							doLoadNext();
@@ -332,7 +343,11 @@ public:
 					}
 					else
 					{
-						ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2);
+						float p = ui->getWidgetsSpacingX();
+						float w = ui->getWidgetsWidth() * 1.f - p / 2;//?ImGui::PushItemWidth(w);
+						ImGui::PushItemWidth(w);
+						ui->AddCombo(index, filenames, true);
+						ImGui::PopItemWidth();
 					}
 				}
 
@@ -349,6 +364,17 @@ public:
 					{
 						doLoadNext();
 					};
+				}
+				if (!bExpand && !ui->bMinimize)
+				{
+					float p = ui->getWidgetsSpacingX();
+					float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
+					ImGui::PushItemWidth(w);
+					ui->AddCombo(index, filenames, true);
+					ImGui::PopItemWidth();
+
+					ui->SameLine();
+					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2);
 				}
 
 				//--
@@ -675,7 +701,9 @@ private:
 
 				else if (bKeyCtrl && !bKeyAlt)
 				{
-					filename = filenames[index_PRE];
+					filename = filenames[index];
+					//filename = filenames[index_PRE];
+
 					doSave();
 
 					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET COPY!";
