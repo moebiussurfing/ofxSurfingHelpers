@@ -1,10 +1,10 @@
 {
     "ofxSurfingPresetsLite": {
-        "Amount": "2",
+        "Amount": "3",
         "AutoSave": "1",
         "CLICKER": "1",
-        "Expand": "1",
-        "Index": "3",
+        "Expand": "0",
+        "Index": "5",
         "PRESETS": "1"
     }
 }

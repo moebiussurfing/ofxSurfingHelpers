@@ -120,9 +120,19 @@ public:
 private:
 	string pathSettings = "ofApp";
 
-
 	bool bKeyCtrl = false;
 	bool bKeyAlt = false;
+
+	//----
+
+private:
+
+	vector<char> keyCommandsChars;
+	vector<ofColor> colors;
+	bool bUseColorizedMatrices = false;
+
+public:
+	void setColorized(bool b) { bUseColorizedMatrices = b; }
 
 	//----
 
@@ -145,10 +155,11 @@ public:
 
 		if (b)
 		{
-			//TODO:
-			static string _namePreset = "";
-			//static bool bTyping = false;
-			static bool bOverInputText = false;
+			////TODO:
+			//static string _namePreset = "";
+			////static bool bTyping = false;
+			//static bool bOverInputText = false;
+
 			//string s = "presetName";
 			string s = filename;
 
@@ -173,7 +184,7 @@ public:
 			{
 				if (bShowMinimizer) ui->Add(ui->bMinimize, OFX_IM_TOGGLE_ROUNDED);
 
-				if (!ui->bMinimize) 
+				if (!ui->bMinimize)
 				{
 					ui->Add(bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 					ui->AddSpacing();
@@ -210,22 +221,7 @@ public:
 						{
 							if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
 							{
-								if (!bOverInputText) bOverInputText = true;
-
-								//default name
-								_namePreset = "";
-
-								//autoname
-								string _n = ofToString(dir.size());
-								bool bAvoidOverWrite = false;
-								for (int i = 0; i < dir.size(); i++)
-								{
-									if (_n == dir.getName(i)) bAvoidOverWrite = true;
-								}
-								if (!bAvoidOverWrite) _namePreset = _n;
-								//TODO: should rename if file is already there!
-
-								setFilename(_namePreset);
+								doNewPreset();
 							}
 						}
 						else
@@ -248,6 +244,67 @@ public:
 
 						ui->Add(vReset, OFX_IM_BUTTON_SMALL, 2, true);
 						ui->Add(vRandom, OFX_IM_BUTTON_SMALL, 2);
+
+						//--
+
+						ui->refreshLayout();
+						float _w2 = getWidgetsWidth(2);
+						float _h = getWidgetsHeightUnit();
+
+						if (ImGui::Button("Clear", ImVec2(_w2, _h)))
+						{
+							ImGui::OpenPopup("CLEAR KIT ?");
+						}
+						ui->AddTooltip("Remove all \nfile Presets!");
+
+						if (ImGui::BeginPopupModal("CLEAR KIT ?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+						{
+							ui->AddLabelBig("Presets Kit \nwill be erased.", true, true);
+							ui->AddSpacing();
+							ui->AddLabelBig("This operation \ncannot be undone!", true, true);
+							ui->AddSpacingBig();
+
+							static bool dont_ask_me_next_time = false;
+							ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+							ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
+							ImGui::PopStyleVar();
+
+							ui->AddSpacing();
+
+							if (!dont_ask_me_next_time) {
+								if (ImGui::Button("OK", ImVec2(120, 2 * _h))) {
+									ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "CLEAR";
+									doClearPresets();
+									ImGui::CloseCurrentPopup();
+								}
+								ImGui::SetItemDefaultFocus();
+								ImGui::SameLine();
+								if (ImGui::Button("Cancel", ImVec2(120, 2 * _h))) {
+									ImGui::CloseCurrentPopup();
+								}
+							}
+							else {
+								ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "CLEAR";
+								doClearPresets(false);
+								ImGui::CloseCurrentPopup();
+
+								if (bOverInputText) bOverInputText = false;
+							}
+
+							ImGui::EndPopup();
+						}
+
+						ui->SameLine();
+
+						if (ImGui::Button("Populate", ImVec2(_w2, _h)))
+						{
+							if (bOverInputText) bOverInputText = false;
+
+							doPopulatePresets();
+						}
+						ui->AddTooltip("Clear Kit and create \nNew Presets copying current");
+
+						//--
 
 						//ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2);//should be automatic!
 					}
@@ -319,7 +376,7 @@ public:
 
 				//--
 
-				if (!ui->bMinimize) ui->AddSpacingSeparated();
+				if (!ui->bMinimize && dir.size() > 0) ui->AddSpacingSeparated();
 
 				// Combo
 				//if (!ui->bMinimize && bExpand)
@@ -419,8 +476,12 @@ public:
 			if (bKeyCtrl) toolTip = "Copy To";
 			else if (bKeyAlt) toolTip = "Swap With";
 			bool bSpaced = true;
+			bool bFlip = true;
 
-			ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h, bSpaced, toolTip);
+			if (!bUseColorizedMatrices)
+				ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h, bSpaced, toolTip, bFlip);
+			else
+				ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, colors, true, amnt, true, h, bSpaced, toolTip, bFlip);
 
 			//ofxImGuiSurfing::AddMatrixClickerLabels(index, filenames, true, amnt, true, h, toolTip);
 
@@ -522,7 +583,7 @@ private:
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 
 		doRefreshFiles();//TODO:
-	}
+	};
 
 	void startup()
 	{
@@ -533,39 +594,60 @@ private:
 		ofxSurfingHelpers::loadGroup(params);
 
 		//index = index;
-	}
+
+		//--
+
+		//TODO:
+		// matrix colors
+		if (bUseColorizedMatrices) {
+			colors.clear();
+			for (size_t i = 0; i < 9; i++)
+			{
+				ofColor c;
+				if (i < 3) c = ofColor::green;
+				else if (i < 6) c = ofColor::yellow;
+				else if (i < 10) c = ofColor::red;
+
+				colors.push_back(c);
+			}
+			keyCommandsChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+		}
+	};
 
 	void update(ofEventArgs& args)
 	{
 		if (ofGetFrameNum() == 0) {
 			startup();
 		}
-	}
+	};
 
 	void draw()
 	{
 		//ImVec2 sz(100,30);
 		//if (ofxSurfingGui::AddButton("Save", sz)) {
 		//}
-	}
+	};
 
 	//--
 
 	void doSave()
 	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		//save the previously settled name
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
 
 		ofxSurfingHelpers::CheckFolder(pathPresets);
+
+		// Save Settings
 		ofxSurfingHelpers::saveGroup(params_Preset, pathPresets + "/" + filename + ".json");
-	}
+	};
 
 	void doLoad()
 	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
 
 		// Load Settings
 		ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
-	}
+	};
 
 
 
@@ -602,25 +684,26 @@ public:
 		}
 
 		setup();
-	}
+	};
 
 	void setPath(string p) {
 		pathPresets = p + "/Presets";
-	}
+	};
 
 	void setFilename(string p) {
 		filename = p;
-	}
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
+	};
 
 	void doLoadPrevious() {
 		if (index > index.getMin()) index--;
 		else if (index == index.getMin()) index = index.getMax();
-	}
+	};
 
 	void doLoadNext() {
 		if (index < index.getMax()) index++;
 		else if (index == index.getMax()) index = index.getMin();
-	}
+	};
 
 private:
 
@@ -639,7 +722,8 @@ private:
 
 			static int index_PRE = -1;//pre
 
-			index = ofClamp(index.get(), index.getMin(), index.getMax()); // clamp inside dir files amount limits
+			// clamp inside dir files amount limits
+			index = ofClamp(index.get(), index.getMin(), index.getMax());
 
 			// Changed?
 			if (index.get() != index_PRE)
@@ -789,6 +873,8 @@ private:
 		{
 			int num = getNumFiles();
 
+			//filename is already named
+
 			doSave();
 
 			// scan
@@ -869,7 +955,7 @@ private:
 
 	int getNumFiles() {
 		return filenames.size();
-	}
+	};
 
 	bool doRefreshFiles()
 	{
@@ -913,7 +999,87 @@ private:
 		// true if there's some file
 
 		return b;
-	}
+	};
+
+	void doClearPresets(bool createOne = true)
+	{
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+
+		// Remove all files
+		for (int i = 0; i < dir.size(); i++)
+		{
+			ofFile file = dir[i];
+			file.remove();
+		}
+		doRefreshFiles();
+
+		if (createOne) doNewPreset();
+		if (bOverInputText) bOverInputText = false;
+
+		index = 0;
+	};
+
+	//TODO:
+	string _namePreset = "";
+	bool bOverInputText = false;
+
+	void doNewPreset()
+	{
+		//only sets a name, 
+		//correlated to the amount of files
+
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		if (!bOverInputText) bOverInputText = true;
+
+		//default name
+		_namePreset = "";
+
+		//auto name counting the amount of files
+		string _n = ofToString(dir.size());
+		bool bAvoidOverWrite = false;
+
+		for (int i = 0; i < dir.size(); i++)
+		{
+			if (_n == dir.getName(i)) bAvoidOverWrite = true;
+		}
+
+		if (!bAvoidOverWrite) _namePreset = _n;
+		//TODO: should rename if file is already there!
+
+		setFilename(_namePreset);
+	};
+
+	void doPopulatePresets(int amount = 9)
+	{
+		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+
+		doClearPresets(false);
+
+		int _max;
+		if (amount == -1)
+		{
+			_max = dir.size();
+			//amount files on folder
+		}
+		else _max = amount;
+
+		for (int i = 0; i < _max; i++)
+		{
+			//index = i;
+			doNewPreset();
+			doSave();
+			doRefreshFiles();
+		}
+
+		//// Workflow
+		//amountButtonsPerRowClicker.setMax(_max);
+		//amountButtonsPerRowClickerMini.setMax(_max);
+		//amountButtonsPerRowClicker.set(_max / 3);
+		//amountButtonsPerRowClickerMini.set(_max / 3);
+
+		// Workflow
+		index = 0;
+	};
 
 	//----
 
@@ -1169,7 +1335,7 @@ private:
 				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
 			}
 		}
-	}
+	};
 
 	// Reset Simple
 	//--------------------------------------------------------------
@@ -1209,7 +1375,7 @@ private:
 		}
 
 		//if (!bSilent) bIsRetrigged = true;
-	}
+	};
 
 	//--------------------------------------------------------------
 	void keyPressed(ofKeyEventArgs& eventArgs)
@@ -1225,7 +1391,7 @@ private:
 
 		if (mod_CONTROL) bKeyCtrl = true;
 		if (mod_ALT) bKeyAlt = true;
-	}
+	};
 
 	//--------------------------------------------------------------
 	void keyReleased(ofKeyEventArgs& eventArgs)
@@ -1243,18 +1409,18 @@ private:
 		if (!mod_ALT) bKeyAlt = false;
 
 		//if (!bKeys) return;
-	}
+	};
 	//--------------------------------------------------------------
 	void addKeysListeners()
 	{
 		ofAddListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
 		ofAddListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
-	}
+	};
 	//--------------------------------------------------------------
 	void removeKeysListeners()
 	{
 		ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
 		ofRemoveListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
-	}
+	};
 };
 

@@ -563,3 +563,7 @@ example-ImGui_Widgets/Project.xcconfig
 example-ImGui_Widgets/openFrameworks-Info.plist
 example-ImGui_Widgets/Makefile
 example-ImGui_Widgets/config.make
+Examples/PresetsLite/bin/data/ofApp/Presets/8.json
+*.json
+*.ini
+*.xml

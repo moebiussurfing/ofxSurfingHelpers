@@ -12,7 +12,7 @@
             "LOG": "0",
             "Log_Keys": "0",
             "Metrics": "0",
-            "Minimize": "0",
+            "Minimize": "1",
             "Mouse_Wheel": "1",
             "Solo": "0"
         }
