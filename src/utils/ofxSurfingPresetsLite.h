@@ -165,6 +165,7 @@ public:
 
 			bool bFolder = !bWindowed;
 			//bool bFolder = true;
+			bool bOpen = true;
 
 			bool b = true;
 
@@ -176,7 +177,8 @@ public:
 			}
 			else
 			{
-				b = ui->BeginTree(sn);
+				b = ui->BeginTree(sn, bOpen);
+				//b = ui->BeginTree(sn);
 				ui->AddSpacing();
 			}
 
