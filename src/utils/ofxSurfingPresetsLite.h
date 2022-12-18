@@ -730,6 +730,10 @@ private:
 			// Changed?
 			if (index.get() != index_PRE)
 			{
+				//TODO:
+				//avoid error!
+				//if (index.get() > filenames.size() - 1 || index_PRE > filenames.size() - 1) return;
+
 				if (index_PRE != -1)
 				{
 					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "\n\n  Changed \n  Preset Index : "
@@ -875,8 +879,9 @@ private:
 		{
 			int num = getNumFiles();
 
-			//filename is already named
+			if (num == 0) filename = "0";
 
+			// filename is already named
 			doSave();
 
 			// scan

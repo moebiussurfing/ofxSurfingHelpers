@@ -17,7 +17,7 @@ class ofApp : public ofBaseApp{
 		ofxSurfingGui ui; // required to use this add-on!
 
 		ofxSurfingPresetsLite pm; // presets manager
-		string pathGlobal = "ofApp/";
+		string path_GLOBAL = "ofApp/";
 
 		surfingSceneTesters sc; // scene tester
 };

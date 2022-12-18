@@ -7,7 +7,7 @@ void ofApp::setup() {
 	ofSetEscapeQuitsApp(false); // disable ESC to allow text input workflow
 
 	pm.setUiPtr(&ui);
-	pm.setPath(pathGlobal);
+	pm.setPath(path_GLOBAL);
 	pm.AddGroup(sc.params);
 }
 
