@@ -200,6 +200,7 @@ public:
 			{
 				b = ui->BeginTree(sn, bOpen);
 				//b = ui->BeginTree(sn);
+
 				ui->AddSpacing();
 			}
 
@@ -391,7 +392,17 @@ public:
 				if (ui->bMinimize && !bExpand)
 				{
 					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
-					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
+
+					//if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
+					//{
+					//	doLoadNext();
+					//};
+
+					if (ui->AddButton("<", OFX_IM_BUTTON_MEDIUM, 4, true))
+					{
+						doLoadPrevious();
+					};
+					if (ui->AddButton(">", OFX_IM_BUTTON_MEDIUM, 4, false))
 					{
 						doLoadNext();
 					};
@@ -435,12 +446,12 @@ public:
 				{
 					//ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
 
-					if (ui->AddButton("Prev", OFX_IM_BUTTON_MEDIUM, 2, true))
+					if (ui->AddButton("<", OFX_IM_BUTTON_MEDIUM, 2, true))
 					{
 						doLoadPrevious();
 					};
 
-					if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
+					if (ui->AddButton(">", OFX_IM_BUTTON_MEDIUM, 2))
 					{
 						doLoadNext();
 					};
@@ -483,32 +494,29 @@ public:
 	// Files
 
 	// 2. Presets
-	void drawImGuiClicker(bool bWindowed = false, bool bMinimal = true)
+	void drawImGuiClicker(bool bWindowed = false, bool bMinimal = false)
 	{
-		if (!bMinimal) {
+		bool bw = false;
+		if (bWindowed) {
+			bw = ui->BeginWindow(bGui);
+			if (!bw) {
+				ui->EndWindow();
+				return;
+			}
+		}
+
+		//--
+
+		if (!bMinimal)
+		{
 			if (!ui->bMinimize) {
 				ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
-
 				ui->AddSpacing();
 			}
 		}
 
-		if (bClicker || !bMinimal)
+		if (bClicker || !bMinimal)//TODO:
 		{
-			//float h = ui->getWidgetsHeightUnit();
-
-			//string toolTip = "";
-			//if (bKeyCtrl) toolTip = "Copy To";
-			//else if (bKeyAlt) toolTip = "Swap With";
-			//bool bSpaced = true;
-			//bool bFlip = true;
-
-			//if (!bUseColorizedMatrices)
-			//	ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amountButtonsPerRowClicker, true, h, bSpaced, toolTip, bFlip);
-			//else
-			//	ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, colors, true, amountButtonsPerRowClicker, true, h, bSpaced, toolTip, bFlip);
-
-
 			float _h2 = ui->getWidgetsHeightUnit();
 			bool bResponsiveButtonsClicker = true;
 			bool bFlip = true;
@@ -517,76 +525,27 @@ public:
 			if (bKeyCtrl) toolTip = "Copy To";
 			else if (bKeyAlt) toolTip = "Swap With";
 
-			if (bUseColorizedMatrices)
+			if (bUseColorizedMatrices) {
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
-			else
+			}
+			else {
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
-
-
-			//ofxImGuiSurfing::AddMatrixClickerLabels(index, filenames, true, amountButtonsPerRowClicker, true, h, toolTip);
-
-			if (!bMinimal) 
-			{
-				ui->AddSpacing();
-				if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
 			}
 
-			/*
-			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&index_PRE,
-			const std::vector<string> labels, bool bResponsive = true, int amountBtRow = 3, const bool bDrawBorder = true, float __h = -1, bool bSpaced = true, string toolTip = "")
-			*/
+			//if (!bMinimal)
+			//{
+			//	ui->AddSpacing();
+			//	if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
+			//}
 
-			/*
-			ui->Indent();
-			{
-				// Paths
-				{
-					bool bOpen = false;
-					ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
-					//_flagt |= ImGuiTreeNodeFlags_Framed;
+		}
 
-					if (ImGui::TreeNodeEx("Path", _flagt))
-					{
-						ImGui::TextWrapped(pathPresets.data()); // -> show path
-						ImGui::TreePop();
-					}
-				}
+		//--
 
-				// Files
-				// Buttons Selector for each file
-				if (ofxImGuiSurfing::filesPicker(pathPresets, filename, index, { "json" }))
-				{
-					// Buttons Matrix
-
-					//TODO:
-					// Index back not working
-					// this is a workaround
-					// could fail on macOS/Linux -> requires fix paths slashes
-
-					for (int i = 0; i < dir.size(); i++)
-					{
-						std::string si = ofToString(i);
-						if (i < 10) si = "0" + si;
-						std::string ss = name_Root + "_" + si;
-						fileName = ss;
-
-						auto s0 = ofSplitString(nameSelected, "\\", true);
-						std::string s1 = s0[s0.size() - 1]; // filename
-						auto s = ofSplitString(s1, ".json");
-
-						std::string _nameSelected = s[0];
-
-						if (_nameSelected == fileName)
-						{
-							index = i;
-						}
-					}
-
-					ofLogNotice("ofxSurfingPresetsLite") << "Picked file " << nameSelected << " > " << index;
-				}
+		if (bWindowed) {
+			if (bw) {
+				ui->EndWindow();
 			}
-			ui->Unindent();
-			*/
 		}
 	}
 
