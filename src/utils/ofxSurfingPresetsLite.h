@@ -92,7 +92,7 @@ public:
 		params.add(bAutoSave);//edit
 		params.add(bClicker);
 		params.add(bExpand);
-		params.add(amnt);
+		params.add(amountButtonsPerRowClicker);
 	};
 
 	ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
@@ -115,6 +115,26 @@ public:
 
 	void setUiPtr(ofxSurfingGui* _ui) {
 		ui = _ui;
+	}
+
+	// Customize global name to avoid window name collide with other preset manager instances
+	//--------------------------------------------------------------
+	void setName(std::string s)
+	{
+		//if (s == "-1") s = "PRESETS EDITOR";
+		//else
+		//{
+		//	n = name_Root;
+		//	n += " EDITOR";
+		//}
+
+		//name_Root = s;
+
+		bGui.setName(s);
+
+		//#ifdef USE__OFX_SURFING_PRESETS__OFX_SURFING_PLAYER 
+		//		playerSurfer.setName(s);
+		//#endif
 	}
 
 private:
@@ -146,14 +166,15 @@ public:
 
 		//TODO:
 		// make windowed
-		bool b = true;
+		bool bw = true;
 
 		if (bWindowed)
 		{
-			b = ui->BeginWindow("PRESETS");
+			bw = ui->BeginWindow(bGui.getName());
+			//bw = ui->BeginWindow("PRESETS");
 		}
 
-		if (b)
+		if (bw)
 		{
 			////TODO:
 			//static string _namePreset = "";
@@ -195,7 +216,7 @@ public:
 				//ui->AddToggle("Expand", bExpand, OFX_IM_TOGGLE_ROUNDED_MINI);
 				if (bExpand)
 				{
-					if (!ui->bMinimize) {//maximized
+					if (!ui->bMinimize) { // maximized
 						ui->Add(vLoad, OFX_IM_BUTTON_SMALL, 2, true);
 
 						//if (ui->Add(vSave, OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
@@ -310,7 +331,7 @@ public:
 
 						//ui->Add(vScan, OFX_IM_BUTTON_SMALL, 2);//should be automatic!
 					}
-					else//minimized
+					else // minimized
 					{
 						if (ui->Add(vSave, bOverInputText ? OFX_IM_BUTTON_SMALL_BORDER_BLINK : OFX_IM_BUTTON_SMALL, 2, true))
 						{
@@ -323,10 +344,10 @@ public:
 							{
 								if (!bOverInputText) bOverInputText = true;
 
-								//default name
+								// default name
 								_namePreset = "";
 
-								//autoname
+								// auto name
 								string _n = ofToString(dir.size());
 								bool bAvoidOverWrite = false;
 								for (int i = 0; i < dir.size(); i++)
@@ -450,8 +471,7 @@ public:
 			}
 		}
 
-
-		if (bWindowed && b) {
+		if (bWindowed && bw) {
 			ui->EndWindow();
 		}
 	}
@@ -463,32 +483,53 @@ public:
 	// Files
 
 	// 2. Presets
-	void drawImGuiClicker(bool bWindowed = false)
+	void drawImGuiClicker(bool bWindowed = false, bool bMinimal = true)
 	{
-		if (!ui->bMinimize) {
-			ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
+		if (!bMinimal) {
+			if (!ui->bMinimize) {
+				ui->Add(bClicker, OFX_IM_TOGGLE_BUTTON_ROUNDED_MINI);
 
-			ui->AddSpacing();
+				ui->AddSpacing();
+			}
 		}
-		if (bClicker)
+
+		if (bClicker || !bMinimal)
 		{
-			float h = ui->getWidgetsHeightUnit();
+			//float h = ui->getWidgetsHeightUnit();
+
+			//string toolTip = "";
+			//if (bKeyCtrl) toolTip = "Copy To";
+			//else if (bKeyAlt) toolTip = "Swap With";
+			//bool bSpaced = true;
+			//bool bFlip = true;
+
+			//if (!bUseColorizedMatrices)
+			//	ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amountButtonsPerRowClicker, true, h, bSpaced, toolTip, bFlip);
+			//else
+			//	ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, colors, true, amountButtonsPerRowClicker, true, h, bSpaced, toolTip, bFlip);
+
+
+			float _h2 = ui->getWidgetsHeightUnit();
+			bool bResponsiveButtonsClicker = true;
+			bool bFlip = true;
 
 			string toolTip = "";
 			if (bKeyCtrl) toolTip = "Copy To";
 			else if (bKeyAlt) toolTip = "Swap With";
-			bool bSpaced = true;
-			bool bFlip = true;
 
-			if (!bUseColorizedMatrices)
-				ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, true, amnt, true, h, bSpaced, toolTip, bFlip);
+			if (bUseColorizedMatrices)
+				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 			else
-				ofxImGuiSurfing::AddMatrixClickerLabelsStrings(index, filenames, colors, true, amnt, true, h, bSpaced, toolTip, bFlip);
+				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 
-			//ofxImGuiSurfing::AddMatrixClickerLabels(index, filenames, true, amnt, true, h, toolTip);
 
-			ui->AddSpacing();
-			if (!ui->bMinimize) ui->Add(amnt, OFX_IM_STEPPER, 2);
+			//ofxImGuiSurfing::AddMatrixClickerLabels(index, filenames, true, amountButtonsPerRowClicker, true, h, toolTip);
+
+			if (!bMinimal) 
+			{
+				ui->AddSpacing();
+				if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
+			}
 
 			/*
 			inline bool AddMatrixClickerLabelsStrings(ofParameter<int>&index_PRE,
@@ -560,7 +601,7 @@ public:
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
 	ofParameter<bool> bGui{ "PRESETS", true };
-	ofParameter<int> amnt{ "Amount", 1, 1, 4 };
+	ofParameter<int> amountButtonsPerRowClicker{ "Amount", 1, 1, 4 };
 
 private:
 
