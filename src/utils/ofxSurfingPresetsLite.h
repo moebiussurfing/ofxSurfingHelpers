@@ -514,8 +514,11 @@ public:
 				ui->AddSpacing();
 			}
 		}
+		else {
+			if (!bClicker)bClicker = true;
+		}
 
-		if (bClicker || !bMinimal)//TODO:
+		if (bClicker /*|| !bMinimal*/)//TODO:
 		{
 			float _h2 = ui->getWidgetsHeightUnit();
 			bool bResponsiveButtonsClicker = true;
@@ -532,12 +535,11 @@ public:
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 			}
 
-			//if (!bMinimal)
-			//{
-			//	ui->AddSpacing();
-			//	if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
-			//}
-
+			if (!bMinimal && !ui->bMinimize)
+			{
+				ui->AddSpacing();
+				if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
+			}
 		}
 
 		//--
@@ -559,8 +561,17 @@ public:
 
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
-	ofParameter<bool> bGui{ "PRESETS", true };
 	ofParameter<int> amountButtonsPerRowClicker{ "Amount", 1, 1, 4 };
+	
+	//--
+	
+	ofParameter<bool> bGui{ "PRESETS", true };
+	
+	void setToggleVisibleGui() { bGui = !bGui; }
+	void setVisibleGui(bool b) { bGui = b; }
+	bool getVisibleGui() { return bGui; }
+
+	//--
 
 private:
 
