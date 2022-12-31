@@ -92,7 +92,7 @@ private:
 
 		////TODO:
 		//// filter a bit to ignore if not really changed.
-		//// retrigger mode should be considerated!
+		//// re trigger mode should be considered!
 		//static int index_PRE = -1;
 		//if (index.get() != index_PRE) {
 		//	index_PRE = index.get();
