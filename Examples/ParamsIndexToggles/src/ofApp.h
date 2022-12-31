@@ -16,7 +16,11 @@ public:
 
 	ofxSurfingGui ui;
 
-	// Current selected index
+	// Selector index
+	// We will auto populate toggles for each index possible values.
+	// that toggles will be exclusive: 
+	// only one can be active at the same time!
+
 	ofParameter<int> index{ "Index", 0, 0, 8 }; 
 
 	surfingParamIndexToggles pIt;

@@ -185,24 +185,25 @@ private:
 
 					continue;
 				}
-				else
+				else // is false
 				{
-					// avoid that all are disabled!
+					// Avoid that all are disabled!
+
 					for (int j = 0; j <= index.getMax() && j < bToggles.size(); j++)
 					{
-						if (bToggles[j].get()) {
+						if (bToggles[j].get()) {//one is already true
 
 							bAttending = false;
 							return;
-							// if one is true return!
+							// if at least one is true, we return!
 						}
 					}
 
-					// here none is true. all are false
+					// If arrived here: none is true. all are false
 					{
 						// restore to who changed back to true
-						if (bToggles[index.get() == false]) bToggles[index.get()] = true;//crash?
-						//bToggles[index.get()] = true;
+						//if (bToggles[index.get() == false]) bToggles[index.get()] = true;//crash?
+						bToggles[index.get()] = true;
 
 						bAttending = false;
 						return;
