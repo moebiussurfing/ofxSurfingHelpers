@@ -45,8 +45,27 @@ public:
 		params_Toggles.setName(_i.getName());
 		doBuildToggles();
 
+		//--
+
+		// callback
+
 		listenerIndex = index.newListener([this](int i) {
-			refreshTogglesByIndex();
+			//listenerIndex = index.newListener([this](int i) {
+
+		//	//TODO:
+		//	// filter a bit to ignore if not really changed.
+		//	// retrigger mode should be considerated!
+		//	static int index_PRE = -1;
+		//if (index.get() != index_PRE) {
+		//	index_PRE = index.get();
+		//}
+		//else {//not changed
+		//	ofLogVerbose("surfingParamIndexToggles") << "SKIP " << index.getName();
+		//	return;
+		//}
+
+		refreshTogglesByIndex();
+
 			});
 	}
 
@@ -54,9 +73,12 @@ public:
 
 	ofParameterGroup params_Toggles{ "Toggles" };
 
-private:
+protected:
 
 	ofParameter<int> index; // Current selected preset index
+
+private:
+
 	vector<ofParameter<bool>> bToggles;
 
 	//bool bDISABLE_CALLBACKS = false;
@@ -68,19 +90,32 @@ private:
 
 		ofLogVerbose("surfingParamIndexToggles") << "::" << index.getName() << " : " << index.get();
 
+		////TODO:
+		//// filter a bit to ignore if not really changed.
+		//// retrigger mode should be considerated!
+		//static int index_PRE = -1;
+		//if (index.get() != index_PRE) {
+		//	index_PRE = index.get();
+		//}
+		//else {//not changed
+		//	ofLogVerbose("surfingParamIndexToggles") << "SKIP " << index.getName();
+		//	return;
+		//}
+
+		//--
+
 		// Exclusive
 		// Sets to true the respective toggle 
-		// for current index and set to false for the others.
+		// for the current changed index 
+		// and then set to false for all the others.
 
 		for (int i = 0; i <= index.getMax() && i < bToggles.size(); i++)
 		{
-			if (i > bToggles.size() - 1) break;
-
-			bToggles[i].set(false);
+			if (bToggles[i].get()) bToggles[i].set(false);
 		}
 		if (index <= index.getMax() && index < bToggles.size())
 		{
-			if (index <= bToggles.size() - 1) bToggles[index].set(true);
+			if (!bToggles[index].get()) bToggles[index].set(true);
 		}
 	}
 
@@ -133,7 +168,7 @@ private:
 		// optimize a bit the callbacks
 		static bool bAttending = false;
 		if (bAttending) return;
-		
+
 		for (int i = 0; i <= index.getMax() && i < bToggles.size(); i++)
 		{
 			if (name == bToggles[i].getName())
@@ -143,8 +178,9 @@ private:
 				// if true
 				if (bToggles[i].get())
 				{
-					index = i;
-					ofLogNotice("surfingParamIndexToggles") << (__FUNCTION__) << " " << name << " : TRUE";
+					if (i != index) index = i;
+
+					ofLogNotice("surfingParamIndexToggles") << " " << name << " : TRUE";
 					bFoundTrue = true;
 
 					continue;
@@ -165,7 +201,8 @@ private:
 					// here none is true. all are false
 					{
 						// restore to who changed back to true
-						bToggles[index.get()] = true;
+						if (bToggles[index.get() == false]) bToggles[index.get()] = true;//crash?
+						//bToggles[index.get()] = true;
 
 						bAttending = false;
 						return;
@@ -182,7 +219,7 @@ private:
 		{
 			if (i != index && bToggles[i].get())
 			{
-				bToggles[i] = false;
+				if (bToggles[i].get()) bToggles[i] = false;
 			}
 		}
 

@@ -51,8 +51,8 @@ void ofApp::draw()
 			}
 
 			// toggles
-			//ui.AddGroup(pIt.params_Toggles);
 			auto& g = pIt.getParamToggles();
+			//ui.AddGroup(pIt.params_Toggles);
 
 			ui.AddGroup(g, ui.bMinimize ? SurfingGuiGroupStyle_NoHeader : SurfingGuiGroupStyle_None);
 
@@ -67,8 +67,6 @@ void ofApp::draw()
 			}
 
 			ui.AddSpacingSeparated();
-
-			//pIt.draw();
 
 			//--
 
