@@ -39,7 +39,7 @@ public:
 	ofParameter<int> div{ "Bpm Div", 2, 1, 4 };
 	ofParameter<glm::vec2> position{ "Position", glm::vec2(100,100), glm::vec2(0,0), glm::vec2(1920,1080) };
 	ofParameter<bool> bGui{ "bGui", true };
-	ofParameter<bool> bLock{ "bLock", false };
+	ofParameter<bool> bLock{ "Lock Move", false };
 
 	void setLocked(bool b) {
 		bLock = b;

@@ -42,6 +42,7 @@ public:
 	{
 		index.makeReferenceTo(_i); // link
 
+		params_Toggles.clear();
 		params_Toggles.setName(_i.getName());
 		doBuildToggles();
 
@@ -64,7 +65,7 @@ public:
 		//	return;
 		//}
 
-		refreshTogglesByIndex();
+			refreshTogglesByIndex();
 
 			});
 	}
@@ -202,8 +203,16 @@ private:
 					// If arrived here: none is true. all are false
 					{
 						// restore to who changed back to true
-						//if (bToggles[index.get() == false]) bToggles[index.get()] = true;//crash?
-						bToggles[index.get()] = true;
+
+						// TODO:
+						//avoid crash
+						if (bToggles.size() <= 1) {
+							bAttending = false;
+							return;
+						}
+
+						//bToggles[index.get()] = true;
+						if (bToggles[index.get() == false]) bToggles[index.get()] = true;//crash?
 
 						bAttending = false;
 						return;
