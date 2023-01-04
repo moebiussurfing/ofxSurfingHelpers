@@ -80,6 +80,7 @@ public:
 		addKeysListeners();
 
 		params.add(bGui);
+		params.add(index);
 		params.add(vScan);
 		params.add(vDelete);
 		params.add(vSave);
@@ -88,7 +89,6 @@ public:
 		params.add(vRename);
 		params.add(vReset);
 		params.add(vRandom);
-		params.add(index);
 		params.add(bAutoSave);//edit
 		params.add(bClicker);
 		params.add(bExpand);
@@ -97,17 +97,23 @@ public:
 
 	ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
 	{
+		exit();
+
 		ofRemoveListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
 		removeKeysListeners();
-
-		ofxSurfingHelpers::CheckFolder(pathSettings);
-		ofxSurfingHelpers::saveGroup(params);
-
-		doSave();
 	};
 
 private:
+
+	void exit() {
+
+		//ofxSurfingHelpers::CheckFolder(pathSettings);
+		ofxSurfingHelpers::CheckFolder(path_Global);
+		ofxSurfingHelpers::saveGroup(params, path_Global + "/" + pathSettings);
+
+		doSave();
+	};
 
 	ofxSurfingGui* ui;
 
@@ -138,7 +144,7 @@ public:
 	}
 
 private:
-	string pathSettings = "ofApp";
+	string pathSettings = "ofxSurfingPresetsLite_Settings.json";
 
 	bool bKeyCtrl = false;
 	bool bKeyAlt = false;
@@ -160,7 +166,7 @@ public:
 
 	// Presets
 
-	void drawImGui(bool bWindowed = false, bool bShowMinimizer = false)
+	void drawImGui(bool bWindowed = false, bool bShowMinimizer = false, bool bFolder = false)
 	{
 		if (!bGui) return;
 
@@ -173,6 +179,9 @@ public:
 			bw = ui->BeginWindow(bGui.getName());
 			//bw = ui->BeginWindow("PRESETS");
 		}
+		else if (bFolder) {
+			bw = true;
+		}
 
 		if (bw)
 		{
@@ -184,8 +193,9 @@ public:
 			//string s = "presetName";
 			string s = filename;
 
-			bool bFolder = !bWindowed;
+			//bool bFolder = !bWindowed;
 			//bool bFolder = true;
+
 			bool bOpen = true;
 
 			bool b = true;
@@ -194,6 +204,7 @@ public:
 
 			if (!bFolder)
 			{
+				b = true;
 				//ui->AddLabelBig(sn, true, true);
 			}
 			else
@@ -251,7 +262,10 @@ public:
 						else
 						{
 							if (ui->AddButton("Cancel", OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
+							{
 								bOverInputText = false;
+								bDoingNew = false;
+							}
 						}
 						ui->SameLine();
 						ui->Add(vDelete, OFX_IM_BUTTON_SMALL, 2);
@@ -343,28 +357,32 @@ public:
 						if (!bOverInputText) {
 							if (ui->Add(vNew, OFX_IM_BUTTON_SMALL, 2))
 							{
-								if (!bOverInputText) bOverInputText = true;
+								doNewPreset();
 
-								// default name
-								_namePreset = "";
+								//if (!bOverInputText) bOverInputText = true;
 
-								// auto name
-								string _n = ofToString(dir.size());
-								bool bAvoidOverWrite = false;
-								for (int i = 0; i < dir.size(); i++)
-								{
-									if (_n == dir.getName(i)) bAvoidOverWrite = true;
-								}
-								if (!bAvoidOverWrite) _namePreset = _n;
+								//// default name
+								//_namePreset = "";
 
-								setFilename(_namePreset);
+								//// auto name
+								//string _n = ofToString(dir.size());
+								//bool bAvoidOverWrite = false;
+								//for (int i = 0; i < dir.size(); i++)
+								//{
+								//	if (_n == dir.getName(i)) bAvoidOverWrite = true;
+								//}
+								//if (!bAvoidOverWrite) _namePreset = _n;
+
+								//setFilename(_namePreset);
 							}
 						}
 						else
 						{
 							if (ui->AddButton("Cancel",
-								OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2))
+								OFX_IM_BUTTON_SMALL_BORDER_BLINK, 2)) {
 								bOverInputText = false;
+								bDoingNew = false;
+							}
 						}
 					}
 
@@ -562,11 +580,11 @@ public:
 	ofParameter<int> index{ "Index", 0, 0, 0 };
 
 	ofParameter<int> amountButtonsPerRowClicker{ "Amount", 1, 1, 4 };
-	
+
 	//--
-	
+
 	ofParameter<bool> bGui{ "PRESETS", true };
-	
+
 	void setToggleVisibleGui() { bGui = !bGui; }
 	void setVisibleGui(bool b) { bGui = b; }
 	bool getVisibleGui() { return bGui; }
@@ -574,6 +592,8 @@ public:
 	//--
 
 private:
+
+	int index_PRE = -1;//pre
 
 	ofParameter<void> vPrevious{ "<" };
 	ofParameter<void> vNext{ ">" };
@@ -604,7 +624,9 @@ private:
 
 		doRefreshFiles();
 
-		ofxSurfingHelpers::loadGroup(params);
+		index_PRE = -1; // pre
+
+		ofxSurfingHelpers::loadGroup(params, path_Global + "/" + pathSettings);
 
 		//index = index;
 
@@ -614,6 +636,7 @@ private:
 		// matrix colors
 		if (bUseColorizedMatrices) {
 			colors.clear();
+			keyCommandsChars.clear();
 			for (size_t i = 0; i < 9; i++)
 			{
 				ofColor c;
@@ -648,6 +671,8 @@ private:
 		//save the previously settled name
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
 
+		if (bDoingNew) bDoingNew = false;
+
 		ofxSurfingHelpers::CheckFolder(pathPresets);
 
 		// Save Settings
@@ -657,6 +682,8 @@ private:
 	void doLoad()
 	{
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
+
+		if (bDoingNew) bDoingNew = false;
 
 		// Load Settings
 		ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
@@ -696,11 +723,22 @@ public:
 			params_Preset = group;
 		}
 
+		pathSettings = params_Preset.getName() + "_Settings.json";
+
 		setup();
 	};
 
+	void setPathGlobal(std::string path) {
+		path_Global = path;
+		ofxSurfingHelpers::CheckFolder(path_Global);
+	}
+private:
+	std::string path_Global = "";//main folder where nested folder goes inside
+
+public:
 	void setPath(string p) {
 		pathPresets = p + "/Presets";
+		ofxSurfingHelpers::CheckFolder(pathPresets);
 	};
 
 	void setFilename(string p) {
@@ -733,7 +771,7 @@ private:
 		{
 			if (filenames.size() == 0) return;
 
-			static int index_PRE = -1;//pre
+			//static int index_PRE = -1; // pre
 
 			// clamp inside dir files amount limits
 			index = ofClamp(index.get(), index.getMin(), index.getMax());
@@ -747,14 +785,16 @@ private:
 
 				if (index_PRE != -1)
 				{
-					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "\n\n  Changed \n  Preset Index : "
-						<< ofToString(index_PRE) << " > " << ofToString(index)
-						<< "      \t(" <<
-						ofToString(filenames[index_PRE]) << " > " <<
-						ofToString(filenames[index]) << ")"
-						<< "\n";
+					if (index_PRE < filenames.size() && index < filenames.size())
+					{
+						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "\n\n  Changed \n  Preset Index : "
+							<< ofToString(index_PRE) << " > " << ofToString(index)
+							<< "      \t(" <<
+							ofToString(filenames[index_PRE]) << " > " <<
+							ofToString(filenames[index]) << ")"
+							<< "\n";
+					}
 				}
-
 
 				//--
 
@@ -766,7 +806,7 @@ private:
 
 					if (bAutoSave)
 					{
-						if (dir.size() > 0 && index_PRE < dir.size())
+						if (dir.size() > 0 && index_PRE < dir.size() && index_PRE < filenames.size())
 						{
 							filename = filenames[index_PRE];
 							doSave();
@@ -782,7 +822,7 @@ private:
 
 					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << index.getName() + " : " << ofToString(index);
 
-					if (dir.size() > 0 && index < dir.size())
+					if (dir.size() > 0 && index < dir.size() && index_PRE < filenames.size())
 					{
 						filename = filenames[index_PRE];
 						doLoad();
@@ -802,14 +842,16 @@ private:
 
 				else if (bKeyCtrl && !bKeyAlt)
 				{
-					filename = filenames[index];
-					//filename = filenames[index_PRE];
+					if (index < filenames.size()) {
+						filename = filenames[index];
+						//filename = filenames[index_PRE];
 
-					doSave();
+						doSave();
 
-					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET COPY!";
+						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET COPY!";
 
-					index_PRE = index;
+						index_PRE = index;
+					}
 				}
 
 				//--
@@ -823,30 +865,33 @@ private:
 
 				else if (!bKeyCtrl && bKeyAlt)
 				{
-					// Rename target to source
-					string _fFrom = filenames[index_PRE];
-					string _fTo = filenames[index];
-					ofFile f;
+					if (dir.size() > 0 && index < filenames.size() && index_PRE < filenames.size())
+					{
+						// Rename target to source
+						string _fFrom = filenames[index_PRE];
+						string _fTo = filenames[index];
+						ofFile f;
 
-					_fTo = pathPresets + "/" + _fTo + ".json";
-					_fFrom = pathPresets + "/" + _fFrom + ".json";
+						_fTo = pathPresets + "/" + _fTo + ".json";
+						_fFrom = pathPresets + "/" + _fFrom + ".json";
 
-					bool bf = f.open(_fTo);
-					bool bt = f.renameTo(_fFrom, true, true);
+						bool bf = f.open(_fTo);
+						bool bt = f.renameTo(_fFrom, true, true);
 
-					// Save current to
-					filename = _fTo;
-					doSave();
+						// Save current to
+						filename = _fTo;
+						doSave();
 
-					if (bf && bt) {
-						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET SWAP!";
-						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << _fFrom << " <-> " << _fTo;
+						if (bf && bt) {
+							ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET SWAP!";
+							ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << _fFrom << " <-> " << _fTo;
+						}
+						else {
+							ofLogError("ofxSurfingPresetsLite") << "WRONG SWAP!";
+						}
+
+						index_PRE = index;
 					}
-					else {
-						ofLogError("ofxSurfingPresetsLite") << "WRONG SWAP!";
-					}
-
-					index_PRE = index;
 				}
 			}
 
@@ -1040,7 +1085,7 @@ private:
 	//TODO:
 	string _namePreset = "";
 	bool bOverInputText = false;
-
+	bool bDoingNew = false;
 	void doNewPreset()
 	{
 		//only sets a name, 
@@ -1048,6 +1093,8 @@ private:
 
 		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
 		if (!bOverInputText) bOverInputText = true;
+
+		bDoingNew = true;
 
 		//default name
 		_namePreset = "";
