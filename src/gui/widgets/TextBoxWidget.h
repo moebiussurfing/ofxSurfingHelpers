@@ -175,7 +175,9 @@ private:
 
 	ofxInteractiveRect rect_HelpTextBox = { "Help_ofxPresetsManager" };//main object
 
-	std::string path_RectHelpBox = "_HelpBox";
+	std::string path_RectHelpBox = "HelpBox";
+	//std::string path_RectHelpBox = "_HelpBox";
+
 	std::string path_Global = "TextBoxWidget/";// can be setted before setup
 	//std::string path_Name = "appSettings";// subfolder for app session settings
 
@@ -263,9 +265,22 @@ public:
 
 public:
 
+	// Call before setup. Will set path to save settings into.
 	//--------------------------------------------------------------
-	void setPath(string path) {//call before setup. Will set path to save settings into.
+	void setPath(string path) {
 		path_Global = path;
+	}
+	// Call before setup. Will set the name of the settings file.
+	// useful to customize the name when using many instances but on the same folder.
+	// Notice that is not required when using a personalized path with setPath(
+	//--------------------------------------------------------------
+	void setName(string name, bool bNameGuiToo = false) {
+		// default: "_HelpBox"
+
+		path_RectHelpBox = name ;
+		//path_RectHelpBox = "HelpBox" + name ;
+		//path_RectHelpBox = name + "_HelpBox";
+		if (bNameGuiToo) bGui.setName(name);
 	}
 
 	//--------------------------------------------------------------
@@ -284,13 +299,14 @@ public:
 		rect_HelpTextBox.enableEdit();
 		rect_HelpTextBox.setEnableMouseWheel(false);
 
+		// search font files by priorities here:
 		path_TTF = "assets/fonts/" + name_TTF;
 		string path_TTF_LEGACY = "assets/fonts/JetBrainsMono-Bold.ttf"; // some add-ons are settled with this font.
 		string path_TTF_LEGACY2 = "assets/fonts/telegrama_render.otf"; // some add-ons are settled with this font.
 		bool bLoaded = myFont.load(path_TTF, size_TTF, true, true); // try before assign an oF bundled font!
 		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY, size_TTF, true, true);
 		if (!bLoaded) bLoaded = myFont.load(path_TTF_LEGACY2, size_TTF, true, true);
-		if (!bLoaded) bLoaded = myFont.load(OF_TTF_MONO, size_TTF, true, true);
+		if (!bLoaded) bLoaded = myFont.load(OF_TTF_MONO, size_TTF, true, true);//the oF bundled internal font is always present!
 
 		_bUseShadow = true;
 
@@ -536,7 +552,7 @@ private:
 		// 3. left pressed + right click : close box!
 		//if (ofGetMousePressed(0) && isMouseRightClick())
 		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick())
-		//if (doubleClicker.isMouseRightPressedThenPressedLeft()) 
+			//if (doubleClicker.isMouseRightPressedThenPressedLeft()) 
 		{
 			ofLogWarning("TextBoxWidget") << (__FUNCTION__);
 			bGui = false;

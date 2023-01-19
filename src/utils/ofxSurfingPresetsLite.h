@@ -179,7 +179,8 @@ public:
 			bw = ui->BeginWindow(bGui.getName());
 			//bw = ui->BeginWindow("PRESETS");
 		}
-		else if (bFolder) {
+		else if (bFolder) 
+		{
 			bw = true;
 		}
 
@@ -205,14 +206,14 @@ public:
 			if (!bFolder)
 			{
 				b = true;
-				//ui->AddLabelBig(sn, true, true);
+				ui->AddLabelBig(sn, true, true);
 			}
 			else
 			{
 				b = ui->BeginTree(sn, bOpen);
 				//b = ui->BeginTree(sn);
 
-				ui->AddSpacing();
+				if (b) ui->AddSpacing();
 			}
 
 			if (b)
@@ -468,7 +469,6 @@ public:
 					{
 						doLoadPrevious();
 					};
-
 					if (ui->AddButton(">", OFX_IM_BUTTON_MEDIUM, 2))
 					{
 						doLoadNext();
@@ -500,7 +500,8 @@ public:
 			}
 		}
 
-		if (bWindowed && bw) {
+		if (bWindowed && bw)
+		{
 			ui->EndWindow();
 		}
 	}
@@ -652,7 +653,9 @@ private:
 
 	void update(ofEventArgs& args)
 	{
-		if (ofGetFrameNum() == 0) {
+		if (ofGetFrameNum() == 1) 
+		//if (ofGetFrameNum() == 0) 
+		{
 			startup();
 		}
 	};
@@ -723,7 +726,7 @@ public:
 			params_Preset = group;
 		}
 
-		pathSettings = params_Preset.getName() + "_Settings.json";
+		pathSettings = ofToString(params_Preset.getName()) + ofToString("_Settings.json");
 
 		setup();
 	};
