@@ -20,7 +20,7 @@ namespace ofxSurfingHelpers
 {
 	//------------------------------------------------------------------------------
 	// Animator functions taken from
-	//https://github.com/tcoppex/ofxFontSampler/blob/main/example/src/ofApp.cpp
+	// https://github.com/tcoppex/ofxFontSampler/blob/main/example/src/ofApp.cpp
 
 	namespace
 	{
