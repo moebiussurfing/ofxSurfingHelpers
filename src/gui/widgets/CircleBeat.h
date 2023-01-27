@@ -80,6 +80,10 @@ public:
 	{
 		color.set(_color);
 	}
+	void setColorText(ofColor _color)
+	{
+		colorText.set(_color);
+	}
 	void setColorBackground(ofColor _color)
 	{
 		colorBg.set(_color);
@@ -198,6 +202,7 @@ private:
 	bool bNamed2 = false;
 	bool bSubLabelBlinkind = false;
 
+	ofColor colorText;
 	ofColor color;
 	ofColor colorBg;
 	//float radiusMax;
@@ -237,6 +242,7 @@ public:
 
 		ofSetCircleResolution(100);
 
+		colorText.set(225, 225, 225, 200);
 		color.set(255, 255, 255, 255);
 		colorBg.set(0, 0, 0, 200);
 		alphaMax = 200;
@@ -461,12 +467,13 @@ public:
 
 
 		//--
-		 
+
 		// text
-		 
+
 		// name
 		if (bNamed) {
-			ofSetColor(255, 200);
+			ofSetColor(colorText);
+			//ofSetColor(255, 200);
 			ofRectangle r;
 			if (bSmall) r = font2.getStringBoundingBox(name, 0, 0);
 			else r = font.getStringBoundingBox(name, 0, 0);
@@ -490,10 +497,13 @@ public:
 		// sub label
 		if (bNamed2) {
 			if (bSubLabelBlinkind) {
-				ofSetColor(255, 200 * ofxSurfingHelpers::Bounce());
+				ofSetColor(ofColor(colorText.r, colorText.g, colorText.b, 
+					colorText.a * ofxSurfingHelpers::Bounce()));
+				//ofSetColor(255, 200 * ofxSurfingHelpers::Bounce());
 			}
 			else
-				ofSetColor(255, 200);
+					ofSetColor(colorText);
+					//ofSetColor(255, 200);
 
 			ofRectangle r = font2.getStringBoundingBox(name2, 0, 0);
 			int pad = r.getHeight();
@@ -511,7 +521,7 @@ public:
 			//_y = position.get().y + radiusMax - 2 * pad;
 
 			if (bSmall) _y += fontSize2 + 5;//space for name
-			else _y += fontSize + 5 ;//space for name
+			else _y += fontSize + 5;//space for name
 
 			font2.drawString(name2, _x, _y);
 		}
