@@ -30,55 +30,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef GUARD__ofxNotify__
-#define GUARD__ofxNotify__
+#pragma once
 
 #include "ofMain.h"
 
 class surfingNotify
 {
 
-//public:
+private:
+
+	struct MessagesColored 
+	{
+		std::string message;
+		ofColor colorBg;
+		ofColor colorText;
+	};
+ 
+public:
 
 	////--------------------------------------------------------------
-	//void addNotificationColored(string msg, ofColor colorText, ofColor colorBg) {
-	//	MessagesColored m;
-	//	m.messages[ofGetElapsedTimeMicros()] = msg;
-	//	m.colorText = colorText;
-	//	m.colorBg = colorBg;
-	//	messagesColored.push_back(m);
+	//void addNotification(string msg) {
+	//	messages[ofGetElapsedTimeMicros()] = msg;
 	//}
-
-//private:
-//
-//	struct MessagesColored {
-//		std::map<unsigned long long, std::string> messages;
-//		ofColor colorBg;
-//		ofColor colorText;
-//	};
-//	vector<MessagesColored> messagesColored;
-
-public:
 
 	//--------------------------------------------------------------
 	void addNotification(string msg) {
-		messages[ofGetElapsedTimeMicros()] = msg;
+		MessagesColored m;
+		m.message = msg;
+		m.colorText = colorText;
+		m.colorBg = colorBg;
+
+		messages[ofGetElapsedTimeMicros()] = m;
 	}
 
-	std::map<unsigned long long, std::string> messages;
-	int messageLifeTimeInMilliseconds; // defaults to 2000ms
+	//--------------------------------------------------------------
+	void addNotification(string msg, ofColor _colorText, ofColor _colorBg) {
+		MessagesColored m;
+		m.message = msg;
+		m.colorText = _colorText;
+		m.colorBg = _colorBg;
+		messages[ofGetElapsedTimeMicros()] = m;
+	}
+
+	std::map<unsigned long long, MessagesColored> messages;
+	//std::map<unsigned long long, std::string> messages;
+
+	int timeMsgMs; // defaults to 2000ms
 	std::ostringstream message;
 	bool bPrinted = false;
 
 	ofTrueTypeFont font;
 	float fontSize;
-	float pad0 = 5;
+	float pad0 = 5;//to border
 	float pad1;
 	float pad2;
-	float rounded;
+	float rounded;//box round
 
-	ofColor colorBg = 0;
-	ofColor colorText = 255;
+	// Default colors
+	ofColor colorBg = ofColor(0);
+	ofColor colorText = ofColor(255);
 
 	//--------------------------------------------------------------
 	void refreshPads()
@@ -124,7 +134,7 @@ public:
 	surfingNotify()
 		: bPrinted(false) {
 
-		messageLifeTimeInMilliseconds = 2000;
+		timeMsgMs = 2000;
 
 		// draw help font
 		fontSize = 15;
@@ -134,10 +144,11 @@ public:
 		rounded = 10.f;
 	};
 
+	virtual ~surfingNotify();
+
 	//--------------------------------------------------------------
 	void setup(string pathFont, int sizeFont, float round = 10.f)
 	{
-		// draw help font
 		fontSize = sizeFont;
 		font.load(pathFont, sizeFont);
 
@@ -145,10 +156,9 @@ public:
 		refreshPads();
 	}
 
-	virtual ~surfingNotify();
-
-	// draw the notifier by calling ofxNotify::draw(); from within your app.
-	void draw(bool shouldDraw_ = true);
+	// Draw the notifier 
+	void draw(bool bShouldDraw = true);
+	
 	void setMessagesLifeTime(int messageLifeTimeInMilliseconds_);
 
 	//--------------------------------------------------------------
@@ -175,8 +185,11 @@ public:
 			else ofDrawRectRounded(_r, rounded);
 
 			// text
+			//float alphaDelayed = MAX(0, alpha - 10);//fix
+			//ofSetColor(cText, alphaDelayed);
 			ofSetColor(cText, alpha);
 			ofNoFill();
+
 			font.drawString(text, x, y);
 		}
 
@@ -195,9 +208,4 @@ private:
 		return (font.getStringBoundingBox(text, 0, 0)).getHeight();
 	}
 
-	//----
-
 };
-
-
-#endif /* defined(GUARD__ofxNotify__) */
