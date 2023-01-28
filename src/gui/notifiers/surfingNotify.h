@@ -84,7 +84,7 @@ private:
 
 	ofTrueTypeFont font;
 	float fontSize;
-	float pad0 = 10;//to border
+	float pad0 = 20;//to border
 	float pad1;
 	float pad2;
 	float rounded;//box round

@@ -99,26 +99,43 @@ void surfingNotify::draw(bool bShouldDraw) {
 
 			// Faded alpha
 
+			//TODO:
+			// last moments looks weird..
+			// should make some in state with full alpha maybe..
+			// trying to avoid low alpha 
 			bool bLog = true;
 			bool bClamp = false;
+			bool bAbrupt = false;
 
 			int t = (timeElapsedNow - it->first) / 1000;
-			float fade = ofMap(t, 0, timeDurationMsgMs, 1.f, 0.f);
+			float fade;
+			float prcFullAlpha = 0.6f;//the first phase with be without fading alpha
+			float th = timeDurationMsgMs * prcFullAlpha;
+			if (t <  th) fade = 1;//first phase
+			else fade = ofMap(t, th, timeDurationMsgMs, 1.f, 0.f);//2nd phase
 
 			if (!bLog) alpha = fade * 255;
 			else {
 				float fadeLog = ofxSurfingHelpers::reversedExponentialFunction(fade * 10.f);
-				//float fadeLog = ofxSurfingHelpers::squaredFunction(fade);
+				fadeLog = ofClamp(fadeLog, 0.f, 1.f);
+				//cout << "fadeLog:" << fadeLog << endl;
+				//float fadeLog = ofxSurfingHelpers::squaredFunction(fade);//slow weird
 				alpha = fadeLog * 255;
 			}
 
 			// hide when alpha is low.. 
 			// bc looks weird avoid some levels
-			if (bClamp) if (alpha < 32) alpha = 0;
+			if (bClamp) {
+				if (alpha < 32) alpha = 0;
+			}
+
+			if (bAbrupt) {
+				if (alpha < 64) alpha = 0;
+			}
 
 			//--
 
-			if (alpha != 0) 
+			//if (alpha != 0)
 			{
 				if (!font.isLoaded())
 				{
