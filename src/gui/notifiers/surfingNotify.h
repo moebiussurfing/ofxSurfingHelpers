@@ -170,6 +170,7 @@ private:
 	void drawTextBoxed(string text, int x, int y, int alpha = 255, ofColor cText = 255, ofColor cBg = 0)
 	{
 		ofPushStyle();
+		ofSetCircleResolution(400);
 
 		if (!font.isLoaded())
 		{
