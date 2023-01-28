@@ -1,5 +1,7 @@
+
 // This is a modified version by mobiusSurfing
 // bc some errors on static definitions...
+// but also for adding some features and esthetic's.
 
 //
 //     _____    ___     
@@ -33,8 +35,28 @@
 
 #include "ofMain.h"
 
-class ofxNotify
+class surfingNotify
 {
+
+//public:
+
+	////--------------------------------------------------------------
+	//void addNotificationColored(string msg, ofColor colorText, ofColor colorBg) {
+	//	MessagesColored m;
+	//	m.messages[ofGetElapsedTimeMicros()] = msg;
+	//	m.colorText = colorText;
+	//	m.colorBg = colorBg;
+	//	messagesColored.push_back(m);
+	//}
+
+//private:
+//
+//	struct MessagesColored {
+//		std::map<unsigned long long, std::string> messages;
+//		ofColor colorBg;
+//		ofColor colorText;
+//	};
+//	vector<MessagesColored> messagesColored;
 
 public:
 
@@ -43,8 +65,6 @@ public:
 		messages[ofGetElapsedTimeMicros()] = msg;
 	}
 
-private:
-
 	std::map<unsigned long long, std::string> messages;
 	int messageLifeTimeInMilliseconds; // defaults to 2000ms
 	std::ostringstream message;
@@ -52,22 +72,57 @@ private:
 
 	ofTrueTypeFont font;
 	float fontSize;
-	int pad;
-	int pad2;
+	float pad0 = 5;
+	float pad1;
+	float pad2;
 	float rounded;
+
+	ofColor colorBg = 0;
+	ofColor colorText = 255;
 
 	//--------------------------------------------------------------
 	void refreshPads()
 	{
-		pad = 3 * fontSize;
+		pad1 = 3 * fontSize;
 		pad2 = fontSize * 0.5f;
 	}
 
 public:
 
+	enum AlignNote_
+	{
+		AlignNote_RIGHT = 0,
+		AlignNote_CENTER,
+		AlignNote_LEFT,
+
+		AlignNote_AMOUNT
+	};
+
+private:
+
+	AlignNote_ alignNote = AlignNote_RIGHT;
+
+public:
+
 	//--------------------------------------------------------------
-	ofxNotify()
-	: bPrinted(false) {
+	void setAlignment(AlignNote_ align) {
+		alignNote = align;
+	}
+
+	//--------------------------------------------------------------
+	void setColorText(ofColor c) {
+		colorText = c;
+	}
+	//--------------------------------------------------------------
+	void setColorBg(ofColor c) {
+		colorBg = c;
+	}
+
+public:
+
+	//--------------------------------------------------------------
+	surfingNotify()
+		: bPrinted(false) {
 
 		messageLifeTimeInMilliseconds = 2000;
 
@@ -80,47 +135,47 @@ public:
 	};
 
 	//--------------------------------------------------------------
-	void setup(string pathFont, int sizeFont, float round = 10.f) 
+	void setup(string pathFont, int sizeFont, float round = 10.f)
 	{
-			// draw help font
-			fontSize = sizeFont;
-			font.load(pathFont, sizeFont);
+		// draw help font
+		fontSize = sizeFont;
+		font.load(pathFont, sizeFont);
 
-			rounded = round;
-			refreshPads();
+		rounded = round;
+		refreshPads();
 	}
 
-	virtual ~ofxNotify();
+	virtual ~surfingNotify();
 
 	// draw the notifier by calling ofxNotify::draw(); from within your app.
 	void draw(bool shouldDraw_ = true);
 	void setMessagesLifeTime(int messageLifeTimeInMilliseconds_);
 
 	//--------------------------------------------------------------
-	void drawTextBoxed(string text, int x, int y, int alpha = 255)
+	void drawTextBoxed(string text, int x, int y, int alpha = 255, ofColor cText = 255, ofColor cBg = 0)
 	{
 		ofPushStyle();
 
-		if (!font.isLoaded()) 
+		if (!font.isLoaded())
 		{
 			ofDrawBitmapStringHighlight(text, x, y);
 		}
-		else 
+		else
 		{
 			// bbox
-			ofSetColor(0, alpha);
+			ofSetColor(cBg, alpha);
 			ofFill();
 			ofRectangle _r(font.getStringBoundingBox(text, x, y));
-			_r.setWidth(_r.getWidth() + pad);
-			_r.setHeight(_r.getHeight() + pad);
-			_r.setX(_r.getPosition().x - pad / 2.);
-			_r.setY(_r.getPosition().y - pad / 2.);
-	
-			//ofDrawRectangle(_r);
-			ofDrawRectRounded(_r, rounded);
+			_r.setWidth(_r.getWidth() + pad1);
+			_r.setHeight(_r.getHeight() + pad1);
+			_r.setX(_r.getPosition().x - pad1 / 2.f);
+			_r.setY(_r.getPosition().y - pad1 / 2.f);
+
+			if (rounded <= 0) ofDrawRectangle(_r);
+			else ofDrawRectRounded(_r, rounded);
 
 			// text
-			ofSetColor(255, alpha);
+			ofSetColor(cText, alpha);
 			ofNoFill();
 			font.drawString(text, x, y);
 		}
