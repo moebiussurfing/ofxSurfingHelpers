@@ -33,19 +33,20 @@
 #pragma once
 
 #include "ofMain.h"
+#include "surfingMaths.h"
 
 class surfingNotify
 {
 
 private:
 
-	struct MessagesColored 
+	struct MessagesColored
 	{
 		std::string message;
 		ofColor colorBg;
 		ofColor colorText;
 	};
- 
+
 public:
 
 	////--------------------------------------------------------------
@@ -72,16 +73,18 @@ public:
 		messages[ofGetElapsedTimeMicros()] = m;
 	}
 
+private:
+
 	std::map<unsigned long long, MessagesColored> messages;
 	//std::map<unsigned long long, std::string> messages;
 
-	int timeMsgMs; // defaults to 2000ms
+	int timeDurationMsgMs; // defaults to 2000ms
 	std::ostringstream message;
 	bool bPrinted = false;
 
 	ofTrueTypeFont font;
 	float fontSize;
-	float pad0 = 5;//to border
+	float pad0 = 10;//to border
 	float pad1;
 	float pad2;
 	float rounded;//box round
@@ -134,7 +137,7 @@ public:
 	surfingNotify()
 		: bPrinted(false) {
 
-		timeMsgMs = 2000;
+		timeDurationMsgMs = 2000;
 
 		// draw help font
 		fontSize = 15;
@@ -158,8 +161,10 @@ public:
 
 	// Draw the notifier 
 	void draw(bool bShouldDraw = true);
-	
+
 	void setMessagesLifeTime(int messageLifeTimeInMilliseconds_);
+
+private:
 
 	//--------------------------------------------------------------
 	void drawTextBoxed(string text, int x, int y, int alpha = 255, ofColor cText = 255, ofColor cBg = 0)
@@ -172,8 +177,10 @@ public:
 		}
 		else
 		{
-			// bbox
+			// bg box
 			ofSetColor(cBg, alpha);
+			//ofSetColor(cBg, MAX(10, alpha));//improve
+
 			ofFill();
 			ofRectangle _r(font.getStringBoundingBox(text, x, y));
 			_r.setWidth(_r.getWidth() + pad1);
@@ -185,10 +192,10 @@ public:
 			else ofDrawRectRounded(_r, rounded);
 
 			// text
+			ofNoFill();
+			ofSetColor(cText, alpha);
 			//float alphaDelayed = MAX(0, alpha - 10);//fix
 			//ofSetColor(cText, alphaDelayed);
-			ofSetColor(cText, alpha);
-			ofNoFill();
 
 			font.drawString(text, x, y);
 		}

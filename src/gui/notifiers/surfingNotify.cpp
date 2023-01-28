@@ -33,14 +33,14 @@
 
 //map<unsigned long long, string>				surfingNotify::messages;
 //ofMutex										surfingNotify::msgMutex;
-//int											surfingNotify::timeMsgMs = 2000;
+//int											surfingNotify::timeDurationMsgMs = 2000;
 
 // ----------------------------------------------------------------------
 // Class Methods
 // ----------------------------------------------------------------------
 
 void surfingNotify::setMessagesLifeTime(int messageLifeTimeInMilliseconds_) {
-	timeMsgMs = messageLifeTimeInMilliseconds_;
+	timeDurationMsgMs = messageLifeTimeInMilliseconds_;
 }
 
 // ----------------------------------------------------------------------
@@ -75,11 +75,6 @@ void surfingNotify::draw(bool bShouldDraw) {
 			ofColor ct = it->second.colorText;
 			ofColor cb = it->second.colorBg;
 
-			// Faded alpha
-			int t = (timeElapsedNow - it->first) / 1000;
-			float fade = ofMap(t, 0, timeMsgMs * 1.f, 1.f, 0.f);
-			alpha = fade * 255;
-
 			if (!font.isLoaded()) // Used when font file not found!
 			{
 				w = (it->second.message.size() * 8 + pad1);
@@ -102,15 +97,39 @@ void surfingNotify::draw(bool bShouldDraw) {
 
 			//--
 
-			if (!font.isLoaded())
-			{
-				ofDrawBitmapStringHighlight(str, x, y, (i == messages.size() - 1) ? (ofColor::red) : colorBg);
-			}
-			else
-			{
-				//ofSetColor((i == messages.size() - 1) ? (ofColor::red) : (ofColor::black)); // mark last one ?
+			// Faded alpha
 
-				drawTextBoxed(str, x, y, alpha, ct, cb);
+			bool bLog = true;
+			bool bClamp = false;
+
+			int t = (timeElapsedNow - it->first) / 1000;
+			float fade = ofMap(t, 0, timeDurationMsgMs, 1.f, 0.f);
+
+			if (!bLog) alpha = fade * 255;
+			else {
+				float fadeLog = ofxSurfingHelpers::reversedExponentialFunction(fade * 10.f);
+				//float fadeLog = ofxSurfingHelpers::squaredFunction(fade);
+				alpha = fadeLog * 255;
+			}
+
+			// hide when alpha is low.. 
+			// bc looks weird avoid some levels
+			if (bClamp) if (alpha < 32) alpha = 0;
+
+			//--
+
+			if (alpha != 0) 
+			{
+				if (!font.isLoaded())
+				{
+					ofDrawBitmapStringHighlight(str, x, y, (i == messages.size() - 1) ? (ofColor::red) : colorBg);
+				}
+				else
+				{
+					//ofSetColor((i == messages.size() - 1) ? (ofColor::red) : (ofColor::black)); // mark last one ?
+
+					drawTextBoxed(str, x, y, alpha, ct, cb);
+				}
 			}
 
 			it++;
@@ -134,7 +153,7 @@ void surfingNotify::draw(bool bShouldDraw) {
 
 	while (it != messages.end())
 	{
-		if (timeElapsedNow - (it->first) > (timeMsgMs * 1000))
+		if (timeElapsedNow - (it->first) > (timeDurationMsgMs * 1000))
 		{
 			it++;
 			bHasFoundDeadMessage = true;
