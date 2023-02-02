@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 
-namespace ofxSurfingHelpers {
+namespace ofxSurfingHelpersT {
 
 	/* Return a linear value in range [0,1] every delay (in seconds). */
 	inline float Tick(float delay = 1.0f) {
@@ -11,7 +11,7 @@ namespace ofxSurfingHelpers {
 	/* Return a linear value in range [0,1] every delay (in seconds),
 	 with value equal 0 at boundaries, and 1 at delay / 2. */
 	inline float Bounce(float delay = 1.0f) {
-		return 0.5f * (1.0 + glm::sin(ofxSurfingHelpers::Tick(delay) * glm::two_pi<float>()));
+		return 0.5f * (1.0 + glm::sin(ofxSurfingHelpersT::Tick(delay) * glm::two_pi<float>()));
 	}
 	/* Noise function used by the gradient scaling. */
 	inline float Noise(const ofPoint& vertex = ofPoint(1, -1)) {
@@ -50,12 +50,12 @@ public:
 		int a = 255;
 
 		float _speed = ofMap(speed, 0, 1, 2, 0.3, true);
-		float r0 = 0.75 + ofxSurfingHelpers::Bounce(_speed);
+		float r0 = 0.75 + ofxSurfingHelpersT::Bounce(_speed);
 
 		float _d = 1;
 		float d0 = 1.f / (float)amount;
 
-		float _n = ofMap(ofxSurfingHelpers::Noise(), 0, 1, 0.95, 1.05, true);
+		float _n = ofMap(ofxSurfingHelpersT::Noise(), 0, 1, 0.95, 1.05, true);
 		if (bNoise) d0 = d0 * _n;
 
 		for (int i = 0; i < amount; i++)
