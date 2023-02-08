@@ -26,10 +26,11 @@ public:
 	ofParameter<int> amount{ "Amount", 10, 1, 100 };
 	ofParameter<float> scale{ "Scale", 0, -1, 1 };
 	ofParameter<float> speed{ "Speed", 0, 0, 1 };
-	ofParameter<ofColor> c1{ "Color 1",ofColor::blue, ofColor(0), ofColor(255) };
-	ofParameter<ofColor> c2{ "Color 2",ofColor::white, ofColor(0), ofColor(255) };
+	ofParameter<ofColor> c1{ "Color 1",ofColor::blue, ofColor(0,0), ofColor(255,255) };
+	ofParameter<ofColor> c2{ "Color 2",ofColor::white, ofColor(0,0), ofColor(255,255) };
 	ofParameter<bool> bNoise{ "Noise", false };
-	ofParameterGroup params{ "Scene", amount, scale, speed, bNoise , c1, c2 };
+	ofParameter<bool> bUpdateable{ "Update", true };
+	ofParameterGroup params{ "Scene", amount, scale, speed, bNoise , c1, c2, bUpdateable };
 
 	void setColor1(ofColor c) { c1 = c; };
 	void setColor2(ofColor c) { c2 = c; };
@@ -47,10 +48,14 @@ public:
 
 		float x = ofGetWidth() * 0.5f;
 		float y = ofGetHeight() * 0.5f;
-		int a = 255;
 
 		float _speed = ofMap(speed, 0, 1, 2, 0.3, true);
-		float r0 = 0.75 + ofxSurfingHelpersT::Bounce(_speed);
+		static float vBounce;
+
+		if (bUpdateable)
+			vBounce = ofxSurfingHelpersT::Bounce(_speed);
+
+		float r0 = 0.75 + vBounce;
 
 		float _d = 1;
 		float d0 = 1.f / (float)amount;
@@ -60,10 +65,14 @@ public:
 
 		for (int i = 0; i < amount; i++)
 		{
+			bool _b = (i % 2 == 0);//odd/even
+
+			//int a = 255;
+			int a = _b ? c1.get().a : c2.get().a;
+
 			_d = _d - d0;
 			float _r = r0 * sz * _d;
 
-			bool _b = (i % 2 == 0);//odd/even
 			ofSetColor(_b ? c1 : c2, a);
 			ofDrawCircle(x, y, 0, _r);
 		}
