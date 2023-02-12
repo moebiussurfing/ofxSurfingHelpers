@@ -234,6 +234,14 @@ namespace ofxSurfingHelpers
 	{
 		//ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << _path;
 
+		//TODO: A clean alternative..
+		/*
+		///string jsonfilepath;
+		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(jsonfilepath))) {
+			ofFilePath::createEnclosingDirectory(jsonfilepath);
+		}
+		*/
+
 		//if (ofFile::doesFileExist(_path)) {
 
 		//// Workaround to avoid error when folders are folder/subfolder
@@ -242,7 +250,8 @@ namespace ofxSurfingHelpers
 		//	ofLogNotice("ofxSurfingHelpers")<<(__FUNCTION__) << ofToString(i) << " " << _fullPath[i];
 		//}
 
-		ofDirectory dataDirectory(ofToDataPath(_path, true));// /bin/data/
+		// /bin/data/
+		ofDirectory dataDirectory(ofToDataPath(_path, true));
 
 		// Check if folder path exist
 		if (!dataDirectory.isDirectory())
