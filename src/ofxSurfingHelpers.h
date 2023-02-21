@@ -10,13 +10,16 @@
 
 //---------
 
-// Include some classes. 
-// Notice that there's other classes that are not included.
+// Include some classes by default. 
+// Notice that there's other classes bundled on the add-on (/src or /libs) 
+// that are not included here, then you have to include them manually.
 
 #include "surfingTimers.h"
 #include "ofxSurfing_Widgets.h"
+//#include "ofxAutosaveGroupTimer.h"
 
 //--
+
 
 //TODO: WIP
 // test improve serialize performance..

@@ -1,12 +1,25 @@
 #pragma once
 
+
+/*
+* 
+* ofxAutosaveGroupTimer.h
+* This class is an auto saver for ofParameterGroups.
+* Each added group will be (his params) saved/serialized into his passed path.
+* Will save on exit too even when auto save is disabled.
+* Timer settings like enabled or waiting time is saved too.
+* 
+*/
+
+
 #include "ofMain.h"
 
+//#include "ofxSurfingHelpers.h"
 #include "ofxAutosaveGroupTimer.h"
 
-#include "ofxSurfingImGui.h"
+#include "ofxSurfingImGui.h" // Not required to use this class!
 #include "surfingSceneTesters.h"
-#define MAX_CAMERA_DISTANCE 500.0f
+#define MAX_DIST 500.0f
 
 class ofApp : public ofBaseApp{
 
@@ -17,10 +30,6 @@ class ofApp : public ofBaseApp{
 		void keyPressed(int key);		
 
 		ofxSurfingGui ui; // Not required to use this class!
-
-		string path_GLOBAL = "ofApp/";
-
-		surfingSceneTesters sc; // scene tester
 
 		void setupParams();
 
@@ -56,5 +65,8 @@ class ofApp : public ofBaseApp{
 		ofParameter<ofFloatColor> color2;
 		ofParameter<int> indexExpanded;
 
+		surfingSceneTesters sc; // scene tester to pass another group param
+
+		// Manager
 		ofxAutosaveGroupTimer autosaver;
 };

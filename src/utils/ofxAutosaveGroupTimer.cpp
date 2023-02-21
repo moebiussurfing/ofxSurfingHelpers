@@ -28,12 +28,14 @@ void ofxAutosaveGroupTimer::setup()
 {
 	data.clear();
 
-	bAutoSave.set("Auto Save", true);
+	bAutoSave.set("auto save", true);
+	bSilent.set("silent", false);
 	timeToAutosave.set("time", 5000, 100, 10000);
 
 	params.setName("ofxAutosaveGroupTimer");
 	params.add(bAutoSave);
 	params.add(timeToAutosave);
+	params.add(bSilent);
 }
 
 //--------------------------------------------------------------
@@ -42,7 +44,16 @@ void ofxAutosaveGroupTimer::exit()
 	saveAllGroups();
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
-	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension);
+	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension, !bSilent.get());
+}
+
+//--------------------------------------------------------------
+void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params, string path)
+{
+	ofxSurfingHelpers::SurfDataGroupSaver d;
+	d.params = params;
+	d.path = path;
+	this->addGroup(d);
 }
 
 //--------------------------------------------------------------
@@ -56,11 +67,11 @@ void ofxAutosaveGroupTimer::saveAllGroups()
 {
 	for (int i = 0; i < data.size(); i++)
 	{
-		ofxSurfingHelpers::saveGroup(data[i].params, data[i].path);
+		ofxSurfingHelpers::saveGroup(data[i].params, data[i].path, !bSilent.get());
 	}
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
-	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension);
+	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension, !bSilent.get());
 }
 
 //--------------------------------------------------------------
@@ -87,19 +98,11 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 
 			saveAllGroups();
 
-			ofLogNotice(__FUNCTION__) << "Auto save DONE!";
-			ofLogNotice(__FUNCTION__) << "#" << count++ << " " << ofGetElapsedTimef();
-			ofLogNotice(__FUNCTION__) << "--------------------------------------------------------------\n";
-
-			//// easy callback
-			//bMustUptate = true;
+			ofLogNotice("ofxAutosaveGroupTimer") << "Auto save DONE!";
+			if (!bSilent.get()) {
+				ofLogNotice("ofxAutosaveGroupTimer") << "#" << count++ << " " << ofGetElapsedTimef();
+				ofLogNotice("ofxAutosaveGroupTimer") << "--------------------------------------------------------------\n";
+			}
 		}
-
-		//// easy callback
-		//bool b = isTimedOut();
-		//if (b)
-		//{
-		//	ofLogNotice(__FUNCTION__) << "isTimedOut: " << (b ? "TRUE" : "FALSE");
-		//}
 	}
 }

@@ -34,11 +34,11 @@ void ofApp::setupParams()
 	// Parameters
 	bPrevious.set("<", false);
 	bNext.set(">", false);
-	value.set("value", 0.f, -MAX_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE);
-	valueMin.set("valueMin", 0.f, -MAX_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE);
-	valueMax.set("valueMax", 0.f, -MAX_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE);
-	pos_1.set("pos_1", glm::vec3(0.f), glm::vec3(-MAX_CAMERA_DISTANCE), glm::vec3(MAX_CAMERA_DISTANCE));
-	rot_1.set("rot_1", glm::vec3(0.f), glm::vec3(-2.f * MAX_CAMERA_DISTANCE), glm::vec3(2.f * MAX_CAMERA_DISTANCE));
+	value.set("value", 0.f, -MAX_DIST, MAX_DIST);
+	valueMin.set("valueMin", 0.f, -MAX_DIST, MAX_DIST);
+	valueMax.set("valueMax", 0.f, -MAX_DIST, MAX_DIST);
+	pos_1.set("pos_1", glm::vec3(0.f), glm::vec3(-MAX_DIST), glm::vec3(MAX_DIST));
+	rot_1.set("rot_1", glm::vec3(0.f), glm::vec3(-2.f * MAX_DIST), glm::vec3(2.f * MAX_DIST));
 	lineWidth2.set("linew2", 0.5, 0, 1);
 	separation2.set("sep2", 50, 1, 100);
 	shapeType2.set("shape2", 0, -50, 50);
@@ -60,6 +60,7 @@ void ofApp::setupParams()
 	//--
 
 	// Groups
+
 	params1.setName("params1");
 	params2.setName("params2");
 	params3.setName("params3");
@@ -96,33 +97,25 @@ void ofApp::draw()
 
 	ui.Begin();
 	{
-		if (ui.BeginWindow("ofApp")) {
-
-			ui.AddMinimizeToggle();
-			ui.AddAutoResizeToggle();
-			ui.AddSpacingSeparated();
+		if (ui.BeginWindow("ofApp")) 
+		{
+			//ui.AddMinimizeToggle();
+			//ui.AddAutoResizeToggle();
+			//ui.AddSpacingSeparated();
 
 			ui.AddLabelBig("Group Params", true, true);
 
-			bool b = ui.isMaximized();
-			SurfingGuiGroupStyle f = b ? SurfingGuiGroupStyle_None : SurfingGuiGroupStyle_Collapsed;
-
-			ui.AddGroup(sc.params, f);
-			ui.AddGroup(params1, f);
-			ui.AddGroup(params2, f);
-			ui.AddGroup(params3, f);
-			ui.AddGroup(params4, f);
-
-			//ui.AddGroup(sc.params);
-			//ui.AddGroup(params1);
-			//ui.AddGroup(params2);
-			//ui.AddGroup(params3);
-			//ui.AddGroup(params4);
+			ui.AddGroup(sc.params);
+			ui.AddGroup(params1);
+			ui.AddGroup(params2);
+			ui.AddGroup(params3);
+			ui.AddGroup(params4);
 
 			ui.AddSpacingBigSeparated();
 
 			ui.AddGroup(autosaver.params);
 			ofxImGuiSurfing::AddProgressBar(autosaver.getProgressPrc());
+
 			ui.EndWindow();
 		};
 	}
