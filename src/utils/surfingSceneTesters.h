@@ -29,7 +29,7 @@ public:
 	ofParameter<ofColor> c1{ "Color 1",ofColor::blue, ofColor(0,0), ofColor(255,255) };
 	ofParameter<ofColor> c2{ "Color 2",ofColor::white, ofColor(0,0), ofColor(255,255) };
 	ofParameter<bool> bNoise{ "Noise", false };
-	ofParameter<bool> bUpdateable{ "Update", true };
+	ofParameter<bool> bUpdateable{ "EnableUpdate", true };
 	ofParameterGroup params{ "Scene", amount, scale, speed, bNoise , c1, c2, bUpdateable };
 
 	void setColor1(ofColor c) { c1 = c; };

@@ -1,110 +1,105 @@
 #include "ofxAutosaveGroupTimer.h"
 
-//#pragma once
-
 //--------------------------------------------------------------
 ofxAutosaveGroupTimer::ofxAutosaveGroupTimer()
 {
-	params.clear();
+	ofAddListener(ofEvents().update, this, &ofxAutosaveGroupTimer::update);
 
-	bAutoSave.set("bAutoSave", true);
-	timeToAutosave.set("timeToAutosave", 5000, 100, 10000);
-	
-	paramsControl.setName("paramsControl");
-	paramsControl.add(bAutoSave);
-	paramsControl.add(timeToAutosave);
+	setup();
 }
 
 //--------------------------------------------------------------
 ofxAutosaveGroupTimer::~ofxAutosaveGroupTimer()
 {
+	ofRemoveListener(ofEvents().update, this, &ofxAutosaveGroupTimer::update);
+
+	exit();
 }
 
 //--------------------------------------------------------------
-void ofxAutosaveGroupTimer::addGroup(ofParameterGroup g)
+void ofxAutosaveGroupTimer::startup()
 {
-	params.push_back(g);
+	ofxSurfingHelpers::CheckFolder(path_Global);
+	ofxSurfingHelpers::loadGroup(params, path_Global + name_Settings + fileExtension);
+}
+
+//--------------------------------------------------------------
+void ofxAutosaveGroupTimer::setup()
+{
+	data.clear();
+
+	bAutoSave.set("Auto Save", true);
+	timeToAutosave.set("time", 5000, 100, 10000);
+
+	params.setName("ofxAutosaveGroupTimer");
+	params.add(bAutoSave);
+	params.add(timeToAutosave);
+}
+
+//--------------------------------------------------------------
+void ofxAutosaveGroupTimer::exit()
+{
+	saveAllGroups();
+
+	ofxSurfingHelpers::CheckFolder(path_Global);
+	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension);
+}
+
+//--------------------------------------------------------------
+void ofxAutosaveGroupTimer::addGroup(ofxSurfingHelpers::SurfDataGroupSaver _data)
+{
+	data.push_back(_data);
 }
 
 //--------------------------------------------------------------
 void ofxAutosaveGroupTimer::saveAllGroups()
 {
-	for (int i = 0; i< params.size(); i++)
+	for (int i = 0; i < data.size(); i++)
 	{
-		string path = path_Global + "/" + path_Params + "_" + params[i].getName() +fileExtension;
-		saveParams(params[i], path);
+		ofxSurfingHelpers::saveGroup(data[i].params, data[i].path);
 	}
+
+	ofxSurfingHelpers::CheckFolder(path_Global);
+	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension);
 }
 
 //--------------------------------------------------------------
-void ofxAutosaveGroupTimer::update()
+void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 {
+	if (!bDoneStartup)
+	{
+		bDoneStartup = true;
+		startup();
+	}
+
 	//--
 
-	//autosave
-	//bAutoSave = false;
-
-	if (bAutoSave && ofGetElapsedTimeMillis() - timerLast_Autosave > timeToAutosave)
+	if (bAutoSave)
 	{
-		//easy callback
-		bMustUptate = true;
+		auto t = ofGetElapsedTimeMillis() - timerLast_Autosave;
+		progressPrc = ofMap(t, 0, timeToAutosave.get(), 0, 1, true);
 
-		saveAllGroups();
+		static int count = 0;
 
-		//saveParams(params_AppsSettings, path_Global + path_Params_AppSettings);
-		
-		// bDISABLE_CALLBACKS = true;
-		// //get gui position before save
-		// positionGui_Internal = glm::vec2(gui_User.getPosition());
-		// saveParams(params_AppsSettings, path_Global + path_Params_AppSettings);
-		// bDISABLE_CALLBACKS = false;
+		if (t >= timeToAutosave.get())
+		{
+			timerLast_Autosave = ofGetElapsedTimeMillis();
 
-		//-
+			saveAllGroups();
 
-		timerLast_Autosave = ofGetElapsedTimeMillis();
-		ofLogNotice(__FUNCTION__) << "DONE Autosave";
+			ofLogNotice(__FUNCTION__) << "Auto save DONE!";
+			ofLogNotice(__FUNCTION__) << "#" << count++ << " " << ofGetElapsedTimef();
+			ofLogNotice(__FUNCTION__) << "--------------------------------------------------------------\n";
+
+			//// easy callback
+			//bMustUptate = true;
+		}
+
+		//// easy callback
+		//bool b = isTimedOut();
+		//if (b)
+		//{
+		//	ofLogNotice(__FUNCTION__) << "isTimedOut: " << (b ? "TRUE" : "FALSE");
+		//}
 	}
-
-	//easycallback
-	bool b = isTimedOut();
-	if (b) {
-		ofLogNotice(__FUNCTION__) << "isTimedOut: " << (b?"TRUE":"FALSE");
-	}
-}
-
-
-//--------------------------------------------------------------
-void ofxAutosaveGroupTimer::loadParams(ofParameterGroup &g, string path)
-{
-	ofLogNotice(__FUNCTION__) << "loadParams:";
-	ofXml settings;
-	bool bLoaded = settings.load(path);
-	if (!bLoaded)
-	{
-		ofLogError(__FUNCTION__) << "FILE '" << path << "' NOT FOUND!";
-		//errorsDEBUG.addError("ofxAutosaveGroupTimer", "loadParams()", path);
-	}
-	else
-	{
-		ofDeserialize(settings, g);
-		ofLogNotice(__FUNCTION__) << "LOADED FILE '" << path << "' TO GROUP: '" << g.getName() << "'";
-	}
-}
-
-//--------------------------------------------------------------
-void ofxAutosaveGroupTimer::saveParams(ofParameterGroup &g, string path)
-{
-	ofLogNotice(__FUNCTION__) << "saveParams:";
-	ofXml settings;
-	ofSerialize(settings, g);
-	bool bSave = settings.save(path);
-	if (bSave)
-	{
-		ofLogNotice(__FUNCTION__) << "SAVED FILE FILE '" << path << "' FROM GROUP: '" << g.getName() << "'";
-	}
-	else
-	{
-		ofLogError(__FUNCTION__) << "CAN'T SAVE FILE '" << path << "' FROM GROUP: '" << g.getName() << "'. MAYBE FOLDER NOT ACCESIBLE!";
-	}
-
 }

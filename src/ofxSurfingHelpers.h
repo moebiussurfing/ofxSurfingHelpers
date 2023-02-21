@@ -1,99 +1,43 @@
-//TODO:
-// Get some utils from here
-//https://github.com/d3cod3/ofxMosaicPlugin/blob/master/src/utils.h
-
-
 #pragma once
 
 #include "ofMain.h"
 
 //---------
 
-
 // OPTIONAL
-
-//#define USE_FAST_SERIALIZER // test improve serialize performance..
 
 #include "ofxSurfingConstants.h"
 
-//#define USE_JSON // uncomment to use default xml instead json for ofParameterGroup de/serializers
-//#define USE_XML // uncomment to use default xml instead json for ofParameterGroup de/serializers
-
-//#ifdef USE_IM_GUI
-//#include "ofxSurfing_ImGui.h"
-//#endif
-
-#ifdef USE_ofxGui
-#include "ofxSurfing_ofxGui.h"
-#endif
-
-
 //---------
 
+// Include some classes. 
+// Notice that there's other classes that are not included.
 
 #include "surfingTimers.h"
 #include "ofxSurfing_Widgets.h"
 
+//--
 
-namespace ofxSurfingHelpers 
+//TODO: WIP
+// test improve serialize performance..
+// trying to load all the settings but not triggering each param.
+// then trig all loaded params after file load.
+//#define USE_FAST_SERIALIZER 
+
+//--
+
+namespace ofxSurfingHelpers
 {
 	//----
 
 	// Serializers
 
-	//TODO:
-	// Testing for improving performance
-	// changing the mode we trig the loaded params...
-	// load file without trigging. trig after all is loaded.
-
-	//--------------------------------------------------------------
-	inline void ofDeserializeSilent(const ofJson& json, ofAbstractParameter& parameter) {
-		ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << parameter.getName();
-
-		if (!parameter.isSerializable()) {
-			return;
-		}
-		std::string name = parameter.getEscapedName();
-		if (json.find(name) != json.end()) {
-			if (parameter.type() == typeid(ofParameterGroup).name()) {
-				ofParameterGroup& group = static_cast <ofParameterGroup&>(parameter);
-				for (auto& p : group) {
-					ofDeserializeSilent(json[name], *p);
-				}
-			}
-			else {
-				if (parameter.type() == typeid(ofParameter <int>).name() && json[name].is_number_integer()) {
-					parameter.cast <int>().setWithoutEventNotifications(json[name].get<int>());
-					//parameter.cast <int>() = json[name].get<int>();
-				}
-				else if (parameter.type() == typeid(ofParameter <float>).name() && json[name].is_number_float()) {
-					parameter.cast <float>().setWithoutEventNotifications(json[name].get<float>());
-					//parameter.cast <float>() = json[name].get<float>();
-				}
-				else if (parameter.type() == typeid(ofParameter <bool>).name() && json[name].is_boolean()) {
-					parameter.cast <bool>().setWithoutEventNotifications(json[name].get<bool>());
-					//parameter.cast <bool>() = json[name].get<bool>();
-				}
-				else if (parameter.type() == typeid(ofParameter <int64_t>).name() && json[name].is_number_integer()) {
-					parameter.cast <int64_t>().setWithoutEventNotifications(json[name].get<int64_t>());
-					//parameter.cast <int64_t>() = json[name].get<int64_t>();
-				}
-				else if (parameter.type() == typeid(ofParameter <std::string>).name()) {
-					parameter.cast <std::string>().setWithoutEventNotifications(json[name].get<std::string>());
-					//parameter.cast <std::string>() = json[name].get<std::string>();
-				}
-				else {
-					parameter.fromString(json[name]);
-				}
-			}
-		}
-	}
-
 	//---
 
-	// xml
+	// XML
 
 #ifndef USE_JSON
+#ifdef USE_XML
 
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup& g, string path)
@@ -130,29 +74,32 @@ namespace ofxSurfingHelpers
 	}
 
 #endif
+#endif
 
 	//----
 
-	// json
+	// JSON
 
 #ifdef USE_JSON
 
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
-		if (path == "") path = g.getName() + "_Settings.json";// a default filename
-		//if (path == "") path = "settings.json";
+		if (path == "") {
+			path = g.getName() + "_Settings.json"; // a default filename
+			ofLogWarning("ofxSurfingHelpers") << (__FUNCTION__) << "Path is empty! Using a default instead!";
+		}
 
 		if (debug)
 		{
 			ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogNotice("ofxSurfingHelpers") << "\nofParameters: \n\n" << g.toString();
 		}
-		else
-		{
-			ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
-		}
+		//else
+		//{
+		//	ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
+		//	ofLogVerbose("ofxSurfingHelpers") << "\nofParameters: \n\n" << g.toString();
+		//}
 
 		ofJson settings;
 		settings = ofLoadJson(path);
@@ -164,40 +111,46 @@ namespace ofxSurfingHelpers
 		ofDeserializeSilent(settings, g);
 #endif
 
-		// returns false if no file preset yet.
+		// Returns false if no file preset yet.
 		ofFile f;
 		bool b = f.doesFileExist(path);
-		if (b) ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << "Load: " << g.getName() << " at " << path;
-		else ofLogError("ofxSurfingHelpers") << (__FUNCTION__) << "Error loading: " << g.getName() << " at " << path << " Not found!";
+		if (b) ofLogNotice("ofxSurfingHelpers") << "Load: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers") << "Error loading: " << g.getName() << " at " << path << " Not found!";
 
-		return b;//returns true if its ok
+		return b; // Returns true if it's ok
 	}
 
 	//--------------------------------------------------------------
 	inline bool saveGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
-		//if (path == "") path = "settings.json";
-		if (path == "") path = g.getName() + "_Settings.json";
-		ofLogWarning("ofxSurfingHelpers") << (__FUNCTION__) << "Path is empty! Using a default instead!";
+		if (path == "") {
+			path = g.getName() + "_Settings.json";
+			ofLogWarning("ofxSurfingHelpers") << (__FUNCTION__) << "Path is empty! Using a default instead!";
+		}
 
 		if (debug) {
-			ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
+			ofLogNotice("ofxSurfingHelpers") << g.getName() << " to " << path;
+			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n" << g.toString();
 		}
-		else
-		{
-			ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
-			ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << "\nofParameters: \n\n" << g.toString();
-		}
+		//else
+		//{
+		//	ofLogVerbose("ofxSurfingHelpers") << g.getName() << " to " << path;
+		//	ofLogVerbose("ofxSurfingHelpers") << "ofParameters: \n" << g.toString();
+		//}
 
+		// Create folder if folder do not exist!
 		//ofxSurfingHelpers::CheckFolder(path);
+		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
+			ofFilePath::createEnclosingDirectory(path);
+			ofLogWarning("ofxSurfingHelpers") << "Created enclosing folder for: " << path;
+		}
 
 		ofJson settings;
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
 
-		if (b) ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << "Save: " << g.getName() << " at " << path;
-		else ofLogError("ofxSurfingHelpers") << (__FUNCTION__) << "Error saving: " << g.getName() << " at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers") << "Save: " << g.getName() << " at " << path;
+		else ofLogError("ofxSurfingHelpers") << "Error saving: " << g.getName() << " at " << path;
 
 		return b;
 	}
@@ -259,22 +212,73 @@ namespace ofxSurfingHelpers
 			ofLogError("ofxSurfingHelpers") << (__FUNCTION__) << "FOLDER NOT FOUND! TRYING TO CREATE...";
 
 			// Try to create folder
-			//bool b = dataDirectory.createDirectory(ofToDataPath(_path, true));
 			bool b = dataDirectory.createDirectory(ofToDataPath(_path, true), false, true);
+			//bool b = dataDirectory.createDirectory(ofToDataPath(_path, true));
 			// Added enable recursive to allow create nested subfolders if required
 
 			// Debug if creation has been succeded
-			if (b) ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << "CREATED '" << _path << "' SUCCESSFULLY!";
-			else ofLogError("ofxSurfingHelpers") << (__FUNCTION__) << "UNABLE TO CREATE '" << _path << "' FOLDER!";
+			if (b) ofLogNotice("ofxSurfingHelpers") << "CREATED '" << _path << "' SUCCESSFULLY!";
+			else ofLogError("ofxSurfingHelpers") << "UNABLE TO CREATE '" << _path << "' FOLDER!";
 		}
 		else
 		{
-			ofLogVerbose("ofxSurfingHelpers") << (__FUNCTION__) << _path << " Found!";// nothing to do
+			ofLogVerbose("ofxSurfingHelpers") << _path << " Found!";// nothing to do
+		}
+	}
+
+	//--
+
+	//TODO:
+	// Testing for improving performance
+	// changing the mode we trig the loaded params...
+	// load file without trigging. trig after all is loaded.
+
+	//--------------------------------------------------------------
+	inline void ofDeserializeSilent(const ofJson& json, ofAbstractParameter& parameter) {
+		ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << parameter.getName();
+
+		if (!parameter.isSerializable()) {
+			return;
+		}
+		std::string name = parameter.getEscapedName();
+		if (json.find(name) != json.end()) {
+			if (parameter.type() == typeid(ofParameterGroup).name()) {
+				ofParameterGroup& group = static_cast <ofParameterGroup&>(parameter);
+				for (auto& p : group) {
+					ofDeserializeSilent(json[name], *p);
+				}
+			}
+			else {
+				if (parameter.type() == typeid(ofParameter <int>).name() && json[name].is_number_integer()) {
+					parameter.cast <int>().setWithoutEventNotifications(json[name].get<int>());
+					//parameter.cast <int>() = json[name].get<int>();
+				}
+				else if (parameter.type() == typeid(ofParameter <float>).name() && json[name].is_number_float()) {
+					parameter.cast <float>().setWithoutEventNotifications(json[name].get<float>());
+					//parameter.cast <float>() = json[name].get<float>();
+				}
+				else if (parameter.type() == typeid(ofParameter <bool>).name() && json[name].is_boolean()) {
+					parameter.cast <bool>().setWithoutEventNotifications(json[name].get<bool>());
+					//parameter.cast <bool>() = json[name].get<bool>();
+				}
+				else if (parameter.type() == typeid(ofParameter <int64_t>).name() && json[name].is_number_integer()) {
+					parameter.cast <int64_t>().setWithoutEventNotifications(json[name].get<int64_t>());
+					//parameter.cast <int64_t>() = json[name].get<int64_t>();
+				}
+				else if (parameter.type() == typeid(ofParameter <std::string>).name()) {
+					parameter.cast <std::string>().setWithoutEventNotifications(json[name].get<std::string>());
+					//parameter.cast <std::string>() = json[name].get<std::string>();
+				}
+				else {
+					parameter.fromString(json[name]);
+				}
+			}
 		}
 	}
 
 
-	//--
+	//----
+
 
 	//TODO: add to API
 	/*
@@ -337,7 +341,9 @@ namespace ofxSurfingHelpers
 	}
 	*/
 
-	//---
+
+	//----
+
 
 	// Time in seconds to string min::sec
 	// Original code taken from ofxFilikaUtils.h
@@ -385,14 +391,16 @@ namespace ofxSurfingHelpers
 			return (mins + ":" + secs);
 	}
 
-	//--
-	 
+
+	//----
+
+
 	// Debug Helpers
-	
+
 	//--------------------------------------------------------------
 	inline void DebugCoutParam(ofAbstractParameter& ap)
 	{
 		cout << ap.getName() << ": " << ap << endl;
 	}
 
-};
+}; // namespace ofxSurfingHelpers 
