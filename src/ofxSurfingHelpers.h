@@ -88,15 +88,16 @@ namespace ofxSurfingHelpers
 	//--------------------------------------------------------------
 	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
 	{
-		if (path == "") {
+		if (path == "") 
+		{
 			path = g.getName() + "_Settings.json"; // a default filename
-			ofLogWarning("ofxSurfingHelpers") << (__FUNCTION__) << "Path is empty! Using a default instead!";
+			ofLogWarning("ofxSurfingHelpers") << "loadGroup "  << "Path is empty! Using a default instead!";
 		}
 
 		if (debug)
 		{
-			ofLogNotice("ofxSurfingHelpers") << (__FUNCTION__) << g.getName() << " to " << path;
-			ofLogNotice("ofxSurfingHelpers") << "\nofParameters: \n\n" << g.toString();
+			ofLogNotice("ofxSurfingHelpers") << "loadGroup " << g.getName() << " to " << path;
+			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n" << g.toString();
 		}
 		//else
 		//{
@@ -117,7 +118,7 @@ namespace ofxSurfingHelpers
 		// Returns false if no file preset yet.
 		ofFile f;
 		bool b = f.doesFileExist(path);
-		if (b) ofLogNotice("ofxSurfingHelpers") << "Load: " << g.getName() << " at " << path;
+		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: " << g.getName() << " at " << path;
 		else ofLogError("ofxSurfingHelpers") << "Error loading: " << g.getName() << " at " << path << " Not found!";
 
 		return b; // Returns true if it's ok
@@ -128,7 +129,7 @@ namespace ofxSurfingHelpers
 	{
 		if (path == "") {
 			path = g.getName() + "_Settings.json";
-			ofLogWarning("ofxSurfingHelpers") << (__FUNCTION__) << "Path is empty! Using a default instead!";
+			ofLogWarning("ofxSurfingHelpers") << "saveGroup " << "Path is empty! Using a default instead!";
 		}
 
 		if (debug) {
