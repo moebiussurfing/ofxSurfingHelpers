@@ -166,7 +166,7 @@ public:
 
 	// Presets
 
-	void drawImGui(bool bWindowed = false, bool bShowMinimizer = false, bool bFolder = false)
+	void drawImGui(bool bWindowed = false, bool bShowMinimizer = false, bool bFolder = false, bool bOpen = true)
 	{
 		if (!bGui) return;
 
@@ -179,7 +179,7 @@ public:
 			bw = ui->BeginWindow(bGui.getName());
 			//bw = ui->BeginWindow("PRESETS");
 		}
-		else if (bFolder) 
+		else if (bFolder)
 		{
 			bw = true;
 		}
@@ -196,8 +196,6 @@ public:
 
 			//bool bFolder = !bWindowed;
 			//bool bFolder = true;
-
-			bool bOpen = true;
 
 			bool b = true;
 
@@ -554,11 +552,12 @@ public:
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 			}
 
-			if (!bMinimal && !ui->bMinimize)
-			{
-				ui->AddSpacing();
-				if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
-			}
+			if (dir.size() > 0)
+				if (!bMinimal && !ui->bMinimize)
+				{
+					ui->AddSpacing();
+					if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
+				}
 		}
 
 		//--
@@ -653,8 +652,8 @@ private:
 
 	void update(ofEventArgs& args)
 	{
-		if (ofGetFrameNum() == 1) 
-		//if (ofGetFrameNum() == 0) 
+		if (ofGetFrameNum() == 1)
+			//if (ofGetFrameNum() == 0) 
 		{
 			startup();
 		}
