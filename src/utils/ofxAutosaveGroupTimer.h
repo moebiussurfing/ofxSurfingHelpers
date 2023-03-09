@@ -46,6 +46,7 @@ public:
 
 	void addGroup(ofxSurfingHelpers::SurfDataGroupSaver data);
 	void addGroup(ofParameterGroup params, string path);
+	void addGroup(ofParameterGroup params);
 
 	ofParameterGroup params;
 
@@ -55,6 +56,9 @@ public:
 	};
 	float getProgressPrc() const { return progressPrc; };
 
+	void startup();//public to allow callback manually.
+	//if not, will be auto called on first frame in update!
+
 private:
 	
 	ofParameter<bool> bAutoSave;
@@ -62,7 +66,6 @@ private:
 	ofParameter<int> timeToAutosave;
 
 	void setup();
-	void startup();
 	void update(ofEventArgs& args);
 	void exit();
 

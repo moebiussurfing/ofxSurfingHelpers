@@ -21,6 +21,13 @@ void ofxAutosaveGroupTimer::startup()
 {
 	ofxSurfingHelpers::CheckFolder(path_Global);
 	ofxSurfingHelpers::loadGroup(params, path_Global + name_Settings + fileExtension);
+
+	for (int i = 0; i < data.size(); i++)
+	{
+		ofxSurfingHelpers::loadGroup(data[i].params, data[i].path, !bSilent.get());
+	}
+
+	bDoneStartup = true;
 }
 
 //--------------------------------------------------------------
@@ -57,6 +64,16 @@ void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params, string path)
 }
 
 //--------------------------------------------------------------
+void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params)
+{
+	string path = params.getName() + ".json";
+	ofxSurfingHelpers::SurfDataGroupSaver d;
+	d.params = params;
+	d.path = path;
+	this->addGroup(d);
+}
+
+//--------------------------------------------------------------
 void ofxAutosaveGroupTimer::addGroup(ofxSurfingHelpers::SurfDataGroupSaver _data)
 {
 	data.push_back(_data);
@@ -79,7 +96,6 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 {
 	if (!bDoneStartup)
 	{
-		bDoneStartup = true;
 		startup();
 	}
 

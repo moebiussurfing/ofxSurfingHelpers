@@ -204,7 +204,7 @@ public:
 			if (!bFolder)
 			{
 				b = true;
-				ui->AddLabelBig(sn, true, true);
+				if (!bWindowed) ui->AddLabelBig(sn, true, true);
 			}
 			else
 			{
@@ -429,10 +429,9 @@ public:
 
 				if (!ui->bMinimize && dir.size() > 0) ui->AddSpacingSeparated();
 
-				// Combo
-				//if (!ui->bMinimize && bExpand)
-				if (bExpand)
+				if (bExpand) // expanded
 				{
+					// Combo
 					//ui->AddComboButtonDual(index, filenames, true);
 
 					if (ui->bMinimize)
@@ -458,35 +457,36 @@ public:
 						ImGui::PopItemWidth();
 					}
 				}
-
-				if (!bExpand && !ui->bMinimize)
+				else // not expanded
 				{
-					//ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
-
-					if (ui->AddButton("<", OFX_IM_BUTTON_MEDIUM, 2, true))
+					if (!ui->bMinimize)
 					{
-						doLoadPrevious();
-					};
-					if (ui->AddButton(">", OFX_IM_BUTTON_MEDIUM, 2))
-					{
-						doLoadNext();
-					};
-				}
-				if (!bExpand && !ui->bMinimize)
-				{
-					float p = ui->getWidgetsSpacingX();
-					float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
-					ImGui::PushItemWidth(w);
-					ui->AddCombo(index, filenames, true);
-					ImGui::PopItemWidth();
+						//ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
 
-					ui->SameLine();
-					ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2);
+						if (ui->AddButton("<", OFX_IM_BUTTON_MEDIUM, 2, true))
+						{
+							doLoadPrevious();
+						};
+						if (ui->AddButton(">", OFX_IM_BUTTON_MEDIUM, 2))
+						{
+							doLoadNext();
+						};
+
+						float p = ui->getWidgetsSpacingX();
+						float w = ui->getWidgetsWidth() * 0.5 - p / 2;//?
+						ImGui::PushItemWidth(w);
+						ui->AddCombo(index, filenames, true);
+						ImGui::PopItemWidth();
+
+						ui->SameLine();
+						ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_SMALL : OFX_IM_BUTTON_SMALL_BORDER_BLINK), 2);
+					}
 				}
 
 				//--
 
 				if (!ui->bMinimize) ui->AddSpacingSeparated();
+				//ui->AddSpacingSeparated();
 
 				//--
 
@@ -504,13 +504,13 @@ public:
 		}
 	}
 
-
-	////--
+	//----
 
 	//TODO:
 	// Files
 
-	// 2. Presets
+	// 2. Presets Clicker
+
 	void drawImGuiClicker(bool bWindowed = false, bool bMinimal = false)
 	{
 		bool bw = false;
@@ -531,33 +531,45 @@ public:
 				ui->AddSpacing();
 			}
 		}
-		else {
-			if (!bClicker)bClicker = true;
+		else
+		{
+			if (!bClicker) bClicker = true;
 		}
 
-		if (bClicker /*|| !bMinimal*/)//TODO:
+		if (bClicker)
 		{
+			if (ui->bMinimize) ui->AddSpacingSeparated();
+
 			float _h2 = ui->getWidgetsHeightUnit();
+			_h2 *= 1.5f;
+
 			bool bResponsiveButtonsClicker = true;
-			bool bFlip = true;
+
+			//TODO: add public var
+			bool bFlip = false;
+			//bool bFlip = true;
 
 			string toolTip = "";
 			if (bKeyCtrl) toolTip = "Copy To";
 			else if (bKeyAlt) toolTip = "Swap With";
 
-			if (bUseColorizedMatrices) {
+			if (bUseColorizedMatrices)
+			{
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, colors, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 			}
-			else {
+			else
+			{
 				ofxImGuiSurfing::AddMatrixClickerLabels(index, keyCommandsChars, bResponsiveButtonsClicker, amountButtonsPerRowClicker, true, _h2, toolTip, bFlip);
 			}
 
 			if (dir.size() > 0)
+			{
 				if (!bMinimal && !ui->bMinimize)
 				{
 					ui->AddSpacing();
 					if (!ui->bMinimize) ui->Add(amountButtonsPerRowClicker, OFX_IM_STEPPER, 2);
 				}
+			}
 		}
 
 		//--
@@ -781,6 +793,8 @@ private:
 			// Changed?
 			if (index.get() != index_PRE)
 			{
+				bIsChangedIndex = true;
+
 				//TODO:
 				//avoid error!
 				//if (index.get() > filenames.size() - 1 || index_PRE > filenames.size() - 1) return;
@@ -1364,11 +1378,11 @@ private:
 	// Random simple
 	//--------------------------------------------------------------
 	void doRandomizeParams(bool bSilent = false) {
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice(__FUNCTION__);
 
 		//TODO:
 		// this is not recursive inside the group content!
-		// get from ImHelpers. AddGroup iterate groups
+		// get solution from ImHelpers. AddGroup iterate groups
 
 		for (int i = 0; i < params_Preset.size(); i++)
 		{
@@ -1380,7 +1394,7 @@ private:
 				float v = ofRandom(pr.getMin(), pr.getMax());
 				if (bSilent) pr.setWithoutEventNotifications(v);
 				else pr.set(v);
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 			}
 
 			else if (p.type() == typeid(ofParameter<int>).name())
@@ -1389,7 +1403,7 @@ private:
 				int v = ofRandom(pr.getMin(), pr.getMax());
 				if (bSilent) pr.setWithoutEventNotifications(v);
 				else pr.set(v);
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 			}
 
 			// include booleans
@@ -1399,7 +1413,7 @@ private:
 				bool b = (ofRandom(1.f) >= 0.5f);
 				if (bSilent) pr.setWithoutEventNotifications(b);
 				else pr.set(b);
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 			}
 		}
 	};
@@ -1407,7 +1421,7 @@ private:
 	// Reset Simple
 	//--------------------------------------------------------------
 	void doResetParams(bool bSilent = false) {
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice(__FUNCTION__);
 
 		for (int i = 0; i < params_Preset.size(); i++)
 		{
@@ -1489,5 +1503,17 @@ private:
 		ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
 		ofRemoveListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
 	};
+
+	// easy callback to know when the preset index/selector changed
+private:
+	bool bIsChangedIndex = false;
+public:
+	bool isChangedIndex() {
+		if (bIsChangedIndex) {
+			bIsChangedIndex = false;
+			return true;
+		}
+		else return false;
+	}
 };
 
