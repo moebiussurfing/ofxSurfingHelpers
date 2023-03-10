@@ -75,7 +75,7 @@ That allows your settings saved even when your app crashes, even if you usually 
   <summary>THIRD PARTY ADD-ONS</summary>
   <p>
 
-#### Bundled into **OF_ADDON/libs/**
+### Bundled into **OF_ADDON/libs/**
 Already added to `OFX_ADDON/libs/`.  
 No need to clone nor add to **PROJECT GENERATOR****.  
 * [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
