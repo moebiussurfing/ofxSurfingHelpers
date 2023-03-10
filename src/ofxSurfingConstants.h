@@ -2,9 +2,8 @@
 
 //---------
 //
-// OPTIONAL // -> defines (modes) are here "to share between addons" in one place
+// OPTIONAL
 //
-#define USE_JSON //uncomment to use default xml instead json for ofParameterGroup de/serializers
 //#define USE_IM_GUI
 //#define USE_ofxGui
 //
