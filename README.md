@@ -1,35 +1,40 @@
 ofxSurfingHelpers
 =============================
 
-# Overview
+# OVERVIEW
 
-**ofxSurfingHelpers** is a (**WIP**) personal collection of some useful stuff for **openFrameworks**:  
+A (**WIP**) personal collection of some useful stuff for **openFrameworks**:  
 
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / Native UI Widgets ...etc.
 
-## Features
+## FEATURES
 
 Look to the available classes in **OF_ADDON/src/** for details.
 
-![](/Capture1.PNG)  
-![](/Capture2.PNG)  
-
 --------------------------
 
-## Examples
+## EXAMPLES
 
-### PresetsLite
-![](Examples/PresetsLite/Capture.PNG)  
+### PresetsLite: presets from an ofParmeterGroup
+![](Examples/PresetsLite/Capture.PNG) 
+
+### ParamsIndexToggles: matrix toggles from an ofParameter<int> index.
+![](Examples/ParamsIndexToggles/Capture.PNG)  
+
+### MouseHandler: auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and to measure distances.
+![](Examples/MouseHandler/Capture.PNG)  
+
+## ParamsAutoSave
 
 --------------------------
 
 <details>
-  <summary>Third Party add-ons</summary>
+  <summary>THIRD PARTY ADD-ONS</summary>
   <p>
 
 ## Bundled into **OF_ADDON/libs/**
 Already added to `OFX_ADDON/libs/`.  
-No need to clone nor add into **PROJECT GENERATOR**.  
+No need to clone nor add to **PROJECT GENERATOR****.  
 * [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
 * [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
 * [ofxSerializer](https://github.com/bakercp/ofxSerializer)
@@ -37,7 +42,7 @@ No need to clone nor add into **PROJECT GENERATOR**.
 </details>
 
 <details>
-  <summary>Other References / Resources</summary>
+  <summary>OTHER REFERENCES / RESOURCES</summary>
   <p>
 
 https://github.com/FilikaDesign/ofxFilika   
@@ -52,7 +57,7 @@ https://github.com/Iwanaka/ofxMyUtil
 https://github.com/perevalovds/ofxKu/tree/master/src  
 https://github.com/ofTheo/ofxFileHelper  
 
-_Some of the bundled classes here may have been "stolen" from the above repositories!_
+_Some of the bundled classes here may have been taken from the above repositories!_
   </p>
 </details>
 
@@ -60,13 +65,13 @@ _Some of the bundled classes here may have been "stolen" from the above reposito
   <summary>Tested Systems</summary>
   <p>
 
-  - **Windows 10** / **VS 2017** / **OF ~0.11**
+  - **Windows 10** / **VS 2022** / **OF ~0.11**
   </p>
 </details>
 
 ## Author
-An addon by **@moebiusSurfing**  
-*( ManuMolina ) 2019-2022*  
+An add-on by **@moebiusSurfing**  
+*( ManuMolina ) 2019-2023*  
 
 ## Contact / Tune
 <p>
