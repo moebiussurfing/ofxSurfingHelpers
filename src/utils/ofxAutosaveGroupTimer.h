@@ -40,7 +40,6 @@ class ofxAutosaveGroupTimer
 {
 
 public:
-
 	ofxAutosaveGroupTimer();
 	~ofxAutosaveGroupTimer();
 
@@ -48,22 +47,26 @@ public:
 	void addGroup(ofParameterGroup params, string path);
 	void addGroup(ofParameterGroup params);
 
+private:
 	ofParameterGroup params;
 
+public:
 	void setPathGlobal(string path) { // call before setup or adding param groups
 		path_Global = path;
 		ofxSurfingHelpers::CheckFolder(path_Global);
 	};
 	float getProgressPrc() const { return progressPrc; };
 
+	//private:
 	void startup();//public to allow callback manually.
 	//if not, will be auto called on first frame in update!
 
+	void saveAllGroups();
+
 private:
-	
 	ofParameter<bool> bAutoSave;
-	ofParameter<bool> bSilent;
-	ofParameter<int> timeToAutosave;
+	ofParameter<bool> bSilent;//not log for every param
+	ofParameter<int> timeToAutosave;//period
 
 	void setup();
 	void update(ofEventArgs& args);
@@ -74,10 +77,16 @@ private:
 	bool bDoneStartup = false;
 
 	string path_Global = "ofxAutosaveGroupTimer/";
-	string name_Settings = "Settings_ofxAutosaveGroupTimer";
+	string name_Settings = "ofxAutosaveGroupTimer_Settings";
 	string fileExtension = ".json";
 
 	vector<ofxSurfingHelpers::SurfDataGroupSaver> data;
 
-	void saveAllGroups();
+	//workaround
+	// a bit of offset to make many instances to not happen at the same time..
+	bool bRandomOffset = true;
+	int tOffset = 0;
+
+	int count = 0;
+
 };

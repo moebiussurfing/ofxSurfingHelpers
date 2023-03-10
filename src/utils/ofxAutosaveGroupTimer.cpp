@@ -27,6 +27,9 @@ void ofxAutosaveGroupTimer::startup()
 		ofxSurfingHelpers::loadGroup(data[i].params, data[i].path, !bSilent.get());
 	}
 
+	tOffset = (int) MAX(0, ofRandom(timeToAutosave.get() / 100));
+	//cout << "tOffset:" << tOffset << endl;
+
 	bDoneStartup = true;
 }
 
@@ -36,8 +39,8 @@ void ofxAutosaveGroupTimer::setup()
 	data.clear();
 
 	bAutoSave.set("auto save", true);
-	bSilent.set("silent", false);
-	timeToAutosave.set("time", 5000, 100, 10000);
+	bSilent.set("silent", true);
+	timeToAutosave.set("time", 10000, 100, 30000);
 
 	params.setName("ofxAutosaveGroupTimer");
 	params.add(bAutoSave);
@@ -66,7 +69,7 @@ void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params, string path)
 //--------------------------------------------------------------
 void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params)
 {
-	string path = params.getName() + ".json";
+	string path = params.getName() + "_Settings.json";
 	ofxSurfingHelpers::SurfDataGroupSaver d;
 	d.params = params;
 	d.path = path;
@@ -103,20 +106,33 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 
 	if (bAutoSave)
 	{
-		auto t = ofGetElapsedTimeMillis() - timerLast_Autosave;
+		// elapsed
+		uint64_t t;
+		if (!bRandomOffset) t = ofGetElapsedTimeMillis() - timerLast_Autosave;
+		else t = ofGetElapsedTimeMillis() - tOffset - timerLast_Autosave;
+		
 		progressPrc = ofMap(t, 0, timeToAutosave.get(), 0, 1, true);
 
-		static int count = 0;
+		//static int count = 0;
 
 		if (t >= timeToAutosave.get())
 		{
-			timerLast_Autosave = ofGetElapsedTimeMillis();
+			if (!bRandomOffset) timerLast_Autosave = ofGetElapsedTimeMillis();
+			else timerLast_Autosave = ofGetElapsedTimeMillis() - tOffset;
 
 			saveAllGroups();
 
 			ofLogNotice("ofxAutosaveGroupTimer") << "Auto save DONE!";
-			if (!bSilent.get()) {
-				ofLogNotice("ofxAutosaveGroupTimer") << "#" << count++ << " " << ofGetElapsedTimef();
+			ofLogNotice("ofxAutosaveGroupTimer") << " " << path_Global;
+
+			for (int i = 0; i < data.size(); i++)
+			{
+				ofLogNotice("ofxAutosaveGroupTimer") << "  " << data[i].params.getName();
+			}
+
+			ofLogNotice("ofxAutosaveGroupTimer") << "#" << count++ << " | " << (int)ofGetElapsedTimef() << " secs";
+			if (!bSilent.get())
+			{
 				ofLogNotice("ofxAutosaveGroupTimer") << "--------------------------------------------------------------\n";
 			}
 		}

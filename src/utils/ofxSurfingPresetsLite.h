@@ -108,9 +108,12 @@ private:
 
 	void exit() {
 
-		//ofxSurfingHelpers::CheckFolder(pathSettings);
 		ofxSurfingHelpers::CheckFolder(path_Global);
-		ofxSurfingHelpers::saveGroup(params, path_Global + "/" + pathSettings);
+
+		string s;
+		if (path_Global == "") s = path_Settings;
+		else s = path_Global + "/" + path_Settings;
+		ofxSurfingHelpers::saveGroup(params, s);
 
 		doSave();
 	};
@@ -144,7 +147,7 @@ public:
 	}
 
 private:
-	string pathSettings = "ofxSurfingPresetsLite_Settings.json";
+	string path_Settings = "ofxSurfingPresetsLite_Settings.json";
 
 	bool bKeyCtrl = false;
 	bool bKeyAlt = false;
@@ -625,20 +628,23 @@ private:
 
 	void setup()
 	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice(__FUNCTION__);
 
 		doRefreshFiles();//TODO:
 	};
 
 	void startup()
 	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice(__FUNCTION__);
 
 		doRefreshFiles();
 
 		index_PRE = -1; // pre
 
-		ofxSurfingHelpers::loadGroup(params, path_Global + "/" + pathSettings);
+		string s;
+		if (path_Global == "") s = path_Settings;
+		else s = path_Global + "/" + path_Settings;
+		ofxSurfingHelpers::loadGroup(params, s);
 
 		//index = index;
 
@@ -683,7 +689,7 @@ private:
 	void doSave()
 	{
 		//save the previously settled name
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
+		ofLogNotice(__FUNCTION__) << " : " << filename;
 
 		if (bDoingNew) bDoingNew = false;
 
@@ -695,7 +701,7 @@ private:
 
 	void doLoad()
 	{
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
+		ofLogNotice(__FUNCTION__) << " : " << filename;
 
 		if (bDoingNew) bDoingNew = false;
 
@@ -737,7 +743,9 @@ public:
 			params_Preset = group;
 		}
 
-		pathSettings = ofToString(params_Preset.getName()) + ofToString("_Settings.json");
+		string s = params_Preset.getName();
+		s += ofToString("_Settings.json");
+		path_Settings = s;
 
 		setup();
 	};
@@ -757,7 +765,7 @@ public:
 
 	void setFilename(string p) {
 		filename = p;
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << " : " << filename;
+		ofLogNotice(__FUNCTION__) << " : " << filename;
 	};
 
 	void doLoadPrevious() {
@@ -775,7 +783,7 @@ private:
 	void Changed(ofAbstractParameter& e)
 	{
 		string name = e.getName();
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+		ofLogNotice(__FUNCTION__);
 		ofLogNotice("ofxSurfingPresetsLite") << name << " " << e;
 
 		if (0) {}
@@ -803,7 +811,7 @@ private:
 				{
 					if (index_PRE < filenames.size() && index < filenames.size())
 					{
-						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "\n\n  Changed \n  Preset Index : "
+						ofLogNotice("ofxSurfingPresetsLite") << "\n  Changed \n  Preset Index : "
 							<< ofToString(index_PRE) << " > " << ofToString(index)
 							<< "      \t(" <<
 							ofToString(filenames[index_PRE]) << " > " <<
@@ -836,7 +844,7 @@ private:
 
 					// Load
 
-					ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << index.getName() + " : " << ofToString(index);
+					ofLogNotice("ofxSurfingPresetsLite") << index.getName() + " : " << ofToString(index);
 
 					if (dir.size() > 0 && index < dir.size() && index_PRE < filenames.size())
 					{
@@ -864,7 +872,7 @@ private:
 
 						doSave();
 
-						ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET COPY!";
+						ofLogNotice("ofxSurfingPresetsLite") << "PRESET COPY!";
 
 						index_PRE = index;
 					}
@@ -899,8 +907,8 @@ private:
 						doSave();
 
 						if (bf && bt) {
-							ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "PRESET SWAP!";
-							ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << _fFrom << " <-> " << _fTo;
+							ofLogNotice("ofxSurfingPresetsLite") << "PRESET SWAP!";
+							ofLogNotice("ofxSurfingPresetsLite") << _fFrom << " <-> " << _fTo;
 						}
 						else {
 							ofLogError("ofxSurfingPresetsLite") << "WRONG SWAP!";
@@ -963,7 +971,7 @@ private:
 			//if (filename_ != filename)
 			if (num != getNumFiles())
 			{
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "Reorganize " << dir.size() << " files.";
+				ofLogNotice("ofxSurfingPresetsLite") << "Reorganize " << dir.size() << " files.";
 				for (int i = 0; i < dir.size(); i++)
 				{
 					string n = dir.getName(i);
@@ -1052,7 +1060,7 @@ private:
 		filenames.clear();
 		for (int i = 0; i < dir.size(); i++)
 		{
-			ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
+			ofLogNotice("ofxSurfingPresetsLite") << "file " << "[" << ofToString(i) << "] " << dir.getName(i);
 
 			std::string _name = "NoName"; // without ext
 			auto _names = ofSplitString(dir.getName(i), ".");
@@ -1432,7 +1440,7 @@ private:
 				ofParameter<float> pr = p.cast<float>();
 				if (bSilent) pr.setWithoutEventNotifications(pr.getMin());
 				else pr.set(pr.getMin());
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 
 			}
 
@@ -1441,7 +1449,7 @@ private:
 				ofParameter<int> pr = p.cast<int>();
 				if (bSilent) pr.setWithoutEventNotifications(pr.getMin());
 				else pr.set(pr.getMin());
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 			}
 
 			// include booleans
@@ -1451,7 +1459,7 @@ private:
 				bool b = false;
 				if (bSilent) pr.setWithoutEventNotifications(b);
 				else pr.set(b);
-				ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << pr.getName() << " = " << pr.get();
+				ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
 			}
 		}
 
