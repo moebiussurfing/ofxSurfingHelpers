@@ -5,7 +5,7 @@ ofxSurfingHelpers
 
 A (**WIP**) personal collection of some useful stuff for **openFrameworks**:  
 
-OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / Native UI Widgets ...etc.
+OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / OF Native UI Widgets and many ImGui / ofxSurfingImGui modules ...
 
 ## FEATURES
 
@@ -63,7 +63,7 @@ https://github.com/Iwanaka/ofxMyUtil
 https://github.com/perevalovds/ofxKu/tree/master/src  
 https://github.com/ofTheo/ofxFileHelper  
 
-_Some of the bundled classes here may have been taken from the above repositories!_
+_Some of the bundled classes here may have been taken from the above repositories. Thanks to their respective coders!_
   </p>
 </details>
 
