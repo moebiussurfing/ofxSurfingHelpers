@@ -32,7 +32,7 @@ Queue many ofParameterGroup and they will be auto-saved using a timer.
 Also on exit and reloaded when starting the app. 
 That allows your settings saved even when your app crashes, and you did the saving only on exit.
 
---------------------------
+<br>
 
 <details>
   <summary>THIRD PARTY ADD-ONS</summary>
