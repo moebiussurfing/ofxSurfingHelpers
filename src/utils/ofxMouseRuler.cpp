@@ -6,9 +6,11 @@ ofxMouseRuler::ofxMouseRuler() {
 	visible = false;
 }
 
-void ofxMouseRuler::setOrig(int x, int y) {
-	orig_x = x;
-	orig_y = y;
+ofxMouseRuler::~ofxMouseRuler() {
+	if (setupDone) {
+		ofUnregisterMouseEvents(this);
+		ofRemoveListener(ofEvents().draw, this, &ofxMouseRuler::draw, OF_EVENT_ORDER_AFTER_APP + 1);
+	}
 }
 
 void ofxMouseRuler::setup() {
@@ -16,6 +18,11 @@ void ofxMouseRuler::setup() {
 	ofRegisterMouseEvents(this);
 	ofAddListener(ofEvents().draw, this, &ofxMouseRuler::draw, std::numeric_limits<int>::max());
 	setupDone = true;
+}
+
+void ofxMouseRuler::setOrig(int x, int y) {
+	orig_x = x;
+	orig_y = y;
 }
 
 void ofxMouseRuler::draw(ofEventArgs&) {
@@ -102,13 +109,6 @@ void ofxMouseRuler::toggleVisibility() {
 
 void ofxMouseRuler::setVisibility(bool b) {
 	visible = b;
-}
-
-ofxMouseRuler::~ofxMouseRuler() {
-	if (setupDone) {
-		ofUnregisterMouseEvents(this);
-		ofRemoveListener(ofEvents().draw, this, &ofxMouseRuler::draw, OF_EVENT_ORDER_AFTER_APP + 1);
-	}
 }
 
 
