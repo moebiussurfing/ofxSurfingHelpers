@@ -3,7 +3,7 @@ ofxSurfingHelpers
 
 # OVERVIEW
 
-A (**WIP**) personal collection of some useful stuff for **openFrameworks**:  
+A ( **WIP** ) personal collection of some useful stuff for **openFrameworks**:  
 
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / OF Native UI Widgets and many ImGui / ofxSurfingImGui modules ...
 
@@ -50,7 +50,7 @@ Look to the available classes in **OF_ADDON/src/** for details.
 ## EXAMPLES
 
 ### - PresetsLite 
-Presets from an ofParmeterGroup  
+Presets from an ofParmeterGroup.  
 
 ![](Examples/PresetsLite/Capture.PNG) 
 
@@ -65,9 +65,9 @@ Auto hides the mouse using a timer and shows a pointer rule to show mouse coordi
 ![](Examples/MouseHandler/Capture.PNG)  
 
 ### - ParamsAutoSave
-Queue many ofParameterGroup and they will be auto-saved using a timer. 
+Queue many ofParameterGroup's and they will be auto-saved using a timer. 
 Also on exit and reloaded when starting the app. 
-That allows your settings saved even when your app crashes, and you did the saving only on exit.
+That allows your settings saved even when your app crashes, even if you usually make the saving only on exit.
 
 <br>
 
@@ -75,11 +75,11 @@ That allows your settings saved even when your app crashes, and you did the savi
   <summary>THIRD PARTY ADD-ONS</summary>
   <p>
 
-## Bundled into **OF_ADDON/libs/**
+#### Bundled into **OF_ADDON/libs/**
 Already added to `OFX_ADDON/libs/`.  
 No need to clone nor add to **PROJECT GENERATOR****.  
-* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _Fork_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
-* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _Fork_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
+* [ofxScaleDragRect](https://github.com/moebiussurfing/ofxScaleDragRect) / _FORK_ from [roymacdonald](https://github.com/roymacdonald/ofxScaleDragRect)  
+* [ofxMSAInteractiveObject](https://github.com/moebiussurfing/ofxMSAInteractiveObject) / _FORK_ from [memo](https://github.com/memo/ofxMSAInteractiveObject)  
 * [ofxSerializer](https://github.com/bakercp/ofxSerializer)
   </p>
 </details>
