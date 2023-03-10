@@ -27,7 +27,7 @@ Matrix toggles from an ofParameter<int> index.
 Auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and measure distances.  
 ![](Examples/MouseHandler/Capture.PNG)  
 
-## ParamsAutoSave
+## - ParamsAutoSave
 Queue many ofParameterGroup and they will be auto-saved using a timer. 
 Also on exit and reloaded when starting the app. 
 That allows your settings saved even when your app crashes, and you did the saving only on exit.
@@ -68,18 +68,18 @@ _Some of the bundled classes here may have been taken from the above repositorie
 </details>
 
 <details>
-  <summary>Tested Systems</summary>
+  <summary>TESTED SYSTEMS</summary>
   <p>
 
   - **Windows 10** / **VS 2022** / **OF ~0.11**
   </p>
 </details>
 
-## Author
+## AUTHOR
 An add-on by **@moebiusSurfing**  
 *( ManuMolina ) 2019-2023*  
 
-## Contact / Tune
+## CONTACT / TUNE
 <p>
 <a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
 <a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
@@ -87,5 +87,5 @@ An add-on by **@moebiusSurfing**
 <a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> 
 </p>
 
-## License
+## LICENSE
 MIT License
