@@ -42,6 +42,8 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 //--------------------------------------------------------------
 ofxInteractiveRect::~ofxInteractiveRect()
 {
+	return;//fixing crash
+
 	bEditMode.removeListener(this, &ofxInteractiveRect::Changed_EditMode);
 	rectParam.removeListener(this, &ofxInteractiveRect::Changed_Rect);
 

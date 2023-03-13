@@ -90,6 +90,8 @@ public:
 	//--------------------------------------------------------------
 	~TextBoxWidget()
 	{
+		return;//fixing crash
+
 		// All app settings
 		ofxSurfingHelpers::CheckFolder(path_Global + "/");
 		rect_HelpTextBox.saveSettings(path_RectHelpBox, path_Global + "/", false);
