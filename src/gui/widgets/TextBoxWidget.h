@@ -1,3 +1,5 @@
+//#include "TextBoxWidget.h"
+
 
 #pragma once
 
@@ -6,7 +8,6 @@
 #include "ofxSurfingHelpers.h"
 #include "ofxInteractiveRect.h"
 #include "DoubleClicker.h"
-//#include "TextBoxWidget.h"
 
 /*
 
