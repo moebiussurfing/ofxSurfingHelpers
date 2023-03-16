@@ -103,6 +103,19 @@ namespace ofxSurfingHelpers {
 		std::string text;
 	};
 
+	inline ofLogLevel getLogLevelFromTag(string tag) {
+		ofLogLevel log;
+		
+		if (tag == "VERBOSE") { log = OF_LOG_VERBOSE; }
+		else if (tag == "NOTICE") { log = OF_LOG_NOTICE; }
+		else if (tag == "WARNING") { log = OF_LOG_WARNING; }
+		else if (tag == "ERROR") { log = OF_LOG_ERROR; }
+		else if (tag == "FATAL_ERROR") { log = OF_LOG_FATAL_ERROR; }
+		else { log = OF_LOG_SILENT; }
+
+		return log;
+	};
+
 	inline ofLogLevel getRandomLogLevelTag() {
 		ofLogLevel log;
 
