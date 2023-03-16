@@ -20,6 +20,7 @@ namespace ofxSurfingHelpersT {//T to avoid conflicts
 }
 
 namespace ofxSurfingHelpers {
+
 	inline string getTextRandom() {
 		string s = "";
 		static int ilast = -1;
@@ -49,6 +50,57 @@ namespace ofxSurfingHelpers {
 		}
 
 		return s;
+	}
+	inline string getRandomText() { return getTextRandom(); };//legacy
+
+	// Helper to feed a Log or Notifier
+	// get a random text message but bundled with a logLeve
+	struct logData
+	{
+		ofLogLevel log;
+		std::string text;
+	};
+
+	inline logData getRandomLogData() {
+		logData d;
+		string s = "";
+		static int ilast = -1;
+		float r = ofRandom(1.f);
+		if (r < 0.25f && ilast != 0) {
+			s = "Hello people, how are you today?";
+			if (ofRandom(1) < 0.5) s += " And current frame is " + ofToString(ofGetFrameNum());
+			ilast = 0;
+			d.text = s;
+			d.log = OF_LOG_VERBOSE;
+		}
+		else if (r < 0.5f && ilast != 1) {
+			s = "Hello dude. Ready to wake up?";
+			ilast = 1;
+			d.text = s;
+			d.log = OF_LOG_NOTICE;
+		}
+		else if (r < 0.75f && ilast != 2) {
+			s = "I go sleep now. Ready to wake up!";
+			if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
+			ilast = 2;
+			d.text = s;
+			d.log = OF_LOG_WARNING;
+		}
+		else if (ilast != 3) {
+			s = "Hey, hello! Im ready to go out";
+			if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
+			ilast = 3;
+			d.text = s;
+			d.log = OF_LOG_ERROR;
+		}
+		else {
+			s = "How are you tonight? Bye bye people";
+			ilast = 4;
+			d.text = s;
+			d.log = OF_LOG_FATAL_ERROR;
+		}
+
+		return d;
 	}
 }
 
