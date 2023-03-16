@@ -19,9 +19,11 @@ namespace ofxSurfingHelpersT {//T to avoid conflicts
 	}
 }
 
+//--
+
 namespace ofxSurfingHelpers {
 
-	string textAtribute[5] = {
+	static string textAtribute[5] = {
 		"Brilliant",
 		"Curious",
 		"Amazing",
@@ -29,14 +31,14 @@ namespace ofxSurfingHelpers {
 		"Ironic",
 	};
 
-	string textObject[4] = {
+	static string textObject[4] = {
 		" disco inferno",
 		" camp fire entanglement",
 		" wedding promise",
 		" man"
 	};
 
-	string textVerb[6] = {
+	static string textVerb[6] = {
 		" bites",
 		" strikes",
 		" lost on",
@@ -45,12 +47,21 @@ namespace ofxSurfingHelpers {
 		" invites"
 	};
 
-	string textSubject[5] = {
+	static string textSubject[5] = {
 		" pope",
 		" government",
 		" irate schoolmaster",
 		" late enthusiast",
 		" dog"
+	};
+
+	inline string getTextRandomSentence()
+	{
+		stringstream ss;
+		ss << textAtribute[rand() % 5] << textObject[rand() % 4] << textVerb[rand() % 6] << textSubject[rand() % 5];
+		string str(ss.str());
+
+		return str;
 	};
 
 	inline string getTextRandom() {
@@ -82,8 +93,94 @@ namespace ofxSurfingHelpers {
 		}
 
 		return s;
-	}
+	};
+
+	// Helper to feed a Log or Notifier
+	// get a random text message but bundled with a logLeve
+	struct logData
+	{
+		ofLogLevel log;
+		std::string text;
+	};
+
+	inline ofLogLevel getRandomLogLevelTag() {
+		ofLogLevel log;
+
+		float r = ofRandom(1.f);
+		if (r < 0.25f) {
+			log = OF_LOG_VERBOSE;
+		}
+		else if (r < 0.5f) {
+			log = OF_LOG_NOTICE;
+		}
+		else if (r < 0.7f) {
+			log = OF_LOG_WARNING;
+		}
+		else if (r < 0.8) {
+			log = OF_LOG_ERROR;
+		}
+		else {
+			log = OF_LOG_FATAL_ERROR;
+		}
+
+		return log;
+	};
+
+	inline logData getRandomLogData() {
+		logData d;
+		string s = "";
+		static int ilast = -1;
+		float r = ofRandom(1.f);
+		if (r < 0.25f && ilast != 0) {
+			s = "Hello people, how are you today?";
+			if (ofRandom(1) < 0.5) s += " And current frame is " + ofToString(ofGetFrameNum());
+			ilast = 0;
+			d.text = s;
+			//d.log = OF_LOG_VERBOSE;
+			d.log = getRandomLogLevelTag();
+		}
+		else if (r < 0.5f && ilast != 1) {
+			s = "Hello dude. Ready to wake up?";
+			ilast = 1;
+			d.text = s;
+			//d.log = OF_LOG_NOTICE;
+			d.log = getRandomLogLevelTag();
+		}
+		else if (r < 0.75f && ilast != 2) {
+			s = "I go sleep now. Ready to wake up!";
+			if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
+			ilast = 2;
+			d.text = s;
+			//d.log = OF_LOG_WARNING;
+			d.log = getRandomLogLevelTag();
+		}
+		else if (ilast != 3) {
+			s = "Hey, hello! Im ready to go out";
+			if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
+			ilast = 3;
+			d.text = s;
+			d.log = OF_LOG_ERROR;
+			d.log = getRandomLogLevelTag();
+		}
+		else {
+			s = "How are you tonight? Bye bye people";
+			ilast = 4;
+			d.text = s;
+			//d.log = OF_LOG_FATAL_ERROR;
+			d.log = getRandomLogLevelTag();
+		}
+
+		return d;
+	};
 }
+
+//--
+
+/*
+
+	A class to draw a graphic scene controlled by some params.
+
+*/
 
 class surfingSceneTesters
 {
@@ -144,6 +241,6 @@ public:
 		}
 
 		ofPopStyle();
-	}
+	};
 
 };
