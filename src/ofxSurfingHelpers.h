@@ -32,6 +32,32 @@
 
 namespace ofxSurfingHelpers
 {
+	// Monitors helpers
+
+	// WARRNING! For my personal setup!
+	// I have three FHD monitors: 
+	// Left monitor is portrait. 
+	// Central and Right monitor are landscape.
+	//--------------------------------------------------------------
+	inline void SurfSetMyMonitor(int layout = 0) 
+	{
+		int h = 42; // window bar height on WIN_32
+		int offset = 12;
+		int hw = h - offset;
+		if (layout == 0) { // left portrait
+			ofSetWindowPosition(-1080, h);
+			ofSetWindowShape(1080, 1920 - hw);
+		}
+		else if (layout == 1) { // landscape right
+			ofSetWindowPosition(1920, h);
+			ofSetWindowShape(1920, 1080 - hw);
+		}
+		else if (layout == 2) { // landscape left
+			ofSetWindowPosition(-1920, h);
+			ofSetWindowShape(1920, 1080 - hw);
+		}
+	}
+
 	//----
 
 	// Serializers

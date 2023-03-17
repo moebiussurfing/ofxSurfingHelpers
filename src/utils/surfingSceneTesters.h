@@ -65,6 +65,7 @@ namespace ofxSurfingHelpers {
 	};
 
 	inline string getTextRandom() {
+		bool bShort = true;
 		string s = "";
 		static int ilast = -1;
 		float r = ofRandom(1.f);
@@ -79,12 +80,12 @@ namespace ofxSurfingHelpers {
 		}
 		else if (r < 0.75f && ilast != 2) {
 			s = "I go sleep now. Ready to wake up!";
-			if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
+			if (!bShort) if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
 			ilast = 2;
 		}
 		else if (ilast != 3) {
 			s = "Hey, hello! Im ready to go out";
-			if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
+			if (!bShort) if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
 			ilast = 3;
 		}
 		else {
@@ -105,7 +106,7 @@ namespace ofxSurfingHelpers {
 
 	inline ofLogLevel getLogLevelFromTag(string tag) {
 		ofLogLevel log;
-		
+
 		if (tag == "VERBOSE") { log = OF_LOG_VERBOSE; }
 		else if (tag == "NOTICE") { log = OF_LOG_NOTICE; }
 		else if (tag == "WARNING") { log = OF_LOG_WARNING; }
@@ -117,7 +118,7 @@ namespace ofxSurfingHelpers {
 	};
 
 	inline ofLogLevel getRandomLogLevelTag() {
-		ofLogLevel log;
+		ofLogLevel log = OF_LOG_NOTICE;;
 
 		float r = ofRandom(1.f);
 		if (r < 0.25f) {
@@ -139,8 +140,14 @@ namespace ofxSurfingHelpers {
 		return log;
 	};
 
-	inline logData getRandomLogData() {
+	inline logData getRandomLogData() 
+	{
+		bool bShort = true;
+
 		logData d;
+		d.text = "-1";
+		d.log = OF_LOG_NOTICE;
+
 		string s = "";
 		static int ilast = -1;
 		float r = ofRandom(1.f);
@@ -149,38 +156,38 @@ namespace ofxSurfingHelpers {
 			if (ofRandom(1) < 0.5) s += " And current frame is " + ofToString(ofGetFrameNum());
 			ilast = 0;
 			d.text = s;
-			//d.log = OF_LOG_VERBOSE;
 			d.log = getRandomLogLevelTag();
+			//d.log = OF_LOG_VERBOSE;
 		}
 		else if (r < 0.5f && ilast != 1) {
 			s = "Hello dude. Ready to wake up?";
 			ilast = 1;
 			d.text = s;
-			//d.log = OF_LOG_NOTICE;
 			d.log = getRandomLogLevelTag();
+			//d.log = OF_LOG_NOTICE;
 		}
 		else if (r < 0.75f && ilast != 2) {
 			s = "I go sleep now. Ready to wake up!";
-			if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
+			if (!bShort) if (ofRandom(1) < 0.5) s += " Time is " + ofToString(ofGetTimestampString());
 			ilast = 2;
 			d.text = s;
-			//d.log = OF_LOG_WARNING;
 			d.log = getRandomLogLevelTag();
+			//d.log = OF_LOG_WARNING;
 		}
 		else if (ilast != 3) {
 			s = "Hey, hello! Im ready to go out";
-			if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
+			if (!bShort) if (ofRandom(1) < 0.5) s += " Current time is " + ofToString(ofGetTimestampString());
 			ilast = 3;
 			d.text = s;
+			//d.log = getRandomLogLevelTag();
 			d.log = OF_LOG_ERROR;
-			d.log = getRandomLogLevelTag();
 		}
 		else {
 			s = "How are you tonight? Bye bye people";
 			ilast = 4;
 			d.text = s;
-			//d.log = OF_LOG_FATAL_ERROR;
-			d.log = getRandomLogLevelTag();
+			//d.log = getRandomLogLevelTag();
+			d.log = OF_LOG_FATAL_ERROR;
 		}
 
 		return d;
