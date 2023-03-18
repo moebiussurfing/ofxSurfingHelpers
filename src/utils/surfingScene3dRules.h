@@ -634,8 +634,7 @@ namespace ofxSurfingHelpers
 	
 		~SurfSceneGrids() { 
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor() Save settings";
-
-			ofxSurfingHelpers::saveGroup(params); 
+			doSave();
 		};
 
 		void setCameraPtr(ofCamera* _camera) { camera = _camera; }
@@ -654,6 +653,7 @@ namespace ofxSurfingHelpers
 
 		void setup() {
 			params.add(bEnable);
+			params.add(bForceBitmap);
 			params.add(bDefaultColors);
 			params.add(cText);
 			params.add(cBig);
@@ -663,7 +663,6 @@ namespace ofxSurfingHelpers
 			params.add(cBg1);
 			params.add(cBg2);
 			params.add(bFlipBg);
-			params.add(bForceBitmap);
 
 			float sz = 10;
 			string _FONT_FILES_PATH = "assets/fonts/";
@@ -674,13 +673,12 @@ namespace ofxSurfingHelpers
 			if (!b) font.load(OF_TTF_MONO, sz, true);
 
 			doResetColors();
-
-			ofxSurfingHelpers::loadGroup(params);
-			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings";
+			doLoad();
 		}
 
 		void drawBg()
 		{
+			if (!bEnable) return;
 			if (!bEnableBg) return;
 
 			// Bg rounded gradient
@@ -731,12 +729,19 @@ namespace ofxSurfingHelpers
 			}
 
 			//ofDrawAxis(0.4f);
-			ofDrawAxis(gridSize / 20);
+			ofDrawAxis(gridSize / 20.f);
 
 			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
 			else ofxSurfingHelpers::SurfDrawFloor(gridSize, 0, cBig.get(), cQuarter.get());
 		}
-
+		void doSave() {
+			ofxSurfingHelpers::saveGroup(params);
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Save settings";
+		}
+		void doLoad() {
+			ofxSurfingHelpers::loadGroup(params);
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings";
+		}
 		void doResetColors() {
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 96, 96, 96, 150 };
