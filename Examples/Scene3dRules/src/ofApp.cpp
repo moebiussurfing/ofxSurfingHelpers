@@ -38,7 +38,7 @@ void ofApp::draw()
 
 			ui.AddGroup(sceneGrid.params);
 			if (ui.AddButton("Reset Colors")) {
-				sceneGrid.doReset();
+				sceneGrid.doResetColors();
 			}
 			ui.AddSpacingBigSeparated();
 			if (ui.AddButton("Reset Camera")) {
