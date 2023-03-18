@@ -12,7 +12,7 @@ OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive
 Look to the available classes in **OF_ADDON/src/** for details.
 
 <details>
-  <summary>LIST</summary>
+  <summary>FILES LIST</summary>
   <p>
 
 \ofxSurfingConstants.h  
@@ -47,29 +47,34 @@ Look to the available classes in **OF_ADDON/src/** for details.
   </p>
 </details>
 
-## EXAMPLES
 
-### - PresetsLite 
+<details>
+  <summary>EXAMPLES</summary>
+  <p>
+ 
+### PresetsLite 
 ![](Examples/PresetsLite/Capture.PNG)  
 Presets from an ofParmeterGroup.  
 
-### - ParamsIndexToggles 
+### ParamsIndexToggles 
 ![](Examples/ParamsIndexToggles/Capture.PNG)  
 Matrix toggles from an ofParameter<int> index.  
 
-### - MouseHandler
+### MouseHandler
 ![](Examples/MouseHandler/Capture.PNG)  
 Auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and measure distances.  
 
-### - ParamsAutoSave
+### ParamsAutoSave
 Queue many ofParameterGroup's and they will be auto-saved using a timer. 
 Also on exit and reloaded when starting the app. 
 That allows your settings saved even when your app crashes, even if you usually make the saving only on exit.
 
-### - Scene3dRules
+### Scene3dRules
 ![](Examples/Scene3dRules/Capture.PNG)  
 Custom colors and grid plane.  
-  
+
+</p>
+</details>
 <br>
 
 <details>
