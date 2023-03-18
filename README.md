@@ -50,8 +50,8 @@ Look to the available classes in **OF_ADDON/src/** for details.
 ## EXAMPLES
 
 ### - PresetsLite 
-Presets from an ofParmeterGroup.  
 ![](Examples/PresetsLite/Capture.PNG) 
+Presets from an ofParmeterGroup.  
 
 ### - ParamsIndexToggles 
 ![](Examples/ParamsIndexToggles/Capture.PNG)  
