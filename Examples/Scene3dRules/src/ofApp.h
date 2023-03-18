@@ -16,23 +16,21 @@ public:
 	ofxSurfingGui ui;
 	ofParameter<bool> bGui{ "ofApp", true };
 
-	ofParameter<float> scale{ "Scale", 1, 0.5, 10 };
-	//bool bFixScale = 0;
+	SurfSceneGrids sceneGrid;
 
 	ofEasyCam camera;
-
-	bool bForceBitmap = 0;
-	ofTrueTypeFont font;
-	ofColor cText = ofColor{ 255, 255, 255, 150 }; // text
-	ofColor cLines = ofColor{ 96, 96, 96, 16 }; // lines
+	ofParameter<float> scale{ "Scale", 1, 0.5, 10 };
 
 	void doResetCamera() {
 		camera.setupPerspective();
 		camera.setVFlip(0);
 		camera.setPosition(100, 100, 100);
 		camera.lookAt(glm::vec3(0));
-		camera.enableMouseInput();
+		camera.disableMouseInput();
+		//camera.enableMouseInput();
 		camera.setFarClip(10000);
 		camera.setNearClip(0);
+
+		scale = 1;
 	}
 };
