@@ -51,24 +51,25 @@ Look to the available classes in **OF_ADDON/src/** for details.
 
 ### - PresetsLite 
 Presets from an ofParmeterGroup.  
-
 ![](Examples/PresetsLite/Capture.PNG) 
 
 ### - ParamsIndexToggles 
+![](Examples/ParamsIndexToggles/Capture.PNG)  
 Matrix toggles from an ofParameter<int> index.  
 
-![](Examples/ParamsIndexToggles/Capture.PNG)  
-
 ### - MouseHandler
-Auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and measure distances.  
-
 ![](Examples/MouseHandler/Capture.PNG)  
+Auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and measure distances.  
 
 ### - ParamsAutoSave
 Queue many ofParameterGroup's and they will be auto-saved using a timer. 
 Also on exit and reloaded when starting the app. 
 That allows your settings saved even when your app crashes, even if you usually make the saving only on exit.
 
+### - Scene3dRules
+![](Examples/Scene3dRules/Capture.PNG)  
+Custom colors and grid plane.  
+  
 <br>
 
 <details>
