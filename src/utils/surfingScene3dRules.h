@@ -1,6 +1,22 @@
 #pragma once
 #include "ofMain.h"
 
+/*
+
+	TODO:
+
+	- add customizable font.
+
+*/
+
+//--
+
+// WARNING!
+// This is an attempt to draw 3d planes but not using ofBitmapFont for the labels,
+// but using ofTrueTypeFonts instead!
+// One drawback is that we need to handle a trick to handle scale transformation on the camera!
+// https://forum.openframeworks.cc/t/how-to-draw-oftruetype-labels-inside-an-ofcamera-as-ofdrawbitmapstring-does/41542/4
+
 #include "ofxSurfingHelpers.h"
 
 namespace ofxSurfingHelpers {
@@ -457,7 +473,7 @@ namespace ofxSurfingHelpers {
 		if (hasViewport)
 			mutThis->popView();
 
-	}
+}
 #endif
 
 	//TODO:
@@ -497,6 +513,7 @@ namespace ofxSurfingHelpers {
 
 					float yz_ = yz;//for labels without scale fix!
 
+					// From OF:
 					//renderer->drawString(ofToString(yz), 0, yz, 0);
 					//renderer->drawString(ofToString(-yz), 0, -yz, 0);
 					//renderer->drawString(ofToString(yz), 0, 0, yz);
@@ -508,30 +525,19 @@ namespace ofxSurfingHelpers {
 
 					// floor x and floor z
 
-					// flipped
-					//s = ofToString(yz);
-					//p = camera->worldToScreen(glm::vec3(0, yz, 0), r);
-					//bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					//p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					//font->drawString(s, p.x, p.y);
-					//s = ofToString(-yz);
-					//p = camera->worldToScreen(glm::vec3(0, -yz, 0), r);
-					//bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					//p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					//font->drawString(s, p.x, p.y);
-
-					//fix
+					// fix flipped
 					s = ofToString(yz_);
 					p = camera->worldToScreen(glm::vec3(yz, 0, 0), r);
 					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
 					p -= glm::vec2(bb.x / 2, -bb.x / 2);
 					font->drawString(s, p.x, p.y);
+
+					// fix flipped
 					s = ofToString(-yz_);
 					p = camera->worldToScreen(glm::vec3(-yz, 0, 0), r);
 					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
 					p -= glm::vec2(bb.x / 2, -bb.x / 2);
 					font->drawString(s, p.x, p.y);
-
 
 					s = ofToString(yz_);
 					p = camera->worldToScreen(glm::vec3(0, 0, yz), r);
@@ -622,8 +628,15 @@ namespace ofxSurfingHelpers
 	class SurfSceneGrids
 	{
 	public:
-		SurfSceneGrids() { setup(); };
-		~SurfSceneGrids() { ofxSurfingHelpers::saveGroup(params); };
+		SurfSceneGrids() { 
+			setup(); 
+		};
+	
+		~SurfSceneGrids() { 
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor() Save settings";
+
+			ofxSurfingHelpers::saveGroup(params); 
+		};
 
 		void setCameraPtr(ofCamera* _camera) { camera = _camera; }
 
@@ -635,19 +648,21 @@ namespace ofxSurfingHelpers
 		//float stepSize = 0.5f;
 		float stepSize = 10;
 		float numberOfSteps = 10;
-		float size = 100;
+		float gridSize = 100;
 
 		float scale = 1;
 
 		void setup() {
+			params.add(bEnable);
+			params.add(bDefaultColors);
 			params.add(cText);
 			params.add(cBig);
 			params.add(cQuarter);
 			params.add(cUnits);
+			params.add(bEnableBg);
 			params.add(cBg1);
 			params.add(cBg2);
 			params.add(bFlipBg);
-			params.add(bDefaultColors);
 			params.add(bForceBitmap);
 
 			float sz = 10;
@@ -658,13 +673,16 @@ namespace ofxSurfingHelpers
 			bool b = font.load(path, sz, true);
 			if (!b) font.load(OF_TTF_MONO, sz, true);
 
-			doReset();
+			doResetColors();
 
 			ofxSurfingHelpers::loadGroup(params);
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings";
 		}
 
 		void drawBg()
 		{
+			if (!bEnableBg) return;
+
 			// Bg rounded gradient
 			ofxSurfingHelpers::SurfDrawBgGradient(bFlipBg ? cBg1 : cBg2, bFlipBg ? cBg2 : cBg1);
 		}
@@ -673,8 +691,11 @@ namespace ofxSurfingHelpers
 		{
 			if (camera == nullptr)
 			{
-				ofLogError("ofxSurfingHelpers");
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
 			}
+
+			if (!bEnable) return;
 
 			//workaround 
 			// Draw labels, out of the camera
@@ -689,10 +710,12 @@ namespace ofxSurfingHelpers
 		void drawInsideCam() {
 			if (camera == nullptr)
 			{
-				ofLogError("ofxSurfingHelpers");
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
 			}
 
-			size = numberOfSteps * stepSize;
+			if (!bEnable) return;
+
+			gridSize = numberOfSteps * stepSize;
 
 			if (!bForceBitmap)
 			{
@@ -708,19 +731,23 @@ namespace ofxSurfingHelpers
 			}
 
 			//ofDrawAxis(0.4f);
-			ofDrawAxis(size / 20);
+			ofDrawAxis(gridSize / 20);
 
-			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(size);
-			else ofxSurfingHelpers::SurfDrawFloor(size, 0, cBig.get(), cQuarter.get());
+			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
+			else ofxSurfingHelpers::SurfDrawFloor(gridSize, 0, cBig.get(), cQuarter.get());
 		}
 
-		void doReset() {
+		void doResetColors() {
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 96, 96, 96, 150 };
 			cQuarter = ofColor{ 64, 64, 64, 150 };
 			cUnits = ofColor{ 96, 96, 96, 24 };
 			cBg1 = ofColor{ 40, 40, 40 };
 			cBg2 = ofColor{ 0, 0, 0 };
+
+			bEnableBg = true;
+			bFlipBg = false;
+			bEnable = true;
 		}
 
 		ofParameterGroup params{ "SurfSceneGrids " };
@@ -731,8 +758,10 @@ namespace ofxSurfingHelpers
 		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<bool> bDefaultColors{ "Default Colors", true };
-		ofParameter<bool>  bForceBitmap{ "Force Bitmap", false };
+		ofParameter<bool>  bForceBitmap{ "Force ofBitmapFont", false };
 		ofParameter<bool>  bFlipBg{ "Flip Bg", false };
+		ofParameter<bool>  bEnable{ "Enable", true};
+		ofParameter<bool>  bEnableBg{ "EnableBg", true};
 
 	private:
 		ofTrueTypeFont font;
