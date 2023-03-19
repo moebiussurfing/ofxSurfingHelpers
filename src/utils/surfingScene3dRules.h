@@ -580,6 +580,11 @@ namespace ofxSurfingHelpers
 					// how to fix without using billboard mode like as ofBitmapFont?
 					if (scale != -1.0f) yz_ *= scale;
 
+					////TODO: fix
+					//float ratio = 20;
+					////float ratio = numberOfSteps / stepSize;
+					//if (scale != -1.0f) yz_ *= scale * ratio;
+
 					// floor x and floor z
 
 					// fix flipped
@@ -889,6 +894,8 @@ void ofApp::drawImGuiSceneGrids()
 			ui.AddStyle(sceneGrid.bForceBitmap, OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
 			ui.AddStyle(sceneGrid.bLabels, OFX_IM_TOGGLE_ROUNDED_SMALL);
 			//ui.AddStyle(bGridInFront, OFX_IM_TOGGLE_ROUNDED_MINI);
+			ui.AddStyle(sceneGrid.cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
+			ui.AddStyle(sceneGrid.cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);	
 		}
 
 		ui.AddLabelHuge("Scene\n3dRules");
