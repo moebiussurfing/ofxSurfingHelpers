@@ -19,14 +19,36 @@
 
 #include "ofxSurfingHelpers.h"
 
-namespace ofxSurfingHelpers {
+namespace ofxSurfingHelpers
+{
+	// Colors
+#if(1)
+	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor{ 255, 255, 255, 200 };
+	static const ofColor SURFING_RULES_COLOR_LINES_1 = ofColor{ 96, 96, 96, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_2 = ofColor{ 64, 64, 64, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_3 = ofColor{ 64, 64, 64, 32 };
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+#else//debug colors
+	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor{ 0, 255, 255, 200 };
+	static const ofColor SURFING_RULES_COLOR_LINES_1 = ofColor{ 0, 96, 0, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_2 = ofColor{ 0, 0, 64, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_3 = ofColor{ 255, 0, 0, 100 };
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+#endif
+	//--
 
+// Drawing methods. Mostly based on OF internals.
+
+//--------------------------------------------------------------
 	inline void ofxDrawString(string s, float x, float y, float z, ofTrueTypeFont* font, ofCamera* camera) {
 		if (font == nullptr) return;
 		if (camera == nullptr) return;
 
+		//TODO: trying to do a function to draw true types inside a cam, as billboard like ofBitmapFont does..
+		/*
 		bool bWorldTo2D = false;
-
 		if (bWorldTo2D)
 		{
 			//TODO: wrong position..is no centered ?
@@ -52,32 +74,29 @@ namespace ofxSurfingHelpers {
 #ifdef USE_TTF_TO_3D
 			ofxDrawStringTrueType(s, x, y, z, &font);
 #else
-			font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicual oriented..
+			font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
 #endif
 		}
+		*/
 
-
-		//TODO:
-		// Must be out of the camera!
-		//ofPushMatrix();
-		//ofTranslate(posScreen);
-		//font->drawString(s, 0, 0);
-		//ofPopMatrix();
+		font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
 	};
 
 	// From libs\openFrameworks\graphics\of3dGraphics.cpp
 	// Allows passing a font and the camera to customize style instead of using bitmap font
-	inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font, ofCamera* camera, ofColor c1_ = ofColor{ 96, 96, 96, 128 }, ofColor c2_ = ofColor{ 255, 255, 255, 255 })
+	//--------------------------------------------------------------
+	inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_2, ofColor c2 = SURFING_RULES_COLOR_LABELS)
 	{
-		auto renderer = ofGetCurrentRenderer();
 		ofPushStyle();
+
+		auto renderer = ofGetCurrentRenderer();
 
 		float scale = stepSize * numberOfSteps;
 		float lineWidth = renderer->getStyle().lineWidth;
 
 		// Draw all the lines
 
-		ofSetColor(c1_);
+		ofSetColor(c1);
 		for (int iDimension = 0; iDimension < 2; iDimension++)
 		{
 			for (size_t i = 0; i <= numberOfSteps; i++)
@@ -114,7 +133,7 @@ namespace ofxSurfingHelpers {
 				ofColor prevColor = renderer->getStyle().color;
 				ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
 
-				renderer->setColor(c2_);
+				renderer->setColor(c2);
 				renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 				renderer->drawString(ofToString(0), 0, 0, 0);
 
@@ -131,7 +150,8 @@ namespace ofxSurfingHelpers {
 				renderer->setColor(prevColor);
 				renderer->setBitmapTextMode(mode);
 			}
-			else // custom 
+			/*
+			else // custom
 			{
 				//TODO:
 				// skip labels. we will draw using the out-of-the-camera approach!
@@ -154,13 +174,17 @@ namespace ofxSurfingHelpers {
 
 				ofPopStyle();
 			}
+			*/
 		}
 
-		else ofPopStyle();
+		ofPopStyle();
 	};
 
-	// Draws a grid of the three planes with labels
-	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = ofColor{ 96, 96, 96, 24 }, ofColor c2 = ofColor{ 255, 255, 255, 200 })
+	// Draws a grid of the three planes with labels. Can use ofTrueTypeFont for labels if passed font and camera.
+	// Taken from OF of\libs\openFrameworks\graphics\of3dGraphics.cpp
+	// void of3dGraphics::drawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z);
+	//--------------------------------------------------------------
+	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
 	{
 		auto renderer = ofGetCurrentRenderer();
 
@@ -213,7 +237,11 @@ namespace ofxSurfingHelpers {
 
 		if (labels) {
 			if (font == nullptr || camera == nullptr)
-			{ // bitmap
+			{
+				//ofPushStyle();
+				ofSetColor(c2); //color is not internal
+
+				// bitmap
 				ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
 				float labelPos = stepSize * (numberOfSteps + 0.5);
 
@@ -223,9 +251,13 @@ namespace ofxSurfingHelpers {
 				ofDrawBitmapString("z", 0, 0, labelPos);
 
 				ofSetDrawBitmapMode(mode);
+				
+				//ofPopStyle();
 			}
+			/*
 			else
-			{ // custom ttf
+			{
+				// custom ttf
 				//TODO:
 				// skip labels. we will draw using the out-of-the-camera approach!
 
@@ -240,17 +272,24 @@ namespace ofxSurfingHelpers {
 				//ofxDrawString("y", 0, labelPos, 0, font, camera);
 				//ofxDrawString("z", 0, 0, labelPos, font, camera);
 			}
+			*/
 		}
 
 		//ofPopStyle();
 		ofSetColor(prevColor);
 	};
 
+
+	//--------------------------------------------------------------
+	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	{
+		ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, c1, c2);
+	}
+
 	//----
 
 	//TODO: WIP
-//#define USE_TTF_TO_3D // -> Enable to go fixing..
-
+	//#define USE_TTF_TO_3D // -> Enable to go fixing..
 #ifdef USE_TTF_TO_3D
 	// Getting from of\libs\openFrameworks\gl\ofGLRenderer.cpp
 	//void ofGLRenderer::drawString(string textString, float x, float y, float z)
@@ -472,8 +511,7 @@ namespace ofxSurfingHelpers {
 
 		if (hasViewport)
 			mutThis->popView();
-
-}
+	}
 #endif
 
 	//TODO:
@@ -481,10 +519,14 @@ namespace ofxSurfingHelpers {
 	// using worldTo2D
 
 	// Allows passing a font and the camera to customize style instead of using bitmap font
-	inline void ofxDrawGridPlaneLabels(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font, ofCamera* camera, float scale = -1.0f, ofColor c = ofColor{ 255, 255, 255, 200 })
+	//--------------------------------------------------------------
+	inline void ofxDrawGridPlaneLabelsTrueTypeFont(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font, bool bOffset, ofCamera* camera, float scale = -1.0f, ofColor c = SURFING_RULES_COLOR_LABELS)
 	{
 		if (font == nullptr) return;
 		if (camera == nullptr) return;
+
+		//offset labels
+		bool bO = false;
 
 		//ofPushStyle();
 		ofColor prevColor = ofGetStyle().color;
@@ -496,16 +538,29 @@ namespace ofxSurfingHelpers {
 		glm::vec2 bb;
 		ofRectangle r = ofGetCurrentViewport();
 
+		// pass the label and world 3d cords and gets the screen 2d coord.
+		auto doConvertCoord = [&](const std::string& _s, const int _x, const int _y, const int _z, const bool _bOffset = false) {
+			const ofRectangle _r = ofGetCurrentViewport();
+			glm::vec3 _p = camera->worldToScreen(glm::vec3(_x, _y, _z), _r);
+
+			if (_bOffset) {
+				const glm::vec2 _bb = font->getStringBoundingBox(_s, 0, 0).getTopRight();
+				_p = _p - glm::vec2(_bb.x / 2, -_bb.x / 2);
+			}
+
+			return _p;
+		};
+
+		glm::vec3 pp(0);
+
 		// Draw all the labels
 		{
 			// Draw numbers on axes
 			{
 				// point zero 
 				s = ofToString(0);
-				p = camera->worldToScreen(glm::vec3(0, 0, 0), r);
-				bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-				p -= glm::vec2(bb.x / 2, -bb.x / 2);
-				font->drawString(s, p.x, p.y);
+				pp = doConvertCoord(s, 0, 0, 0, bOffset);
+				font->drawString(s, pp.x, pp.y);
 
 				for (float i = 1; i <= numberOfSteps; i++)
 				{
@@ -514,42 +569,39 @@ namespace ofxSurfingHelpers {
 					float yz_ = yz;//for labels without scale fix!
 
 					// From OF:
-					//renderer->drawString(ofToString(yz), 0, yz, 0);
-					//renderer->drawString(ofToString(-yz), 0, -yz, 0);
-					//renderer->drawString(ofToString(yz), 0, 0, yz);
-					//renderer->drawString(ofToString(-yz), 0, 0, -yz);
+					/*
+					renderer->drawString(ofToString(yz), 0, yz, 0);
+					renderer->drawString(ofToString(-yz), 0, -yz, 0);
+					renderer->drawString(ofToString(yz), 0, 0, yz);
+					renderer->drawString(ofToString(-yz), 0, 0, -yz);
+					*/
 
 					//TODO: workaround fix
 					// how to fix without using billboard mode like as ofBitmapFont?
-					if (scale != -1.0f) yz *= scale;
+					if (scale != -1.0f) yz_ *= scale;
 
 					// floor x and floor z
 
 					// fix flipped
-					s = ofToString(yz_);
-					p = camera->worldToScreen(glm::vec3(yz, 0, 0), r);
-					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					font->drawString(s, p.x, p.y);
+					//(yz), 0, yz, 0;
+					s = ofToString(yz);
+					pp = doConvertCoord(s, yz_, 0, 0, bOffset);
+					font->drawString(s, pp.x, pp.y);
+
 
 					// fix flipped
-					s = ofToString(-yz_);
-					p = camera->worldToScreen(glm::vec3(-yz, 0, 0), r);
-					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					font->drawString(s, p.x, p.y);
+					//(-yz), 0, -yz, 0;
+					s = ofToString(-yz);
+					pp = doConvertCoord(s, -yz_, 0, 0, bOffset);
+					font->drawString(s, pp.x, pp.y);
 
-					s = ofToString(yz_);
-					p = camera->worldToScreen(glm::vec3(0, 0, yz), r);
-					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					font->drawString(s, p.x, p.y);
+					s = ofToString(yz);
+					pp = doConvertCoord(s, 0, 0, yz_, bOffset);
+					font->drawString(s, pp.x, pp.y);
 
-					s = ofToString(-yz_);
-					p = camera->worldToScreen(glm::vec3(0, 0, -yz), r);
-					bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-					p -= glm::vec2(bb.x / 2, -bb.x / 2);
-					font->drawString(s, p.x, p.y);
+					s = ofToString(-yz);
+					pp = doConvertCoord(s, 0, 0, -yz_, bOffset);
+					font->drawString(s, pp.x, pp.y);
 				}
 			}
 
@@ -562,25 +614,19 @@ namespace ofxSurfingHelpers {
 
 				//TODO: workaround fix
 				// how to fix without using billboard mode like as ofBitmapFont?
-				if (scale != -1.0f) labelPos *= scale;
+				if (scale != -1.0f) labelPos_ *= scale;
 
 				s = "x";
-				p = camera->worldToScreen(glm::vec3(labelPos, 0, 0), r);
-				bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-				p -= glm::vec2(bb.x / 2, -bb.x / 2);
-				font->drawString(s, p.x, p.y);
+				pp = doConvertCoord(s, labelPos_, 0, 0, bOffset);
+				font->drawString(s, pp.x, pp.y);
 
 				s = "y";
-				p = camera->worldToScreen(glm::vec3(0, labelPos, 0), r);
-				bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-				p -= glm::vec2(bb.x / 2, -bb.x / 2);
-				font->drawString(s, p.x, p.y);
+				pp = doConvertCoord(s, 0, labelPos_, 0, bOffset);
+				font->drawString(s, pp.x, pp.y);
 
 				s = "z";
-				p = camera->worldToScreen(glm::vec3(0, 0, labelPos), r);
-				bb = font->getStringBoundingBox(s, 0, 0).getTopRight();
-				p -= glm::vec2(bb.x / 2, -bb.x / 2);
-				font->drawString(s, p.x, p.y);
+				pp = doConvertCoord(s, 0, 0, labelPos_, bOffset);
+				font->drawString(s, pp.x, pp.y);
 			}
 		}
 
@@ -593,73 +639,109 @@ namespace ofxSurfingHelpers {
 	// 3D Scene Grids and Bg Helpers
 
 	//--------------------------------------------------------------
-	inline void SurfDrawBgGradient(ofColor c1_ = ofColor{ 40, 40, 40 }, ofColor c2_ = ofColor{ 0, 0, 0 })
+	inline void SurfDrawBgGradient(ofColor c1 = SURFING_RULES_COLOR_BG_1, ofColor c2 = SURFING_RULES_COLOR_BG_2, ofGradientMode g = OF_GRADIENT_CIRCULAR)
 	{
-		ofBackgroundGradient(c1_, c2_, OF_GRADIENT_CIRCULAR);
+		ofBackgroundGradient(c1, c2, g);
 	};
 
 	//--------------------------------------------------------------
-	inline void SurfDrawFloor(float size, float offsetHeight = 0, ofColor c1_ = ofColor{ 96, 96, 96, 150 }, ofColor c2_ = ofColor{ 64, 64, 64, 150 })
+	inline void SurfDrawFloor(float size, float offsetHeight = 0, ofColor c1 = SURFING_RULES_COLOR_LINES_1, ofColor c2 = SURFING_RULES_COLOR_LINES_2)
 	{
 		bool bFlipz = true;//make it floor
 
-		ofPushMatrix();
+		bool b = (bFlipz || (offsetHeight != 0));
+
+		if (b) ofPushMatrix();
 		ofPushStyle();
 
 		if (offsetHeight != 0) ofTranslate(0, offsetHeight, 0);
 
 		if (bFlipz) ofRotate(90, 0, 0, 1);
 
-		ofSetColor(c1_);
+		ofSetColor(c1);
 		ofDrawGridPlane(size, 1, false);
 
-		ofSetColor(c2_);
+		ofSetColor(c2);
 		ofDrawGridPlane(size / 2.f, 2, false);
 
 		ofPopStyle();
-		ofPopMatrix();
+		if (b) ofPopMatrix();
 	};
 
 };
 
+//----
+
+// Helper class
+// Easily add to an ofApp.
+
+#define SCENE_GRID_SMALL_FONT_RATIO 0.6f
 
 namespace ofxSurfingHelpers
 {
 	class SurfSceneGrids
 	{
 	public:
-		SurfSceneGrids() { 
-			setup(); 
+		SurfSceneGrids() {
+			setup();
 		};
-	
-		~SurfSceneGrids() { 
+
+		~SurfSceneGrids() {
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor() Save settings";
 			doSave();
 		};
 
-		void setCameraPtr(ofCamera* _camera) { camera = _camera; }
+		void setCameraPtr(ofCamera* _camera) { camera = _camera; };
 
 	private:
 		ofCamera* camera = nullptr;
 
 	public:
-		// Grid sizes
-		//float stepSize = 0.5f;
-		float stepSize = 10;
-		float numberOfSteps = 10;
-		float gridSize = 100;
 
-		float scale = 1;
+		ofParameterGroup params{ "SceneGrids" };
+
+		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
+
+		ofParameter<bool> bEnable{ "Floor Grid", true };
+		//ofParameter<bool> bEnable{ "Enable", true };
+		ofParameter<bool> bDefaultColors{ "Default Colors", true };
+		ofParameter<bool> bForceBitmap{ "Force ofBitmapFont", false };
+		ofParameter<bool> bFlipBg{ "Flip Bg", false };
+		ofParameter<bool> bEnableBg{ "EnableBg", true };
+		ofParameter<bool> bLabels{ "Labels", true };
+		ofParameter<bool> bFontSmall{ "Small Font", false };
+		ofParameter<bool> bOffsetLabels{ "Offset Labels", false };
+		ofParameter<int> gradientType{ "Gradient Type", 1, 0, 2 };
+
+	public:
+
+		// Grid sizes
+		float stepSize = 10;//exposed to user
+		float numberOfSteps = 10;//exposed to user
+		float gridSize = 100;//for debug only
+
+		float scale = 1;//workaround trick to avoid transform errors..
+
+		//--
 
 		void setup() {
 			params.add(bEnable);
 			params.add(bForceBitmap);
+			params.add(bLabels);
+			params.add(bFontSmall);
+			params.add(bOffsetLabels);
 			params.add(bDefaultColors);
 			params.add(cText);
 			params.add(cBig);
 			params.add(cQuarter);
 			params.add(cUnits);
 			params.add(bEnableBg);
+			params.add(gradientType);
 			params.add(cBg1);
 			params.add(cBg2);
 			params.add(bFlipBg);
@@ -671,10 +753,14 @@ namespace ofxSurfingHelpers
 			string path = _FONT_FILES_PATH + string("JetBrainsMonoNL-SemiBold.ttf");
 			bool b = font.load(path, sz, true);
 			if (!b) font.load(OF_TTF_MONO, sz, true);
+			sz *= SCENE_GRID_SMALL_FONT_RATIO;
+			b = fontSmall.load(path, sz, true);
+			if (!b) fontSmall.load(OF_TTF_MONO, sz, true);
 
-			doResetColors();
+			doResetAll();
+
 			doLoad();
-		}
+		};
 
 		void drawBg()
 		{
@@ -682,66 +768,91 @@ namespace ofxSurfingHelpers
 			if (!bEnableBg) return;
 
 			// Bg rounded gradient
-			ofxSurfingHelpers::SurfDrawBgGradient(bFlipBg ? cBg1 : cBg2, bFlipBg ? cBg2 : cBg1);
-		}
+			ofxSurfingHelpers::SurfDrawBgGradient((bFlipBg ? cBg1 : cBg2), (bFlipBg ? cBg2 : cBg1), ofGradientMode(gradientType.get()));
+		};
 
-		void drawOutsideCam()
+		void drawOutsideCam()//draw labels
 		{
+			if (!bEnable) return;
+			if (!bLabels) return;
+			if (bForceBitmap) return;
+
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
+				return;
 			}
-
-			if (!bEnable) return;
 
 			//workaround 
 			// Draw labels, out of the camera
 			// custom font
-			if (!bForceBitmap)
+			//if (!bForceBitmap)
 			{
-				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGridPlaneLabels(stepSize, numberOfSteps, &font, camera, scale);
-				else ofxSurfingHelpers::ofxDrawGridPlaneLabels(stepSize, numberOfSteps, &font, camera, scale, cText);
+				ofTrueTypeFont* f = (bFontSmall.get() ? &fontSmall : &font);
+
+				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGridPlaneLabelsTrueTypeFont(stepSize, numberOfSteps, f, bOffsetLabels, camera, scale);
+				else ofxSurfingHelpers::ofxDrawGridPlaneLabelsTrueTypeFont(stepSize, numberOfSteps, f, bOffsetLabels, camera, scale, cText);
 			}
-		}
+		};
 
 		void drawInsideCam() {
+			if (!bEnable) return;
+
 			if (camera == nullptr)
 			{
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
+				return;
 			}
-
-			if (!bEnable) return;
 
 			gridSize = numberOfSteps * stepSize;
 
+			//axis
+			float sza = gridSize / 20.f;
+			ofDrawAxis(sza);
+
+			//floor lines: big and quarters
+			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
+			else ofxSurfingHelpers::SurfDrawFloor(gridSize, 0, cBig.get(), cQuarter.get());
+
+			//floor lines small/units/10ths (and labels when ofBitmapFont)
 			if (!bForceBitmap)
 			{
+				ofTrueTypeFont* f = (bFontSmall.get() ? &fontSmall : &font);
+
 				// custom font
-				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, true, false, true, false, &font, camera);
-				else ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, true, false, true, false, &font, camera, cUnits, cText);
+				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera);
+				else ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, cUnits, cText);
 			}
 			else
 			{
 				// bitmap font
-				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, true, false, true, false, nullptr, nullptr);
-				else ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, true, false, true, false, nullptr, nullptr, cUnits, cText);
+				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false);
+				else ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, cUnits, cText);
 			}
+		};
 
-			//ofDrawAxis(0.4f);
-			ofDrawAxis(gridSize / 20.f);
-
-			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
-			else ofxSurfingHelpers::SurfDrawFloor(gridSize, 0, cBig.get(), cQuarter.get());
-		}
 		void doSave() {
 			ofxSurfingHelpers::saveGroup(params);
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Save settings";
-		}
+		};
 		void doLoad() {
 			ofxSurfingHelpers::loadGroup(params);
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings";
-		}
+		};
+
+		void doResetSettings() {
+			bEnable = true;
+			bEnableBg = true;
+			bFlipBg = false;
+			bLabels = true;
+			bFontSmall = true;
+			bOffsetLabels = false;
+		};
+
 		void doResetColors() {
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 96, 96, 96, 150 };
@@ -749,28 +860,72 @@ namespace ofxSurfingHelpers
 			cUnits = ofColor{ 96, 96, 96, 24 };
 			cBg1 = ofColor{ 40, 40, 40 };
 			cBg2 = ofColor{ 0, 0, 0 };
+		};
 
-			bEnableBg = true;
-			bFlipBg = false;
-			bEnable = true;
-		}
-
-		ofParameterGroup params{ "SurfSceneGrids " };
-		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<bool> bDefaultColors{ "Default Colors", true };
-		ofParameter<bool>  bForceBitmap{ "Force ofBitmapFont", false };
-		ofParameter<bool>  bFlipBg{ "Flip Bg", false };
-		ofParameter<bool>  bEnable{ "Enable", true};
-		ofParameter<bool>  bEnableBg{ "EnableBg", true};
+		void doResetAll() {
+			doResetSettings();
+			doResetColors();
+		};
 
 	private:
 		ofTrueTypeFont font;
-
-		//bool bFixScale = 0;
+		ofTrueTypeFont fontSmall;
 	};
+
+	//--
+
+	// EXAMPLE GUI:
+/*
+//--------------------------------------------------------------
+void ofApp::drawImGuiSceneGrids()
+{
+	if (ui.BeginWindow(bGui))
+	{
+		static bool bInit = false;
+		if (!bInit) {
+			bInit = true;
+			ui.AddStyle(sceneGrid.bEnable, OFX_IM_TOGGLE);
+			ui.AddStyle(sceneGrid.bEnableBg, OFX_IM_TOGGLE);
+			ui.AddStyle(sceneGrid.bForceBitmap, OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
+			ui.AddStyle(sceneGrid.bLabels, OFX_IM_TOGGLE_ROUNDED_SMALL);
+			//ui.AddStyle(bGridInFront, OFX_IM_TOGGLE_ROUNDED_MINI);
+		}
+
+		ui.AddLabelHuge("Scene\n3dRules");
+		ui.AddSpacing();
+
+		ui.AddGroup(sceneGrid.params);
+		ui.AddSpacing();
+		
+		if (ui.AddButton("Reset", OFX_IM_BUTTON, 3, true)) {
+			sceneGrid.doResetSettings();
+		}
+		if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 3, true)) {
+			sceneGrid.doResetColors();
+		}
+		if (ui.AddButton("Reset All", OFX_IM_BUTTON, 3, false)) {
+			sceneGrid.doResetAll();
+		}
+
+		if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
+			sceneGrid.doSave();
+		}
+		ui.SameLine();
+		if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
+			sceneGrid.doLoad();
+		}
+		ui.AddSpacing();
+
+		string s = "DEBUG";
+		s += "\nstepSize: " + ofToString(sceneGrid.stepSize);
+		s += "\numberOfSteps: " + ofToString(sceneGrid.numberOfSteps);
+		s += "\nsize: " + ofToString(sceneGrid.gridSize);
+		s += "\nscale: " + ofToString(sceneGrid.scale);
+		ui.AddLabel(s);
+
+		ui.EndWindow();
+	}
+}
+*/
+
 }

@@ -41,7 +41,7 @@ namespace ofxSurfingHelpers
 	//--------------------------------------------------------------
 	inline void SurfSetMyMonitor(int layout = 0) 
 	{
-		int h = 42; // window bar height on WIN_32
+		int h = 38; // window bar height on WIN_32
 		int offset = 12;
 		int hw = h - offset;
 		if (layout == 0) { // left portrait

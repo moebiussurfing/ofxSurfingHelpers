@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "ofxSurfingImGui.h"
+// -> Could be completely disabled and replace by ofxGui. Just use the ofParams!
 
 #include "surfingScene3dRules.h"
 
@@ -13,6 +14,7 @@ public:
 	void draw();
 	void keyPressed(int key);
 
+	void drawImGui();
 	ofxSurfingGui ui;
 	ofParameter<bool> bGui{ "ofApp", true };
 
@@ -31,6 +33,6 @@ public:
 		camera.setFarClip(10000);
 		camera.setNearClip(0);
 
-		scale = 1;
+		//scale = 1;
 	}
 };
