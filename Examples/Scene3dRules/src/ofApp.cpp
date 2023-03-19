@@ -70,6 +70,7 @@ void ofApp::drawImGui()
 	{
 		if (ui.BeginWindow(bGui))
 		{
+			// Styles
 			static bool bInit = false;
 			if (!bInit) {
 				bInit = true;
