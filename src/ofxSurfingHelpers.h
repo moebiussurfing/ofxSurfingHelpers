@@ -39,7 +39,7 @@ namespace ofxSurfingHelpers
 	// Left monitor is portrait. 
 	// Central and Right monitor are landscape.
 	//--------------------------------------------------------------
-	inline void SurfSetMyMonitor(int layout = 0) 
+	inline void SurfSetMyMonitor(int layout = 0)
 	{
 		int h = 38; // window bar height on WIN_32
 		int offset = 12;
@@ -56,6 +56,21 @@ namespace ofxSurfingHelpers
 			ofSetWindowPosition(-1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
+	}
+
+	//--------------------------------------------------------------
+	inline void SurfDrawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
+	{
+		ofRectangle rr(0, 0, imageFloat.getWidth(), imageFloat.getHeight());
+		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+		imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
+	}
+	//--------------------------------------------------------------
+	inline void SurfDrawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
+	{
+		ofRectangle rr(0, 0, image.getWidth(), image.getHeight());
+		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+		image.draw(rr.x, rr.y, rr.width, rr.height);
 	}
 
 	//----
