@@ -712,6 +712,11 @@ namespace ofxSurfingHelpers
 		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 
+		ofParameter<bool> bBig{ "Big", true };
+		ofParameter<bool> bQuarter{ "Quarter", true };
+		ofParameter<bool> bUnits{ "Units", true };
+		ofParameter<bool> bAxis{ "Axis", true };
+
 		ofParameter<bool> bEnable{ "Floor Grid", true };
 		//ofParameter<bool> bEnable{ "Enable", true };
 		ofParameter<bool> bDefaultColors{ "Default Colors", true };
@@ -745,6 +750,10 @@ namespace ofxSurfingHelpers
 			params.add(cBig);
 			params.add(cQuarter);
 			params.add(cUnits);
+			params.add(bBig);
+			params.add(bQuarter);
+			params.add(bUnits);
+			params.add(bAxis);
 			params.add(bEnableBg);
 			params.add(gradientType);
 			params.add(cBg1);
