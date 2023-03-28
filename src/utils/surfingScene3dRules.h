@@ -750,9 +750,12 @@ namespace ofxSurfingHelpers
 			params.add(cBig);
 			params.add(cQuarter);
 			params.add(cUnits);
-			params.add(bBig);
-			params.add(bQuarter);
-			params.add(bUnits);
+
+			////TODO: allow disable some lines. requires modifying ofxSurfingHelpers::SurfDrawFloor 
+			//params.add(bBig);
+			//params.add(bQuarter);
+			//params.add(bUnits);
+			
 			params.add(bAxis);
 			params.add(bEnableBg);
 			params.add(gradientType);
@@ -825,8 +828,10 @@ namespace ofxSurfingHelpers
 			gridSize = numberOfSteps * stepSize;
 
 			//axis
-			float sza = gridSize / 20.f;
-			ofDrawAxis(sza);
+			if (bAxis) {
+				float sza = gridSize / 20.f;
+				ofDrawAxis(sza);
+			}
 
 			//floor lines: big and quarters
 			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
