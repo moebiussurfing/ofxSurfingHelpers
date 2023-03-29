@@ -40,27 +40,29 @@ void ofApp::draw()
 
 		// Camera transforms will need fixes!
 		float _scaleTotal = 1.f;
-		 
+
 		//--
 
 		// Zoom
-
-		const float zmax = 3.f;//max range
-		float _zoom = 1.f;//mapped
-		if (zoom != 0) _zoom = ofMap(zoom, -1, 1, 1 / zmax, zmax);
+		{
+			const float zmax = 3.f;//max range
+			float _zoom = 1.f;//mapped
+			if (zoom != 0) _zoom = ofMap(zoom, -1, 1, 1 / zmax, zmax);
 
 #define DO_SMOOTH 1
 #if(DO_SMOOTH==1)
-		static float _zoomo = 1.f;
-		float smooth = 0.94f;
-		ofxSurfingHelpers::ofxKuValueSmooth(_zoomo, _zoom, smooth);
+			static float _zoomo = 1.f;
+			float smooth = 0.94f;
+			ofxSurfingHelpers::ofxKuValueSmooth(_zoomo, _zoom, smooth);
 
-		ofScale(_zoomo);
-		_scaleTotal *= _zoomo;
+			ofScale(_zoomo);
+			_scaleTotal *= _zoomo;
 #else
-		ofScale(_zoom);
-		_scaleTotal *= _zoom;
+			ofScale(_zoom);
+			_scaleTotal *= _zoom;
 #endif
+		}
+
 		//--
 
 		// Scale
@@ -99,8 +101,11 @@ void ofApp::draw()
 			ofPopMatrix();
 		}
 
+		//--
+
 		//ofDisableDepthTest();//optional
 		sceneGrid.scale = _scaleTotal;//workaround trick
+
 		sceneGrid.drawInsideCam();
 	}
 	camera.end();

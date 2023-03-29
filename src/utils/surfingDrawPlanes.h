@@ -19,26 +19,26 @@
 
 namespace ofxSurfingHelpers
 {
-#define DEBUG_COLORS__SCENE 1
-#if(DEBUG_COLORS__SCENE)
-	// Debug colors
-	static const char a = 65;
-	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor(0, 255, 255, a);
-	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor(255, 0, 0, a);//big
-	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor(0, 255, 0, a);//quarter
-	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor(0, 0, 255, a);//sixteenth
-	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor(255, 255, 0, a);//units
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 70, 70, 70 };
-	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 10, 10, 10 };
-#else
+#define DEBUG_COLORS__SCENE 0
+#if(DEBUG_COLORS__SCENE==0)
 	// Colors
-	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor{ 255, 255, 255, 200 };
+	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
 	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
 	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
 	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+#else
+	// Debug colors
+	static const char a = 65;
+	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor(0, 255, 255, a);
+	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor(255, 0, 0, a);//big
+	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor(0, 255, 0, a);//quarter
+	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor(0, 0, 255, a);//sixteenth
+	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor(255, 255, 0, a);//units
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 70, 70, 70 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 10, 10, 10 };
 #endif
 
 	//--
@@ -89,7 +89,7 @@ namespace ofxSurfingHelpers
 	// From libs\openFrameworks\graphics\of3dGraphics.cpp
 	// Allows passing a font and the camera to customize style instead of using bitmap font
 	//--------------------------------------------------------------
-	inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_SIXTEENTH, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_SIXTEENTH, ofColor c2 = SURFING_RULES_COLOR_TEXT)
 	{
 		ofPushStyle();
 
@@ -188,7 +188,7 @@ namespace ofxSurfingHelpers
 	// Taken from OF of\libs\openFrameworks\graphics\of3dGraphics.cpp
 	// void of3dGraphics::drawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z);
 	//--------------------------------------------------------------
-	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_TEXT)
 	{
 		//TODO: must implement disable enableLines! 
 
@@ -287,7 +287,7 @@ namespace ofxSurfingHelpers
 
 
 	//--------------------------------------------------------------
-	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_TEXT)
 	{
 		ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, enableLines, c1, c2);
 	}
@@ -526,7 +526,7 @@ namespace ofxSurfingHelpers
 
 	// Allows passing a font and the camera to customize style instead of using bitmap font
 	//--------------------------------------------------------------
-	inline void ofxDrawGridPlaneLabelsTrueTypeFont(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font, bool bOffset, ofCamera* camera, float scale = -1.0f, ofColor c = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGridPlaneLabelsTrueTypeFont(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font, bool bOffset, ofCamera* camera, float scale = -1.0f, ofColor c = SURFING_RULES_COLOR_TEXT)
 	{
 		if (font == nullptr) return;
 		if (camera == nullptr) return;
@@ -687,16 +687,89 @@ namespace ofxSurfingHelpers
 		float scale = gridSize;
 
 		auto renderer = ofGetCurrentRenderer();
-		float lineWidth = renderer->getStyle().lineWidth;
 
+		float lineWidth = renderer->getStyle().lineWidth;
 		renderer->setLineWidth(2);
-		{
-			renderer->drawLine(scale, 0, -scale, scale, 0, scale);
-			renderer->drawLine(-scale, 0, -scale, -scale, 0, scale);
-			renderer->drawLine(-scale, 0, scale, scale, 0, scale);
-			renderer->drawLine(-scale, 0, -scale, scale, 0, -scale);
-		}
+
+		renderer->drawLine(scale, 0, -scale, scale, 0, scale);
+		renderer->drawLine(-scale, 0, -scale, -scale, 0, scale);
+		renderer->drawLine(-scale, 0, scale, scale, 0, scale);
+		renderer->drawLine(-scale, 0, -scale, scale, 0, -scale);
 
 		renderer->setLineWidth(lineWidth);
 	}
+
+
+	//--------------------------------------------------------------
+	inline void ofxDrawGridPlaneLabelsBitmapFonts(float stepSize, size_t numberOfSteps, ofColor c = SURFING_RULES_COLOR_TEXT) {
+
+		float scale = stepSize * numberOfSteps;
+		auto renderer = ofGetCurrentRenderer();
+		float lineWidth = renderer->getStyle().lineWidth;
+
+		//draw numbers on axes
+		ofColor prevColor = renderer->getStyle().color;
+		ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
+
+		renderer->setColor(c);
+		//renderer->setColor(255, 255, 255);
+
+		renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
+
+		renderer->drawString(ofToString(0), 0, 0, 0);
+
+		for (float i = 1; i <= numberOfSteps; i++)
+		{
+			float yz = i * stepSize;
+			renderer->drawString(ofToString(yz), 0, yz, 0);
+			renderer->drawString(ofToString(-yz), 0, -yz, 0);
+			renderer->drawString(ofToString(yz), 0, 0, yz);
+			renderer->drawString(ofToString(-yz), 0, 0, -yz);
+		}
+
+		renderer->setColor(prevColor);
+		renderer->setBitmapTextMode(mode);
+	}
+
+
+	//--------------------------------------------------------------
+	inline void ofxDrawGridLabelsBitmapFonts(float stepSize, size_t numberOfSteps, bool x, bool y, bool z, ofColor c = SURFING_RULES_COLOR_TEXT)
+	{
+		auto renderer = ofGetCurrentRenderer();
+
+		ofColor prevColor = ofGetStyle().color;
+
+		if (x) {
+			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+		}
+		if (y) {
+			glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
+			renderer->pushMatrix();
+			renderer->multMatrix(m);
+			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+			renderer->popMatrix();
+		}
+		if (z) {
+			glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
+			renderer->pushMatrix();
+			renderer->multMatrix(m);
+			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+			renderer->popMatrix();
+		}
+
+		ofSetColor(c); //color is not internal
+
+		// bitmap
+		ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
+		float labelPos = stepSize * (numberOfSteps + 0.5);
+
+		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
+		ofDrawBitmapString("x", labelPos, 0, 0);
+		ofDrawBitmapString("y", 0, labelPos, 0);
+		ofDrawBitmapString("z", 0, 0, labelPos);
+
+		ofSetDrawBitmapMode(mode);
+
+		ofSetColor(prevColor);
+	};
 };

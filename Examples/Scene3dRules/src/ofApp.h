@@ -1,5 +1,14 @@
 #pragma once
 
+/*
+
+	TODO:
+	
+	make new easyCam from RF
+
+*/
+
+
 #include "ofMain.h"
 
 #include "ofxSurfingImGui.h"
@@ -28,7 +37,7 @@ public:
 	ofParameter<bool> bObject{ "Object", true };
 	ofParameter<bool> bFlipColors{ "bFlipColors", false };
 
-	//-
+	//--
 
 	ofParameterGroup g{ "ofApp" };
 

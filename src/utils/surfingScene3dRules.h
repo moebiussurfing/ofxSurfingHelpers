@@ -11,6 +11,9 @@
 
 	TODO:
 
+	units can't be disabled. if disable can't draw text labels on bitmap mode.
+	ttf fonts work bad when translations applied to the camera, like rotation. Scale is handled well.
+
 */
 
 //--
@@ -75,12 +78,12 @@ namespace ofxSurfingHelpers
 		ofParameter<bool> bUnits{ "Units", true };
 		ofParameter<bool> bAxis{ "Axis", true };
 
-		ofParameter<bool> bEnable{ "Draw FloorGrid", true };
+		ofParameter<bool> bDraw{ "Floor", true };
 
 		ofParameter<bool> bDefaultColors{ "Default Colors", true };
 		ofParameter<bool> bForceBitmap{ "Force ofBitmapFont", false };
 		ofParameter<bool> bFlipBg{ "Flip Bg", false };
-		ofParameter<bool> bEnableBg{ "EnableBg", true };
+		ofParameter<bool> bEnableBg{ "Background", true };
 		ofParameter<bool> bLabels{ "Labels", true };
 		ofParameter<bool> bFontSmall{ "Small Font", false };
 		ofParameter<bool> bOffsetLabels{ "Offset Labels", false };
@@ -93,14 +96,14 @@ namespace ofxSurfingHelpers
 		float numberOfSteps = 10;//exposed to user
 		float gridSize = 100;//for debug only
 
-		float scale = 1;//workaround trick to avoid transform errors..
+		float scale = 1;//TODO: workaround trick to avoid transform errors..(only for ofScale, rotations fails!)
 
 		//--
 
 		void setup()
 		{
 			params.add(bGui);
-			params.add(bEnable);
+			params.add(bDraw);
 			params.add(bForceBitmap);
 			params.add(bLabels);
 			params.add(bFontSmall);
@@ -149,7 +152,7 @@ namespace ofxSurfingHelpers
 		{
 			if (!bDoneSetup) setup();
 
-			if (!bEnable) return;
+			if (!bDraw) return;
 			if (!bEnableBg) return;
 
 			// Bg one color
@@ -166,7 +169,7 @@ namespace ofxSurfingHelpers
 		{
 			if (!bDoneSetup) setup();
 
-			if (!bEnable) return;
+			if (!bDraw) return;
 			if (!bLabels) return;
 			if (bForceBitmap) return;
 
@@ -192,9 +195,7 @@ namespace ofxSurfingHelpers
 
 		void drawInsideCam() {
 			if (!bDoneSetup) setup();
-
-			if (!bEnable) return;
-
+			if (!bDraw) return;
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
@@ -206,6 +207,7 @@ namespace ofxSurfingHelpers
 			gridSize = numberOfSteps * stepSize;
 
 			// Axis
+			//TODO: split in components and sizes..
 			if (bAxis)
 			{
 				float sza = gridSize / 20.f;
@@ -222,23 +224,25 @@ namespace ofxSurfingHelpers
 			{
 				if (!bForceBitmap)
 				{
+					// custom font
 					ofTrueTypeFont* f = (bFontSmall.get() ? &fontSmall : &font);
 
-					// custom font
-					if (bDefaultColors)
-						ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, bUnits);
-					else
-						ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, bUnits, cUnits, cText);
+					ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, bUnits,
+						bDefaultColors ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
+						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
 				}
 				else
 				{
 					// bitmap font
-					if (bDefaultColors)
-						ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, bUnits);
-					else
-						ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, bUnits, cUnits, cText);
+					ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, 0, false, true, false, bUnits,
+						bDefaultColors ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
+						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
 				}
 			}
+			//separated labels here
+				if (bForceBitmap && bLabels)
+					ofxSurfingHelpers::ofxDrawGridLabelsBitmapFonts(stepSize, numberOfSteps, false, true, false, 
+						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
 
 			// 2 Quarters
 			// 3 Sixteenth
@@ -280,7 +284,7 @@ namespace ofxSurfingHelpers
 		};
 
 		void doResetSettings() {
-			bEnable = true;
+			bDraw = true;
 			bEnableBg = true;
 			bFlipBg = false;
 			bLabels = true;
@@ -290,7 +294,7 @@ namespace ofxSurfingHelpers
 
 		void doResetColors() {
 #if(DEBUG_COLORS__SCENE)
-			cText = SURFING_RULES_COLOR_LABELS;
+			cText = SURFING_RULES_COLOR_TEXT;
 			cBig = SURFING_RULES_COLOR_LINES_BIG;
 			cQuarter = SURFING_RULES_COLOR_LINES_QUARTER;
 			cSixteenth = SURFING_RULES_COLOR_LINES_SIXTEENTH;
@@ -326,21 +330,23 @@ namespace ofxSurfingHelpers
 		void drawImGuiDebug(ofxSurfingGui& ui)
 		{
 			if (!bDoneSetup) setup();
+			if (!bGui) return;
 
-			if (ui.isMinimized()) IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
+			if (ui.isMinimized() && bGui) IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 
 			if (ui.BeginWindow(bGui))
 			{
 				ui.AddMinimizerToggle();
+
 				ui.AddSpacingSeparated();
 
 				//--
 
-				ui.AddLabelBig("Floor", false, true);
+				ui.AddLabelBig("FloorGrid", false, true);
 
-				ui.Add(bEnable, OFX_IM_TOGGLE_BIG);
+				ui.Add(bDraw, OFX_IM_TOGGLE_BIG);
 
-				if (bEnable)
+				if (bDraw)
 				{
 					ui.Indent();
 
@@ -350,8 +356,8 @@ namespace ofxSurfingHelpers
 
 					if (ui.isMaximized())
 					{
-						ui.Add(bDefaultColors);
 						ui.Add(bForceBitmap);
+						ui.Add(bDefaultColors);
 						ui.AddSpacingSeparated();
 					}
 
@@ -361,41 +367,35 @@ namespace ofxSurfingHelpers
 
 				//--
 
-				if (ui.isMaximized() && bEnable)
+				if (ui.isMaximized() && bDraw)
 				{
 					if (!bForceBitmap) {
 						if (ui.BeginTree("Labels")) {
 							ui.Add(bFontSmall);
 							ui.Add(bOffsetLabels);
 							if (!bForceBitmap) ui.Add(cText);
+
 							ui.EndTree();
 						}
 					}
-					if (!bDefaultColors)
-					{
-						if (ui.BeginTree("Lines")) {
+					if (ui.BeginTree("Lines")) {
+						ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+						ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+						ui.Add(bSixteenth, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+						ui.Add(bUnits, OFX_IM_TOGGLE_SMALL, 4);
 
-							ui.Add(bAxis);
-
-							//ui.Add(cBig);
-							//ui.Add(cQuarter);
-							//ui.Add(cSixteenth);
-							//ui.Add(cUnits);
-
-							////TODO: allow disable some lines. 
-							//requires modifying ofxSurfingHelpers::ofxDrawFloor() ! 
-							ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
-							ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
-							ui.Add(bSixteenth, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
-							ui.Add(bUnits, OFX_IM_TOGGLE_SMALL, 4);
-
+						if (!bDefaultColors)
+						{
 							if (bBig) ui.Add(cBig);
 							if (bQuarter) ui.Add(cQuarter);
 							if (bSixteenth) ui.Add(cSixteenth);
 							if (bUnits) ui.Add(cUnits);
-
-							ui.EndTree();
 						}
+
+						ui.Add(bAxis);
+						//ui.Add(bAxis, OFX_IM_TOGGLE);
+
+						ui.EndTree();
 					}
 					if (bEnableBg) {
 						if (ui.BeginTree("Background")) {
@@ -416,6 +416,7 @@ namespace ofxSurfingHelpers
 							ui.EndTree();
 						}
 					}
+
 					bool b = !bEnableBg && bForceBitmap && bDefaultColors;
 					if (!b) ui.AddSpacingSeparated();
 
@@ -436,8 +437,9 @@ namespace ofxSurfingHelpers
 					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
 						doLoad();
 					}
-					ui.AddSpacingSeparated();
 
+					/*
+					ui.AddSpacingSeparated();
 					static bool bDebug = false;
 					ui.AddToggle("Debug", bDebug, OFX_IM_TOGGLE_ROUNDED_MINI);
 					if (bDebug) {
@@ -448,6 +450,7 @@ namespace ofxSurfingHelpers
 						s += "\nScale: " + ofToString(scale);
 						ui.AddLabel(s);
 					}
+					*/
 				}
 
 				ui.EndWindow();
