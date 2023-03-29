@@ -66,7 +66,7 @@ namespace ofxSurfingHelpers
 	/*
 	
 	Example use:
-	ofxSurfingHelpers::ofxKuValueSmooth(out, int, smooth);
+	ofxSurfingHelpers::ofxKuValueSmooth(out, in, smooth);
 
 	*/
 

@@ -39,20 +39,32 @@ namespace ofxSurfingHelpers
 	// Left monitor is portrait. 
 	// Central and Right monitor are landscape.
 	//--------------------------------------------------------------
-	inline void SurfSetMyMonitor(int layout = 0)
+	inline void SurfSetMyMonitor(int layout = 0, bool bStandardFrameRate = true)
 	{
-		int h = 38; // window bar height on WIN_32
+		if (bStandardFrameRate) {
+			ofSetFrameRate(60);
+			ofSetVerticalSync(false);
+		}
+
+		// window bar height on WIN_32.
+		int h = 38; 
 		int offset = 12;
 		int hw = h - offset;
-		if (layout == 0) { // left portrait
+		if (layout == 0) 
+		{ 
+			// move app window to the left monitor (from main) as portrait
 			ofSetWindowPosition(-1080, h);
 			ofSetWindowShape(1080, 1920 - hw);
 		}
-		else if (layout == 1) { // landscape right
+		else if (layout == 1) 
+		{ 
+			// move app window  to the right monitor (from main) as landscape 
 			ofSetWindowPosition(1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
-		else if (layout == 2) { // landscape left
+		else if (layout == 2) 
+		{
+			// move app window  to the left monitor (from main) as landscape
 			ofSetWindowPosition(-1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}

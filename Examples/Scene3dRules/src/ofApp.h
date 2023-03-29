@@ -3,14 +3,15 @@
 #include "ofMain.h"
 
 #include "ofxSurfingImGui.h"
-// -> Could be completely disabled and replace by ofxGui. Just use the ofParams!
 
 #include "surfingScene3dRules.h"
+#include "surfingMaths.h"
 
 class ofApp : public ofBaseApp
 {
 public:
 	void setup();
+	void exit();
 	void draw();
 	void keyPressed(int key);
 
@@ -18,21 +19,18 @@ public:
 	ofxSurfingGui ui;
 	ofParameter<bool> bGui{ "ofApp", true };
 
-	SurfSceneGrids sceneGrid;
-
 	ofEasyCam camera;
-	ofParameter<float> scale{ "Scale", 1, 0.5, 10 };
+	ofParameter<float> scale{ "Scale Cam", 1, 0.5, 10 };
+	ofParameter<float> zoom{ "Zoom Cam", 0, -1.f, 1.f };
+	ofParameter<bool> bRotate{ "Rotate Cam", false };
+	void doResetCamera();
+	
+	ofParameter<bool> bObject{ "Object", true };
+	ofParameter<bool> bFlipColors{ "bFlipColors", false };
 
-	void doResetCamera() {
-		camera.setupPerspective();
-		camera.setVFlip(0);
-		camera.setPosition(100, 100, 100);
-		camera.lookAt(glm::vec3(0));
-		camera.disableMouseInput();
-		//camera.enableMouseInput();
-		camera.setFarClip(10000);
-		camera.setNearClip(0);
+	//-
 
-		//scale = 1;
-	}
+	ofParameterGroup g{ "ofApp" };
+
+	ofxSurfingHelpers::SurfSceneGrids sceneGrid;
 };

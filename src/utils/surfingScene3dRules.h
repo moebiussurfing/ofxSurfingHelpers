@@ -1,6 +1,12 @@
 #pragma once
 #include "ofMain.h"
 
+// -> Could be completely disabled or replaced by ofxGui. Just using the ofParams!
+#define USE_IM_GUI__SCENE
+#ifdef USE_IM_GUI__SCENE
+#include "ofxSurfingImGui.h"
+#endif
+
 /*
 
 	TODO:
@@ -13,7 +19,7 @@
 
 // WARNING!
 // This is an attempt to draw 3d planes but not using ofBitmapFont for the labels,
-// but using ofTrueTypeFonts instead!
+// and using ofTrueTypeFonts instead!
 // One drawback is that we need to handle a trick to handle scale transformation on the camera!
 // https://forum.openframeworks.cc/t/how-to-draw-oftruetype-labels-inside-an-ofcamera-as-ofdrawbitmapstring-does/41542/4
 
@@ -21,22 +27,28 @@
 
 namespace ofxSurfingHelpers
 {
+#define DEBUG_COLORS__SCENE 1
+#if(DEBUG_COLORS__SCENE)
+	// Debug colors
+	static const char a = 65;
+	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor(0, 255, 255, a);
+	static const ofColor SURFING_RULES_COLOR_LINES_0 = ofColor(255, 0, 0, a);//big
+	static const ofColor SURFING_RULES_COLOR_LINES_1 = ofColor(0, 255, 0, a);//quarter
+	static const ofColor SURFING_RULES_COLOR_LINES_2 = ofColor(0, 0, 255, a);//sixteenth
+	static const ofColor SURFING_RULES_COLOR_LINES_3 = ofColor(255, 255, 0, a);//units
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 70, 70, 70 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 10, 10, 10 };
+#else
 	// Colors
-#if(1)
 	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor{ 255, 255, 255, 200 };
+	static const ofColor SURFING_RULES_COLOR_LINES_0 = ofColor{ 128, 128, 128, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_1 = ofColor{ 96, 96, 96, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_2 = ofColor{ 64, 64, 64, 150 };
 	static const ofColor SURFING_RULES_COLOR_LINES_3 = ofColor{ 64, 64, 64, 32 };
 	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
 	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
-#else//debug colors
-	static const ofColor SURFING_RULES_COLOR_LABELS = ofColor{ 0, 255, 255, 200 };
-	static const ofColor SURFING_RULES_COLOR_LINES_1 = ofColor{ 0, 96, 0, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_2 = ofColor{ 0, 0, 64, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_3 = ofColor{ 255, 0, 0, 100 };
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
-	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
 #endif
+
 	//--
 
 // Drawing methods. Mostly based on OF internals.
@@ -184,8 +196,10 @@ namespace ofxSurfingHelpers
 	// Taken from OF of\libs\openFrameworks\graphics\of3dGraphics.cpp
 	// void of3dGraphics::drawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z);
 	//--------------------------------------------------------------
-	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
 	{
+		//TODO: must implement disable enableLines! 
+
 		auto renderer = ofGetCurrentRenderer();
 
 		//ofPushStyle();
@@ -235,7 +249,7 @@ namespace ofxSurfingHelpers
 			}
 		}
 
-		if (labels) {
+		if (labels) { // xyz
 			if (font == nullptr || camera == nullptr)
 			{
 				//ofPushStyle();
@@ -251,7 +265,7 @@ namespace ofxSurfingHelpers
 				ofDrawBitmapString("z", 0, 0, labelPos);
 
 				ofSetDrawBitmapMode(mode);
-				
+
 				//ofPopStyle();
 			}
 			/*
@@ -281,9 +295,9 @@ namespace ofxSurfingHelpers
 
 
 	//--------------------------------------------------------------
-	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
+	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_3, ofColor c2 = SURFING_RULES_COLOR_LABELS)
 	{
-		ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, c1, c2);
+		ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, enableLines, c1, c2);
 	}
 
 	//----
@@ -644,35 +658,37 @@ namespace ofxSurfingHelpers
 	// 3D Scene Grids and Bg Helpers
 
 	//--------------------------------------------------------------
-	inline void SurfDrawBgGradient(ofColor c1 = SURFING_RULES_COLOR_BG_1, ofColor c2 = SURFING_RULES_COLOR_BG_2, ofGradientMode g = OF_GRADIENT_CIRCULAR)
+	inline void ofxDrawBgGradient(ofColor c1 = SURFING_RULES_COLOR_BG_1, ofColor c2 = SURFING_RULES_COLOR_BG_2, ofGradientMode g = OF_GRADIENT_CIRCULAR)
 	{
 		ofBackgroundGradient(c1, c2, g);
 	};
 
 	//--------------------------------------------------------------
-	inline void SurfDrawFloor(float size, float offsetHeight = 0, ofColor c1 = SURFING_RULES_COLOR_LINES_1, ofColor c2 = SURFING_RULES_COLOR_LINES_2)
+	inline void ofxDrawFloor(float size, bool bEnable1 = true, bool bEnable2 = true, ofColor c1 = SURFING_RULES_COLOR_LINES_1, ofColor c2 = SURFING_RULES_COLOR_LINES_2, float offsetHeight = 0)
 	{
 		bool bFlipz = true;//make it floor
-
 		bool b = (bFlipz || (offsetHeight != 0));
-
 		if (b) ofPushMatrix();
 		ofPushStyle();
 
 		if (offsetHeight != 0) ofTranslate(0, offsetHeight, 0);
-
 		if (bFlipz) ofRotate(90, 0, 0, 1);
+		
+		{
+			if (bEnable1) {
+				ofSetColor(c1);
+				ofDrawGridPlane(size, 1, false);
+			}
 
-		ofSetColor(c1);
-		ofDrawGridPlane(size, 1, false);
-
-		ofSetColor(c2);
-		ofDrawGridPlane(size / 2.f, 2, false);
+			if (bEnable2) {
+				ofSetColor(c2);
+				ofDrawGridPlane(size / 2.f, 2, false);
+			}
+		}
 
 		ofPopStyle();
 		if (b) ofPopMatrix();
 	};
-
 };
 
 //----
@@ -701,24 +717,36 @@ namespace ofxSurfingHelpers
 	private:
 		ofCamera* camera = nullptr;
 
+		string pathGlobal = "";
+		
+		string fsuffix = "_Settings.json";
+		//string fsuffix = ".json";
+
 	public:
+		void setPathGlobal(string path) {
+			pathGlobal = path;
+		}
 
 		ofParameterGroup params{ "SceneGrids" };
+
+		ofParameter<bool> bGui{ "FloorGrid", true };
 
 		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cSixteenth{ "C Sixteenth", ofColor(ofColor::yellow, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
 
 		ofParameter<bool> bBig{ "Big", true };
 		ofParameter<bool> bQuarter{ "Quarter", true };
+		ofParameter<bool> bSixteenth{ "Sixteenth", true };
 		ofParameter<bool> bUnits{ "Units", true };
 		ofParameter<bool> bAxis{ "Axis", true };
 
-		ofParameter<bool> bEnable{ "Floor Grid", true };
-		//ofParameter<bool> bEnable{ "Enable", true };
+		ofParameter<bool> bEnable{ "Draw FloorGrid", true };
+
 		ofParameter<bool> bDefaultColors{ "Default Colors", true };
 		ofParameter<bool> bForceBitmap{ "Force ofBitmapFont", false };
 		ofParameter<bool> bFlipBg{ "Flip Bg", false };
@@ -739,7 +767,9 @@ namespace ofxSurfingHelpers
 
 		//--
 
-		void setup() {
+		void setup()
+		{
+			params.add(bGui);
 			params.add(bEnable);
 			params.add(bForceBitmap);
 			params.add(bLabels);
@@ -749,14 +779,18 @@ namespace ofxSurfingHelpers
 			params.add(cText);
 			params.add(cBig);
 			params.add(cQuarter);
+			params.add(cSixteenth);
 			params.add(cUnits);
 
-			////TODO: allow disable some lines. requires modifying ofxSurfingHelpers::SurfDrawFloor 
-			//params.add(bBig);
-			//params.add(bQuarter);
-			//params.add(bUnits);
-			
+			////TODO: allow disable some lines.
+			// requires modifying ofxSurfingHelpers::ofxDrawFloor 
+			params.add(bBig);
+			params.add(bQuarter);
+			params.add(bSixteenth);
+			params.add(bUnits);
+
 			params.add(bAxis);
+
 			params.add(bEnableBg);
 			params.add(gradientType);
 			params.add(cBg1);
@@ -765,9 +799,9 @@ namespace ofxSurfingHelpers
 
 			float sz = 10;
 			string _FONT_FILES_PATH = "assets/fonts/";
+			string path = _FONT_FILES_PATH + string("JetBrainsMonoNL-SemiBold.ttf");
 			//string path = _FONT_FILES_PATH + string(FONT_FILE_SMALL);
 			//string path = _FONT_FILES_PATH + string("JetBrainsMonoNL-ExtraBold.ttf");
-			string path = _FONT_FILES_PATH + string("JetBrainsMonoNL-SemiBold.ttf");
 			bool b = font.load(path, sz, true);
 			if (!b) font.load(OF_TTF_MONO, sz, true);
 			sz *= SCENE_GRID_SMALL_FONT_RATIO;
@@ -785,7 +819,7 @@ namespace ofxSurfingHelpers
 			if (!bEnableBg) return;
 
 			// Bg rounded gradient
-			ofxSurfingHelpers::SurfDrawBgGradient((bFlipBg ? cBg1 : cBg2), (bFlipBg ? cBg2 : cBg1), ofGradientMode(gradientType.get()));
+			ofxSurfingHelpers::ofxDrawBgGradient((bFlipBg ? cBg1 : cBg2), (bFlipBg ? cBg2 : cBg1), ofGradientMode(gradientType.get()));
 		};
 
 		void drawOutsideCam()//draw labels
@@ -827,40 +861,91 @@ namespace ofxSurfingHelpers
 
 			gridSize = numberOfSteps * stepSize;
 
-			//axis
-			if (bAxis) {
+			// Axis
+			if (bAxis)
+			{
 				float sza = gridSize / 20.f;
 				ofDrawAxis(sza);
 			}
 
-			//floor lines: big and quarters
-			if (bDefaultColors) ofxSurfingHelpers::SurfDrawFloor(gridSize);
-			else ofxSurfingHelpers::SurfDrawFloor(gridSize, 0, cBig.get(), cQuarter.get());
+			//--
 
-			//floor lines small/units/10ths (and labels when ofBitmapFont)
-			if (!bForceBitmap)
+			// floor lines: 
+
+			// 4. Units 
+			// (with labels when ofBitmapFont)
+			if (bUnits)
 			{
-				ofTrueTypeFont* f = (bFontSmall.get() ? &fontSmall : &font);
+				if (!bForceBitmap)
+				{
+					ofTrueTypeFont* f = (bFontSmall.get() ? &fontSmall : &font);
 
-				// custom font
-				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera);
-				else ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, cUnits, cText);
+					// custom font
+					if (bDefaultColors)
+						ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, bUnits);
+					else
+						ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera, bUnits, cUnits, cText);
+				}
+				else
+				{
+					// bitmap font
+					if (bDefaultColors)
+						ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, bUnits);
+					else
+						ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, bUnits, cUnits, cText);
+				}
 			}
-			else
+
+			// 2 Quarters
+			// 3 Sixteenth
+			// (without labels)
+			if (bQuarter || bSixteenth)
 			{
-				// bitmap font
-				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false);
-				else ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, bLabels, false, true, false, cUnits, cText);
+				if (bDefaultColors)
+					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth);
+				else
+					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth, cQuarter.get(), cSixteenth.get());
+			}
+
+			// 1. Big
+			// (outer square)
+			if (bBig) {
+				ofSetColor(cBig);
+
+				ofPushMatrix();
+				//ofRotateY(90);
+				//ofRotateX(90);
+				//ofSetPlaneResolution(2, 2);
+				//ofNoFill();
+				//ofRectangle r(0, 0, gridSize, gridSize);
+				//ofDrawRectangle(r);
+				////ofDrawPlane(gridSize, gridSize);
+
+				ofDrawGridPlane(gridSize, 0, false);
+
+				ofPopMatrix();
+				//return;
 			}
 		};
+
+		//--
 
 		void doSave() {
-			ofxSurfingHelpers::saveGroup(params);
-			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Save settings";
+			string path;
+			if (pathGlobal == "") path = params.getName() + fsuffix;
+			else path = pathGlobal + "/" + params.getName() + fsuffix;
+			ofxSurfingHelpers::saveGroup(params, path);
+
+			ofLogNotice("of xSurfingHelpers::SurfSceneGrids") << "Setup() Save settings: " << path;
 		};
+
 		void doLoad() {
-			ofxSurfingHelpers::loadGroup(params);
-			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings";
+			string path;
+			if (pathGlobal == "") path = params.getName() + fsuffix;
+			else path = pathGlobal + "/" + params.getName() + fsuffix;
+			ofxSurfingHelpers::loadGroup(params, path);
+
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings: " << path;
 		};
 
 		void doResetSettings() {
@@ -873,12 +958,24 @@ namespace ofxSurfingHelpers
 		};
 
 		void doResetColors() {
+#if(DEBUG_COLORS__SCENE)
+			cText = SURFING_RULES_COLOR_LABELS;
+			cBig = SURFING_RULES_COLOR_LINES_0;
+			cQuarter = SURFING_RULES_COLOR_LINES_1;
+			cSixteenth = SURFING_RULES_COLOR_LINES_2;
+			cUnits = SURFING_RULES_COLOR_LINES_3;
+			cBg1 = SURFING_RULES_COLOR_BG_1;
+			cBg2 = SURFING_RULES_COLOR_BG_2;
+#else
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 96, 96, 96, 150 };
 			cQuarter = ofColor{ 64, 64, 64, 150 };
+			cSixteenth = ofColor{ 64, 64, 64, 150 };
 			cUnits = ofColor{ 96, 96, 96, 24 };
 			cBg1 = ofColor{ 40, 40, 40 };
 			cBg2 = ofColor{ 0, 0, 0 };
+#endif
+
 		};
 
 		void doResetAll() {
@@ -889,64 +986,132 @@ namespace ofxSurfingHelpers
 	private:
 		ofTrueTypeFont font;
 		ofTrueTypeFont fontSmall;
+
+		//--
+
+#ifdef USE_IM_GUI__SCENE
+	public:
+
+		void drawImGuiDebug(ofxSurfingGui& ui)
+		{
+			if (ui.isMinimized()) IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
+
+			if (ui.BeginWindow(bGui))
+			{
+				ui.AddMinimizerToggle();
+				ui.AddSpacingSeparated();
+
+				//--
+
+				ui.AddLabelBig("Floor", false, true);
+
+				ui.Add(bEnable, OFX_IM_TOGGLE_BIG);
+
+				if (bEnable)
+				{
+					ui.Indent();
+
+					ui.Add(bLabels, OFX_IM_TOGGLE);
+					ui.Add(bEnableBg, OFX_IM_TOGGLE);
+					ui.AddSpacing();
+
+					if (ui.isMaximized())
+					{
+						ui.Add(bDefaultColors);
+						ui.Add(bForceBitmap);
+						ui.AddSpacingSeparated();
+					}
+
+					ui.Unindent();
+				}
+				//ui.AddSpacing();
+
+				//--
+
+				if (ui.isMaximized() && bEnable)
+				{
+					if (!bForceBitmap) {
+						if (ui.BeginTree("Labels")) {
+							ui.Add(bFontSmall);
+							ui.Add(bOffsetLabels);
+							if (!bForceBitmap) ui.Add(cText);
+							ui.EndTree();
+						}
+					}
+					if (!bDefaultColors)
+					{
+						if (ui.BeginTree("Lines")) {
+
+							ui.Add(bAxis);
+
+							//ui.Add(cBig);
+							//ui.Add(cQuarter);
+							//ui.Add(cSixteenth);
+							//ui.Add(cUnits);
+
+							////TODO: allow disable some lines. 
+							//requires modifying ofxSurfingHelpers::ofxDrawFloor() ! 
+							ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+							ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+							ui.Add(bSixteenth, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
+							ui.Add(bUnits, OFX_IM_TOGGLE_SMALL, 4);
+
+							if (bBig) ui.Add(cBig);
+							if (bQuarter) ui.Add(cQuarter);
+							if (bSixteenth) ui.Add(cSixteenth);
+							if (bUnits) ui.Add(cUnits);
+
+							ui.EndTree();
+						}
+					}
+					if (bEnableBg) {
+						if (ui.BeginTree("Background")) {
+							ui.Add(gradientType);
+							ui.Add(cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
+							ui.Add(cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);
+							ui.Add(bFlipBg);
+
+							ui.EndTree();
+						}
+					}
+					bool b = !bEnableBg && bForceBitmap && bDefaultColors;
+					if (!b) ui.AddSpacingSeparated();
+
+					if (ui.AddButton("Reset", OFX_IM_BUTTON, 3, true)) {
+						doResetSettings();
+					}
+					if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 3, true)) {
+						doResetColors();
+					}
+					if (ui.AddButton("Reset All", OFX_IM_BUTTON, 3)) {
+						doResetAll();
+					}
+					ui.AddSpacing();
+
+					if (ui.AddButton("Save", OFX_IM_BUTTON, 2, true)) {
+						doSave();
+					}
+					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
+						doLoad();
+					}
+					ui.AddSpacingSeparated();
+
+					static bool bDebug = false;
+					ui.AddToggle("Debug", bDebug, OFX_IM_TOGGLE_ROUNDED_MINI);
+					if (bDebug) {
+						string s = "";
+						s += "StepSize: " + ofToString(stepSize);
+						s += "\nNumberOfSteps: " + ofToString(numberOfSteps);
+						s += "\nSize: " + ofToString(gridSize);
+						s += "\nScale: " + ofToString(scale);
+						ui.AddLabel(s);
+					}
+				}
+
+				ui.EndWindow();
+			}
+		}
+#endif
+
 	};
-
-	//--
-
-	// EXAMPLE GUI:
-/*
-//--------------------------------------------------------------
-void ofApp::drawImGuiSceneGrids()
-{
-	if (ui.BeginWindow(bGui))
-	{
-		static bool bInit = false;
-		if (!bInit) {
-			bInit = true;
-			ui.AddStyle(sceneGrid.bEnable, OFX_IM_TOGGLE);
-			ui.AddStyle(sceneGrid.bEnableBg, OFX_IM_TOGGLE);
-			ui.AddStyle(sceneGrid.bForceBitmap, OFX_IM_TOGGLE_SMALL_BORDER_BLINK);
-			ui.AddStyle(sceneGrid.bLabels, OFX_IM_TOGGLE_ROUNDED_SMALL);
-			//ui.AddStyle(bGridInFront, OFX_IM_TOGGLE_ROUNDED_MINI);
-			ui.AddStyle(sceneGrid.cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
-			ui.AddStyle(sceneGrid.cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);	
-		}
-
-		ui.AddLabelHuge("Scene\n3dRules");
-		ui.AddSpacing();
-
-		ui.AddGroup(sceneGrid.params);
-		ui.AddSpacing();
-		
-		if (ui.AddButton("Reset", OFX_IM_BUTTON, 3, true)) {
-			sceneGrid.doResetSettings();
-		}
-		if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 3, true)) {
-			sceneGrid.doResetColors();
-		}
-		if (ui.AddButton("Reset All", OFX_IM_BUTTON, 3, false)) {
-			sceneGrid.doResetAll();
-		}
-
-		if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
-			sceneGrid.doSave();
-		}
-		ui.SameLine();
-		if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
-			sceneGrid.doLoad();
-		}
-		ui.AddSpacing();
-
-		string s = "DEBUG";
-		s += "\nstepSize: " + ofToString(sceneGrid.stepSize);
-		s += "\numberOfSteps: " + ofToString(sceneGrid.numberOfSteps);
-		s += "\nsize: " + ofToString(sceneGrid.gridSize);
-		s += "\nscale: " + ofToString(sceneGrid.scale);
-		ui.AddLabel(s);
-
-		ui.EndWindow();
-	}
-}
-*/
-
 }
