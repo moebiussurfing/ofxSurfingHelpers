@@ -1,7 +1,11 @@
 #pragma once
 
 #include "ofMain.h"
+/*
+	ofParameterGroup g{ "ofApp" };
 
+
+*/
 /*
 
 	TODO:
@@ -47,28 +51,32 @@ namespace ofxSurfingHelpers
 		}
 
 		// window bar height on WIN_32.
-		int h = 38; 
+		int h = 38;
 		int offset = 12;
 		int hw = h - offset;
-		if (layout == 0) 
-		{ 
+		if (layout == 0)
+		{
 			// move app window to the left monitor (from main) as portrait
 			ofSetWindowPosition(-1080, h);
 			ofSetWindowShape(1080, 1920 - hw);
 		}
-		else if (layout == 1) 
-		{ 
+		else if (layout == 1)
+		{
 			// move app window  to the right monitor (from main) as landscape 
 			ofSetWindowPosition(1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
-		else if (layout == 2) 
+		else if (layout == 2)
 		{
 			// move app window  to the left monitor (from main) as landscape
 			ofSetWindowPosition(-1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
 	}
+
+	//----
+
+	// Images drawing
 
 	//--------------------------------------------------------------
 	inline void SurfDrawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
@@ -84,10 +92,91 @@ namespace ofxSurfingHelpers
 		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
 		image.draw(rr.x, rr.y, rr.width, rr.height);
 	}
+	//--------------------------------------------------------------
+	inline void SurfDrawImageAtBottom(ofImage& image, bool bLine = true)
+	{
+		if (!image.isAllocated()) return;
+
+		ofPushStyle();
+
+		ofRectangle r{ 0,0, image.getWidth(),image.getHeight() };
+		r.scaleTo(ofGetCurrentViewport(), OF_SCALEMODE_FIT);
+		r.translateY(ofGetHeight() - r.getBottomLeft().y);
+		ofSetColor(255, 255);
+		image.draw(r.x, r.y, r.getWidth(), r.getHeight());
+		if (bLine) {
+			ofSetColor(0, 200);
+			ofSetLineWidth(2);
+			ofDrawLine(r.getTopLeft(), r.getTopRight());
+		}
+		ofPopStyle();
+	}
+	//--------------------------------------------------------------
+	inline void SurfDrawImageAtRight(ofImage& image, bool bLine = true)
+	{
+		if (!image.isAllocated()) return;
+
+		ofPushStyle();
+
+		ofRectangle r(0, 0, image.getWidth(), image.getHeight());
+		r.scaleTo(ofGetCurrentViewport(), OF_SCALEMODE_FIT);
+		r.translateX(ofGetWidth() - r.getBottomRight().x);
+		image.draw(r.x, r.y, r.width, r.height);
+
+		if (bLine) {
+			ofSetColor(0, 200);
+			ofSetLineWidth(2);
+			ofDrawLine(r.getTopLeft(), r.getBottomLeft());
+		}
+
+		ofPopStyle();
+	}
+	//--------------------------------------------------------------
+	inline void SurfDrawImageAtBottomRight(ofImage& image, string label = "")
+	{
+		if (!image.isAllocated()) return;
+
+		ofPushStyle();
+
+		float p = 6;
+		float p2 = 5;
+
+		float w = image.getWidth();
+		float h = image.getHeight();
+		float x = ofGetWidth() - w - p;
+		float y = ofGetHeight() - h - p;
+
+		//bg
+		ofRectangle r(x, y, w, h);
+		r.setWidth(r.width + p2);
+		r.setHeight(r.height + p2);
+		r.translateX(-p2 / 2.f);
+		r.translateY(-p2 / 2.f);
+		ofFill();
+		ofSetColor(0, 225);
+		ofDrawRectRounded(r, 3);
+
+		//img
+		ofSetColor(255, 255);
+		image.draw(x, y);
+
+		//txt
+		if (label != "") {
+			ofDrawBitmapStringHighlight(label, x + 4, y + 14);
+		}
+
+		ofPopStyle();
+	}
+	//--------------------------------------------------------------
+	inline void SurfDrawImageResponsive(ofImage& image, bool bLine = true)
+	{
+		if (ofGetWidth() > ofGetHeight()) ofxSurfingHelpers::SurfDrawImageAtRight(image);//landscape
+		else ofxSurfingHelpers::SurfDrawImageAtBottom(image);//portrait
+	}
 
 	//----
 
-	// Serializers
+	// ofParams Serializers
 
 	//----
 

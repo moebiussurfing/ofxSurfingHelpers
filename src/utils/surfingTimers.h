@@ -27,20 +27,20 @@ namespace ofxSurfingHelpers
 		/* Return a linear value in range [0,1] every delay (in seconds). */
 		float Tick(float delay = 1.0f) {
 			return fmodf(ofGetElapsedTimeMillis() / 1000.0f, delay) / delay;
-		}
+		};
 
 		/* Return a linear value in range [0,1] every delay (in seconds),
 		 with value equal 0 at boundaries, and 1 at delay / 2. */
 		float Bounce(float delay = 1.0f) {
 			return 0.5f * (1.0 + glm::sin(Tick(delay) * glm::two_pi<float>()));
-		}
+		};
 
 		/* Noise function used by the gradient scaling. */
 		float Noise(const ofPoint& vertex = ofPoint(1, -1)) {
 			//return /*24.0f **/ ofNoise(0.005f*vertex + 0.5f*ofGetElapsedTimeMillis()*0.0002f);
 
 			return ofNoise(0.05f * vertex + 0.5f * ofGetElapsedTimeMillis() * 0.002f);
-		}
+		};
 
 		static constexpr int32_t kCharsetSize = 26;
 
@@ -54,14 +54,14 @@ namespace ofxSurfingHelpers
 		std::mt19937 mt(rd());
 		std::normal_distribution<float> distribution(center, standard_dev);
 		return distribution(mt);
-	}
+	};
 	inline float NextReal(const float lower, const float upper)
 	{
 		std::random_device rd;
 		std::mt19937 mt(rd());
 		std::uniform_real_distribution<float> distribution(lower, upper);
 		return distribution(mt);
-	}
+	};
 
 	//-
 
@@ -73,7 +73,58 @@ namespace ofxSurfingHelpers
 		float a = ofMap(glm::sin(freq * ofGetFrameNum()), -1, 1, min, max);
 
 		return a;
-	}
+	};
+
+	/*
+	//--------------------------------------------------------------
+	inline ofColor getColorFadeBlinkBW() {
+		float f = 0.3f;
+
+		//alternate b/w
+		int v1 = 0;
+		int v2 = 255;
+		float v = ofLerp(v1, v2, getFadeBlink(0, 255, f * 0.5f));
+		float a = getFadeBlink(0.2, 0.8, f * 1.f);
+		//int v = ofLerp(v1, v2, getFadeBlink(0, 1, 0.15f * 1));
+		//float a = getFadeBlink(0.2, 0.8, 0.15f * 0.5f);
+		//a *= getFadeBlink(0, 0.8, 0.15f * 0.5f);
+		ofColor c(v, v, v, (int)255.f * a);
+
+		return c;
+	};
+	//--------------------------------------------------------------
+	inline ofFloatColor getFloatColorFadeBlinkBW() {
+
+		float f = 0.3f;
+		//float f = 0.15f;
+
+		//alternate b/w
+		float v1 = 0;
+		float v2 = 1;
+		float v = ofLerp(v1, v2, getFadeBlink(0, 1, f * 0.5f));
+		float a = getFadeBlink(0.2, 0.8, f * 1.f);
+		//float v = ofLerp(v1, v2, getFadeBlink(0, 1, f * 1));
+		//float a = getFadeBlink(0.2, 0.8, f * 0.5f);
+		//a *= getFadeBlink(0, 0.8, f * 0.5f);
+		ofFloatColor c(v, v, v, a);
+
+		return c;
+	};
+	*/
+
+	template<typename ColorType>
+	void setColorFadeBlinkBW(ColorType& c) {
+		float f = 0.3f;
+
+		//alternate b/w
+		float v1 = (std::is_same<ColorType, ofColor>::value ? 255 : 0.f);
+		float v2 = (std::is_same<ColorType, ofColor>::value ? 255 : 1.f);
+		float v = ofLerp(v1, v2, getFadeBlink(0, 1, f * 0.5f));
+		float a = getFadeBlink(0.2, 0.8, f * 1.f);
+
+		c.set(ColorType(v, v, v, std::is_same<ColorType, ofColor>::value ? ((int)255.f * a) : a));
+	};
+
 
 	////----
 
@@ -142,7 +193,7 @@ namespace ofxSurfingHelpers
 					break;
 
 					// saw
-				case 1: generators[g] =  ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.0, 0.8);//simple
+				case 1: generators[g] = ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.0, 0.8);//simple
 					//case 1: generators[g] = (bGenMode2 ? 1.f : 0.25f) * ofMap(ofxSurfingHelpers::Tick((bGenMode2 ? 1 : 2)), 0, 1, 0.1, 0.6);
 					break;
 
