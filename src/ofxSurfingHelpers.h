@@ -14,6 +14,14 @@
 
 //---------
 
+#ifndef OF_APP_DEFINED_ofxSurfingHelpers
+#define OF_APP_DEFINED_ofxSurfingHelpers 
+// To avoid include it twice. 
+// useful when using other helpers with the same namespace. 
+// as we do in ofxSurfingImGui
+
+//--
+
 // Include some classes by default. 
 // Notice that there's other classes bundled on the add-on (/src or /libs) 
 // that are not included here, then you have to include them manually.
@@ -72,7 +80,15 @@ namespace ofxSurfingHelpers
 			ofSetWindowPosition(-1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
-	}
+	};
+
+	//call on update()
+	//--------------------------------------------------------------
+	inline void SurfSetWindowTitleDebugPerformance(string name) {
+		string s = name + " |  " + ofToString(ofGetFrameRate(), 0) + "fps";
+		s += " / " + ofToString(ofGetLastFrameTime() * 1000, 0) + "ms";
+		ofSetWindowTitle(s);
+	};
 
 	//----
 
@@ -84,14 +100,14 @@ namespace ofxSurfingHelpers
 		ofRectangle rr(0, 0, imageFloat.getWidth(), imageFloat.getHeight());
 		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
 		imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
-	}
+	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
 	{
 		ofRectangle rr(0, 0, image.getWidth(), image.getHeight());
 		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
 		image.draw(rr.x, rr.y, rr.width, rr.height);
-	}
+	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageAtBottom(ofImage& image, bool bLine = true)
 	{
@@ -110,7 +126,7 @@ namespace ofxSurfingHelpers
 			ofDrawLine(r.getTopLeft(), r.getTopRight());
 		}
 		ofPopStyle();
-	}
+	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageAtRight(ofImage& image, bool bLine = true)
 	{
@@ -130,7 +146,7 @@ namespace ofxSurfingHelpers
 		}
 
 		ofPopStyle();
-	}
+	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageAtBottomRight(ofImage& image, string label = "")
 	{
@@ -166,13 +182,13 @@ namespace ofxSurfingHelpers
 		}
 
 		ofPopStyle();
-	}
+	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageResponsive(ofImage& image, bool bLine = true)
 	{
 		if (ofGetWidth() > ofGetHeight()) ofxSurfingHelpers::SurfDrawImageAtRight(image);//landscape
 		else ofxSurfingHelpers::SurfDrawImageAtBottom(image);//portrait
-	}
+	};
 
 	//----
 
@@ -212,7 +228,7 @@ namespace ofxSurfingHelpers
 		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` at `" << path << "` Not found!";
 
 		return b; // Returns true if it's ok
-	}
+	};
 
 	//--------------------------------------------------------------
 	inline bool saveGroup(ofParameterGroup& g, string path = "", bool debug = true)
@@ -244,7 +260,7 @@ namespace ofxSurfingHelpers
 		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` at " << path;
 
 		return b;
-	}
+	};
 
 	//----
 
@@ -254,13 +270,13 @@ namespace ofxSurfingHelpers
 	inline bool load(ofParameterGroup& g)
 	{
 		return loadGroup(g);
-	}
+	};
 
 	//--------------------------------------------------------------
 	inline bool save(ofParameterGroup& g)
 	{
 		return saveGroup(g);
-	}
+	};
 
 	//--
 
@@ -313,7 +329,7 @@ namespace ofxSurfingHelpers
 		{
 			ofLogVerbose("ofxSurfingHelpers") << _path << " Found!";// nothing to do
 		}
-	}
+	};
 
 	//--
 
@@ -363,7 +379,7 @@ namespace ofxSurfingHelpers
 				}
 			}
 		}
-	}
+	};
 
 
 	//----
@@ -478,8 +494,7 @@ namespace ofxSurfingHelpers
 			return "00:00";
 		else
 			return (mins + ":" + secs);
-	}
-
+	};
 
 	//----
 
@@ -490,6 +505,8 @@ namespace ofxSurfingHelpers
 	inline void DebugCoutParam(ofAbstractParameter& ap)
 	{
 		cout << ap.getName() << ": " << ap << endl;
-	}
+	};
 
 }; // namespace ofxSurfingHelpers 
+
+#endif

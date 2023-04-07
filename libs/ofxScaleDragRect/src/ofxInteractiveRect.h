@@ -214,6 +214,11 @@ public:
 
 	virtual ~ofxInteractiveRect();
 
+private:
+	void exit(ofEventArgs& args);
+	void exit();
+
+public:
 	void enableEdit(bool enable = true);
 	void disableEdit();
 	void toggleEdit();

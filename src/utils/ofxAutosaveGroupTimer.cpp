@@ -3,7 +3,13 @@
 //--------------------------------------------------------------
 ofxAutosaveGroupTimer::ofxAutosaveGroupTimer()
 {
+	ofLogNotice("ofxAutosaveGroupTimer") << "ofxAutosaveGroupTimer() CONSTRUCTOR";
+
 	ofAddListener(ofEvents().update, this, &ofxAutosaveGroupTimer::update);
+
+	// Fix some exit exceptions.
+	int minValue = std::numeric_limits<int>::min();
+	ofAddListener(ofEvents().exit, this, &ofxAutosaveGroupTimer::exit, minValue);
 
 	setup();
 }
@@ -11,14 +17,19 @@ ofxAutosaveGroupTimer::ofxAutosaveGroupTimer()
 //--------------------------------------------------------------
 ofxAutosaveGroupTimer::~ofxAutosaveGroupTimer()
 {
-	ofRemoveListener(ofEvents().update, this, &ofxAutosaveGroupTimer::update);
+	ofLogNotice("ofxAutosaveGroupTimer") << "~ofxAutosaveGroupTimer() DESTRUCTOR";
 
-	exit();
+	ofRemoveListener(ofEvents().update, this, &ofxAutosaveGroupTimer::update);
+	ofRemoveListener(ofEvents().exit, this, &ofxAutosaveGroupTimer::exit);
+
+	//exit();
 }
 
 //--------------------------------------------------------------
 void ofxAutosaveGroupTimer::startup()
 {
+	ofLogNotice("ofxAutosaveGroupTimer") << "startup()";
+
 	ofxSurfingHelpers::CheckFolder(path_Global);
 	ofxSurfingHelpers::loadGroup(params, path_Global + name_Settings + fileExtension);
 
@@ -27,7 +38,9 @@ void ofxAutosaveGroupTimer::startup()
 		ofxSurfingHelpers::loadGroup(data[i].params, data[i].path, !bSilent.get());
 	}
 
-	tOffset = (int) MAX(0, ofRandom(timeToAutosave.get() / 100));
+	//tOffset = (int)ofRandom(5);
+	tOffset = (int)MAX(0, ofRandom(timeToAutosave.get() / 5));
+	//tOffset = (int) MAX(0, ofRandom(timeToAutosave.get() / 100));
 	//cout << "tOffset:" << tOffset << endl;
 
 	bDoneStartup = true;
@@ -40,17 +53,29 @@ void ofxAutosaveGroupTimer::setup()
 
 	bAutoSave.set("auto save", true);
 	bSilent.set("silent", true);
-	timeToAutosave.set("time", 10000, 100, 30000);
+	timeToAutosave.set("time", 10, 1, 120);
 
 	params.setName("ofxAutosaveGroupTimer");
 	params.add(bAutoSave);
 	params.add(timeToAutosave);
 	params.add(bSilent);
+
+	timerLast_Autosave = ofGetElapsedTimef();
+}
+
+//--------------------------------------------------------------
+void ofxAutosaveGroupTimer::exit(ofEventArgs& args)
+{
+	ofLogNotice("ofxAutosaveGroupTimer") << "exit(ofEventArgs& args)";
+
+	exit();
 }
 
 //--------------------------------------------------------------
 void ofxAutosaveGroupTimer::exit()
 {
+	ofLogNotice("ofxAutosaveGroupTimer") << "exit()";
+
 	saveAllGroups();
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
@@ -85,6 +110,11 @@ void ofxAutosaveGroupTimer::addGroup(ofxSurfingHelpers::SurfDataGroupSaver _data
 //--------------------------------------------------------------
 void ofxAutosaveGroupTimer::saveAllGroups()
 {
+	if (!bSilent) ofLogNotice("ofxAutosaveGroupTimer") << "saveAllGroups()";
+
+	auto l = ofGetLogLevel();
+	if (bSilent) ofSetLogLevel(OF_LOG_SILENT);
+
 	for (int i = 0; i < data.size(); i++)
 	{
 		ofxSurfingHelpers::saveGroup(data[i].params, data[i].path, !bSilent.get());
@@ -92,6 +122,8 @@ void ofxAutosaveGroupTimer::saveAllGroups()
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
 	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension, !bSilent.get());
+
+	if (bSilent) ofSetLogLevel(l);
 }
 
 //--------------------------------------------------------------
@@ -108,29 +140,43 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 	{
 		// elapsed
 		uint64_t t;
-		if (!bRandomOffset) t = ofGetElapsedTimeMillis() - timerLast_Autosave;
-		else t = ofGetElapsedTimeMillis() - tOffset - timerLast_Autosave;
-		
+		if (!bRandomOffset) t = ofGetElapsedTimef() - timerLast_Autosave;
+		else t = ofGetElapsedTimef() + tOffset - timerLast_Autosave;
+
+		//cout << "t:" << t << endl;
+
 		progressPrc = ofMap(t, 0, timeToAutosave.get(), 0, 1, true);
 
 		//static int count = 0;
 
 		if (t >= timeToAutosave.get())
 		{
-			if (!bRandomOffset) timerLast_Autosave = ofGetElapsedTimeMillis();
-			else timerLast_Autosave = ofGetElapsedTimeMillis() - tOffset;
+			if (!bRandomOffset) timerLast_Autosave = ofGetElapsedTimef();
+			else timerLast_Autosave = ofGetElapsedTimef() - tOffset;
 
 			saveAllGroups();
 
-			ofLogNotice("ofxAutosaveGroupTimer") << "Auto save DONE!";
-			ofLogNotice("ofxAutosaveGroupTimer") << " " << path_Global;
+			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Auto save";
+			ofLogNotice("ofxAutosaveGroupTimer") << "> " << path_Global;
 
 			for (int i = 0; i < data.size(); i++)
 			{
-				ofLogNotice("ofxAutosaveGroupTimer") << "  " << data[i].params.getName();
+				ofLogNotice("ofxAutosaveGroupTimer") << "> " << data[i].params.getName();
 			}
 
-			ofLogNotice("ofxAutosaveGroupTimer") << "#" << count++ << " | " << (int)ofGetElapsedTimef() << " secs";
+			stringstream ss;
+			ss << "> #" << (++count) << " | " << (int)ofGetElapsedTimef() << " secs | " << (timeToAutosave.get());
+			if (bRandomOffset) 
+			{
+				ss << " / " << ofToString(tOffset) << " | ";
+				ss << ofToString(timeToAutosave - tOffset) << "";
+			}
+			else {
+				//ss << "]";
+			}
+
+			ofLogNotice("ofxAutosaveGroupTimer") << ss.str();
+
 			if (!bSilent.get())
 			{
 				ofLogNotice("ofxAutosaveGroupTimer") << "--------------------------------------------------------------\n";

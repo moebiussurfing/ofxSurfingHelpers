@@ -12,6 +12,8 @@
 //--------------------------------------------------------------
 ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 {
+	ofAddListener(ofEvents().exit, this, &ofxInteractiveRect::exit, OF_EVENT_ORDER_AFTER_APP);
+
 	bEditMode.addListener(this, &ofxInteractiveRect::Changed_EditMode);
 	rectParam.addListener(this, &ofxInteractiveRect::Changed_Rect);
 
@@ -42,7 +44,18 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 //--------------------------------------------------------------
 ofxInteractiveRect::~ofxInteractiveRect()
 {
-	return;//fixing crash
+	ofRemoveListener(ofEvents().exit, this, &ofxInteractiveRect::exit);
+}
+
+//--------------------------------------------------------------
+void ofxInteractiveRect::exit(ofEventArgs& args)
+{
+	exit();
+}
+
+//--------------------------------------------------------------
+void ofxInteractiveRect::exit()
+{
 
 	bEditMode.removeListener(this, &ofxInteractiveRect::Changed_EditMode);
 	rectParam.removeListener(this, &ofxInteractiveRect::Changed_Rect);
@@ -618,7 +631,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 	if (!bEditMode) return;
 	//if (!this->isMouseOver()) return;
 
-	if (!bLockResize) 
+	if (!bLockResize)
 	{
 		bLeft = false;
 		bRight = false;

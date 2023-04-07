@@ -66,10 +66,11 @@ public:
 private:
 	ofParameter<bool> bAutoSave;
 	ofParameter<bool> bSilent;//not log for every param
-	ofParameter<int> timeToAutosave;//period
+	ofParameter<int> timeToAutosave;//period in seconds
 
 	void setup();
 	void update(ofEventArgs& args);
+	void exit(ofEventArgs& args);
 	void exit();
 
 	uint64_t timerLast_Autosave = 0;
@@ -84,9 +85,8 @@ private:
 
 	//workaround
 	// a bit of offset to make many instances to not happen at the same time..
-	bool bRandomOffset = true;
+	bool bRandomOffset = 0;
 	int tOffset = 0;
 
 	int count = 0;
-
 };
