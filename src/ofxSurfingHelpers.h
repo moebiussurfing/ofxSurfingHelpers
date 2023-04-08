@@ -51,7 +51,7 @@ namespace ofxSurfingHelpers
 	// Left monitor is portrait. 
 	// Central and Right monitor are landscape.
 	//--------------------------------------------------------------
-	inline void SurfSetMyMonitor(int layout = 0, bool bStandardFrameRate = true)
+	inline void setMonitorsLayout(int layout = 0, bool bStandardFrameRate = true)
 	{
 		if (bStandardFrameRate) {
 			ofSetFrameRate(60);
@@ -85,10 +85,10 @@ namespace ofxSurfingHelpers
 	//----
 
 	// Window title
-	
+
 	// Set title with fps. Call on update()
 	//--------------------------------------------------------------
-	inline void SurfSetWindowTitleDebugPerformance(string name, bool bAsciiBar = false) {
+	inline void setWindowTitleDebugPerformance(string name, bool bAsciiBar = false) {
 		float v = ofMap(ofGetFrameRate(), 0, 60, 0, 1, true);
 
 		string s = name + "    |     " + ofToString(ofGetFrameRate(), 0) + " fps";
@@ -114,7 +114,7 @@ namespace ofxSurfingHelpers
 	// Images drawing
 
 	//--------------------------------------------------------------
-	inline void SurfDrawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
+	inline void drawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
 	{
 		if (!imageFloat.isAllocated()) return;
 
@@ -130,7 +130,7 @@ namespace ofxSurfingHelpers
 		}
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
+	inline void drawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
 	{
 		if (!image.isAllocated()) return;
 
@@ -149,7 +149,7 @@ namespace ofxSurfingHelpers
 		}
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageAtBottom(ofImage& image, bool bLine = true)
+	inline void drawImageAtBottom(ofImage& image, bool bLine = true)
 	{
 		if (!image.isAllocated()) return;
 
@@ -168,7 +168,7 @@ namespace ofxSurfingHelpers
 		ofPopStyle();
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageAtRight(ofImage& image, bool bLine = true)
+	inline void drawImageAtRight(ofImage& image, bool bLine = true)
 	{
 		if (!image.isAllocated()) return;
 
@@ -188,7 +188,7 @@ namespace ofxSurfingHelpers
 		ofPopStyle();
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageAtBottomRight(ofImage& image, string label = "")
+	inline void drawImageAtBottomRight(ofImage& image, string label = "")
 	{
 		if (!image.isAllocated()) return;
 
@@ -224,10 +224,10 @@ namespace ofxSurfingHelpers
 		ofPopStyle();
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageResponsive(ofImage& image, bool bLine = true)
+	inline void drawImageResponsive(ofImage& image, bool bLine = true)
 	{
-		if (ofGetWidth() > ofGetHeight()) ofxSurfingHelpers::SurfDrawImageAtRight(image);//landscape
-		else ofxSurfingHelpers::SurfDrawImageAtBottom(image);//portrait
+		if (ofGetWidth() > ofGetHeight()) ofxSurfingHelpers::drawImageAtRight(image);//landscape
+		else ofxSurfingHelpers::drawImageAtBottom(image);//portrait
 	};
 
 	//----
@@ -535,6 +535,7 @@ namespace ofxSurfingHelpers
 		else
 			return (mins + ":" + secs);
 	};
+	inline std::string getTimeFromSecond(float _time) { return calculateTime(_time); }
 
 	//----
 
@@ -542,7 +543,7 @@ namespace ofxSurfingHelpers
 	// Debug Helpers
 
 	//--------------------------------------------------------------
-	inline void DebugCoutParam(ofAbstractParameter& ap)
+	inline void debugCoutParam(ofAbstractParameter& ap)
 	{
 		cout << ap.getName() << ": " << ap << endl;
 	};
