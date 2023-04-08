@@ -82,31 +82,71 @@ namespace ofxSurfingHelpers
 		}
 	};
 
-	//call on update()
+	//----
+
+	// Window title
+	
+	// Set title with fps. Call on update()
 	//--------------------------------------------------------------
-	inline void SurfSetWindowTitleDebugPerformance(string name) {
-		string s = name + " |  " + ofToString(ofGetFrameRate(), 0) + "fps";
-		s += " / " + ofToString(ofGetLastFrameTime() * 1000, 0) + "ms";
+	inline void SurfSetWindowTitleDebugPerformance(string name, bool bAsciiBar = false) {
+		float v = ofMap(ofGetFrameRate(), 0, 60, 0, 1, true);
+
+		string s = name + "    |     " + ofToString(ofGetFrameRate(), 0) + " fps";
+		s += " / " + ofToString(ofGetLastFrameTime() * 1000, 0) + " ms";
+		s += "           ";
+
+		if (bAsciiBar) {
+			string ss = "";
+			size_t a = 10;
+			for (size_t i = 0; i < 10; i++)
+			{
+				if (i == (size_t)(v * a) - 0) ss += "|";
+				else ss += "-";
+			}
+			s += ss;
+		}
+
 		ofSetWindowTitle(s);
-	};
+	}
 
 	//----
 
 	// Images drawing
 
 	//--------------------------------------------------------------
-	inline void SurfDrawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
+	inline void SurfDrawImageFullScreenFit(ofFloatImage& imageFloat, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
 	{
-		ofRectangle rr(0, 0, imageFloat.getWidth(), imageFloat.getHeight());
-		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
-		imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
+		if (!imageFloat.isAllocated()) return;
+
+		if (!bflip) {
+			ofRectangle rr(0, 0, imageFloat.getWidth(), imageFloat.getHeight());
+			rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+			imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
+		}
+		else {
+			ofRectangle rr(0, 0, imageFloat.getHeight(), imageFloat.getWidth());
+			rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+			imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
+		}
 	};
 	//--------------------------------------------------------------
-	inline void SurfDrawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT)
+	inline void SurfDrawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
 	{
-		ofRectangle rr(0, 0, image.getWidth(), image.getHeight());
-		rr.scaleTo(ofGetCurrentViewport(), scaleMode);
-		image.draw(rr.x, rr.y, rr.width, rr.height);
+		if (!image.isAllocated()) return;
+
+		if (!bflip) {
+			ofRectangle rr(0, 0, image.getWidth(), image.getHeight());
+			rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+			image.draw(rr.x, rr.y, rr.width, rr.height);
+		}
+		//TODO:
+		else {
+			ofRectangle rr(0, 0, image.getHeight(), image.getWidth());
+			rr.scaleTo(ofGetCurrentViewport(), scaleMode);
+			ofPushMatrix();
+			image.draw(rr.x, rr.y, rr.width, rr.height);
+			ofPopMatrix();
+		}
 	};
 	//--------------------------------------------------------------
 	inline void SurfDrawImageAtBottom(ofImage& image, bool bLine = true)
