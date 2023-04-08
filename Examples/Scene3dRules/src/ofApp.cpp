@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofxSurfingHelpers::SurfSetMyMonitor(1);
+	ofxSurfingHelpers::setMonitorsLayout(1);
 
 	sceneGrid.setCameraPtr(&camera);
 	sceneGrid.setPathGlobal("data");

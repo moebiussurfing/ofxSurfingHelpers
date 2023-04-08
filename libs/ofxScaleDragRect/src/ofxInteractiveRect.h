@@ -233,7 +233,7 @@ public:
 	void draw();
 	void drawBorder();
 
-	bool loadSettings(string name = "", string path = "", bool bUseJson = false);
+	bool loadSettings(string name = "", string path = "", bool bUseJson = false);//fix json
 	void saveSettings(string name = "", string path = "", bool bUseJson = false);
 
 private:

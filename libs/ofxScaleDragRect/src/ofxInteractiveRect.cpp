@@ -650,27 +650,29 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 //--------------------------------------------------------------
 void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse)
 {
+	if (!this->isMouseOver()) return;
 	if (!bEnableMouseWheel) return;
 	if (!bEditMode) return;
-	if (!this->isMouseOver()) return;
 	if (bLockResize) return;
 
 	//--
 
-	// Skip window oversize
-	//TODO: workaround
-	const float gap = 20;
-	float xgap = 2 * xpad + gap;
-	float ygap = 2 * ypad + gap;
-	if (mouse.scrollY > 0)
-	{
-		if ((width >= ofGetWidth() - xgap) || (height >= ofGetHeight() - ygap))
-		{
-			if (bLockAspectRatio) height = width / aspectRatio;
-			doConstraints();
-			return;
-		}
-	}
+	//// Skip window oversize
+	////TODO: workaround
+	//const float gap = 20;
+	//float xgap = 2 * xpad + gap;
+	//float ygap = 2 * ypad + gap;
+	//
+	//// up
+	//if (mouse.scrollY > 0)
+	//{
+	//	if ((width >= ofGetWidth() - xgap) || (height >= ofGetHeight() - ygap))
+	//	{
+	//		if (bLockAspectRatio) height = width / aspectRatio;
+	//		doConstraints();
+	//		return;
+	//	}
+	//}
 
 	//--
 
@@ -697,6 +699,8 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse)
 
 //--------------------------------------------------------------
 void ofxInteractiveRect::doConstraints() {
+	//TODO:
+	//return;
 
 	// Apply constraints if defined
 	if (bConstrainedMin)
