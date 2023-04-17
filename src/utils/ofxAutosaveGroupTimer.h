@@ -77,7 +77,7 @@ private:
 	float progressPrc;
 	bool bDoneStartup = false;
 
-	string path_Global = "ofxAutosaveGroupTimer/";
+	string path_Global = "ofxAutosaveGroupTimer";
 	string name_Settings = "ofxAutosaveGroupTimer_Settings";
 	string fileExtension = ".json";
 

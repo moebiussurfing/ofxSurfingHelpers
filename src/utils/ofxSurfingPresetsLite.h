@@ -70,13 +70,13 @@ EXAMPLE
 
 class ofxSurfingPresetsLite
 {
-
 public:
 
 	ofxSurfingPresetsLite::ofxSurfingPresetsLite()
 	{
 		ofAddListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
 		ofAddListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
+		ofAddListener(ofEvents().exit, this, &ofxSurfingPresetsLite::exit);
 		addKeysListeners();
 
 		params.add(bGui);
@@ -97,14 +97,19 @@ public:
 
 	ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
 	{
-		exit();
+		//exit();
 
 		ofRemoveListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
 		ofRemoveListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
+		ofRemoveListener(ofEvents().exit, this, &ofxSurfingPresetsLite::exit);
 		removeKeysListeners();
 	};
 
 private:
+
+	void exit(ofEventArgs& args) {
+		exit();
+	};
 
 	void exit() {
 
@@ -753,7 +758,8 @@ public:
 	void setPathGlobal(std::string path) {
 		path_Global = path;
 		ofxSurfingHelpers::CheckFolder(path_Global);
-	}
+	};
+
 private:
 	std::string path_Global = "";//main folder where nested folder goes inside
 
@@ -1522,6 +1528,6 @@ public:
 			return true;
 		}
 		else return false;
-	}
+	};
 };
 

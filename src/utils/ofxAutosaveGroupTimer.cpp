@@ -31,7 +31,7 @@ void ofxAutosaveGroupTimer::startup()
 	ofLogNotice("ofxAutosaveGroupTimer") << "startup()";
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
-	ofxSurfingHelpers::loadGroup(params, path_Global + name_Settings + fileExtension);
+	ofxSurfingHelpers::loadGroup(params, path_Global + "/" + name_Settings + fileExtension);
 
 	for (int i = 0; i < data.size(); i++)
 	{
@@ -53,7 +53,7 @@ void ofxAutosaveGroupTimer::setup()
 
 	bAutoSave.set("auto save", true);
 	bSilent.set("silent", true);
-	timeToAutosave.set("time", 10, 1, 120);
+	timeToAutosave.set("time", 30, 1, 120);
 
 	params.setName("ofxAutosaveGroupTimer");
 	params.add(bAutoSave);
@@ -79,7 +79,7 @@ void ofxAutosaveGroupTimer::exit()
 	saveAllGroups();
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
-	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension, !bSilent.get());
+	ofxSurfingHelpers::saveGroup(params, path_Global + "/" + name_Settings + fileExtension, !bSilent.get());
 }
 
 //--------------------------------------------------------------
@@ -121,7 +121,7 @@ void ofxAutosaveGroupTimer::saveAllGroups()
 	}
 
 	ofxSurfingHelpers::CheckFolder(path_Global);
-	ofxSurfingHelpers::saveGroup(params, path_Global + name_Settings + fileExtension, !bSilent.get());
+	ofxSurfingHelpers::saveGroup(params, path_Global + "/" + name_Settings + fileExtension, !bSilent.get());
 
 	if (bSilent) ofSetLogLevel(l);
 }
@@ -156,26 +156,23 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 
 			saveAllGroups();
 
-			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Auto save";
-			ofLogNotice("ofxAutosaveGroupTimer") << "> " << path_Global;
-
-			for (int i = 0; i < data.size(); i++)
-			{
-				ofLogNotice("ofxAutosaveGroupTimer") << "> " << data[i].params.getName();
-			}
-
 			stringstream ss;
-			ss << "> #" << (++count) << " | " << (int)ofGetElapsedTimef() << " secs | " << (timeToAutosave.get());
-			if (bRandomOffset) 
+			if (bRandomOffset)
 			{
-				ss << " / " << ofToString(tOffset) << " | ";
+				ss << " | " << ofToString(tOffset) << " | ";
 				ss << ofToString(timeToAutosave - tOffset) << "";
 			}
 			else {
 				//ss << "]";
 			}
+			ss << "  #" << (++count) << "|" << (ofxSurfingHelpers::calculateTime(ofGetElapsedTimef())) << "|" << (timeToAutosave.get()) << "secs";
 
-			ofLogNotice("ofxAutosaveGroupTimer") << ss.str();
+			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Autosave to " << path_Global.c_str() << ss.str();
+
+			for (int i = 0; i < data.size(); i++)
+			{
+				ofLogNotice("ofxAutosaveGroupTimer") << "> Group #" << i << ": " << data[i].params.getName();
+			}
 
 			if (!bSilent.get())
 			{
