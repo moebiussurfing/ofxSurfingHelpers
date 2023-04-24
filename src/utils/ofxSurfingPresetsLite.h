@@ -1476,7 +1476,7 @@ private:
 	void keyPressed(ofKeyEventArgs& eventArgs)
 	{
 		const int& key = eventArgs.key;
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
+		ofLogVerbose("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
 
 		// Modifiers
 		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -1492,7 +1492,7 @@ private:
 	void keyReleased(ofKeyEventArgs& eventArgs)
 	{
 		const int& key = eventArgs.key;
-		ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
+		ofLogVerbose("ofxSurfingPresetsLite") << (__FUNCTION__) << (char)key << " [" << key << "]";
 
 		// Modifiers
 		bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
