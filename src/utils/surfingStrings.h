@@ -225,4 +225,38 @@ namespace ofxSurfingHelpers {
 	*/
 
 
+
+//--
+
+//TODO: break lines for text formatting by setting a with of amount of of chars.
+//https://stackoverflow.com/questions/6891652/formatting-a-string-into-multiple-lines-of-a-specific-length-in-c-c
+
+	inline string splitInLines(string source, std::size_t width, string whitespace = " \t\r")
+	{
+		std::size_t  currIndex = width - 1;
+		std::size_t  sizeToElim;
+		while (currIndex < source.length())
+		{
+			currIndex = source.find_last_of(whitespace, currIndex + 1);
+			if (currIndex == string::npos)
+				break;
+			currIndex = source.find_last_not_of(whitespace, currIndex);
+			if (currIndex == string::npos)
+				break;
+			sizeToElim = source.find_first_not_of(whitespace, currIndex + 1) - currIndex - 1;
+			source.replace(currIndex + 1, sizeToElim, "\n");
+			currIndex += (width + 1); //due to the recently inserted "\n"
+		}
+		return source;
+	}
+
+	/*
+	int main() {
+		string source = "Shankle drumstick corned beef, chuck turkey chicken pork chop venison beef strip steak cow sausage. Tail short loin shoulder ball tip, jowl drumstick rump. Tail tongue ball tip meatloaf, bresaola short loin tri-tip fatback pork loin sirloin shank flank biltong. Venison short loin andouille.";
+		string result = splitInLines(source, 60);
+		std::cout << result;
+		return 0;
+	}
+	*/
+
 }; // ofxSurfingHelpers
