@@ -52,7 +52,8 @@ namespace ofxSurfingHelpers
 	// I have three FHD monitors: 
 	// Left monitor is portrait. 
 	// Central and Right monitor are landscape.
-
+	// Example:	
+	//	ofxSurfingHelpers::setMonitorsLayout(-1, true, true); // Left monitor portrait
 	//--------------------------------------------------------------
 	inline void setMonitorsLayout(int pos, bool bPortrait, bool bStandardFrameRate)
 	{
@@ -322,7 +323,7 @@ namespace ofxSurfingHelpers
 		}
 
 		// Create folder if folder do not exist!
-		// From now, will not rerquire to call manually:
+		// From now, will not require to call manually:
 		//ofxSurfingHelpers::CheckFolder(path);
 
 		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {

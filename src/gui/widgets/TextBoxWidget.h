@@ -172,7 +172,7 @@ public:
 		return rect_HelpTextBox;
 	}
 
-	ofParameter<bool> bGui{ "Show TextBox", true };
+	ofParameter<bool> bGui{ "Show TextBox", false };
 
 private:
 
@@ -277,7 +277,7 @@ public:
 	// useful to customize the name when using many instances but on the same folder.
 	// Notice that is not required when using a personalized path with setPath(
 	//--------------------------------------------------------------
-	void setName(string name, bool bNameGuiToo = false) {
+	void setName(string name, bool bNameGuiToo = true) {
 		// default: "_HelpBox"
 
 		path_RectHelpBox = name ;
@@ -637,6 +637,11 @@ public:
 	//--------------------------------------------------------------
 	void setToggleTheme() {
 		bThemeDarkOrLight = !bThemeDarkOrLight;
+	}
+
+	//--------------------------------------------------------------
+	void setToggleVisible() {
+		bGui = !bGui;
 	}
 
 	//--------------------------------------------------------------
