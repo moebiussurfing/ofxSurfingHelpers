@@ -62,6 +62,7 @@ namespace ofxSurfingHelpers {
 		return text;
 	};
 
+	/*
 	//#include <unordered_set>//required
 	// will split blocks checking new lines '\n'
 	//--------------------------------------------------------------
@@ -110,6 +111,40 @@ namespace ofxSurfingHelpers {
 
 		return blocks;
 	};
+	*/
+
+	inline std::vector<std::string> splitTextBlocks(const std::string& s) {
+		std::vector<std::string> blocks;
+		std::string current_block;
+		bool inside_block = false; // Keeps track of whether we're currently inside a block
+
+		for (char c : s) {
+			if (c == '\n' || c == '\r') {
+				inside_block = false;
+				blocks.push_back(current_block);
+				current_block.clear();
+			}
+			else {
+				current_block += c;
+				inside_block = true;
+			}
+
+			if (current_block.length() > 10000) {
+				std::cerr << "Block size limit exceeded" << std::endl;
+				break;
+			}
+		}
+
+		if (inside_block) {
+			blocks.push_back(current_block);
+		}
+
+		// remove starting spaces on each text blocks
+		removeLeadingSpaces(blocks);
+
+		return blocks;
+	};
+
 
 	// regex_replace
 	// https://stackoverflow.com/questions/3654617/remove-number-then-a-space-from-the-start-of-a-string
@@ -123,7 +158,6 @@ namespace ofxSurfingHelpers {
 			Add a plus sign(+) to the end and you can have...
 			\d + a series of digits(number)
 			\s + multiple spaces(typos etc.)
-	*/
 	//--------------------------------------------------------------
 	static void removeNumberPatternsFromBlocks(std::vector<std::string>& blocks) {
 		const std::string pattern = "/^\d+\s+/";
@@ -141,7 +175,9 @@ namespace ofxSurfingHelpers {
 			//ofStringReplace(block, "\"", "");
 		}
 	};
+	*/
 
+	// Remove the starting numbers of the lines
 	//--------------------------------------------------------------
 	static std::vector<std::string> splitTextBlocksNumbered(std::string paragraph) {
 		std::vector<std::string> blocks;
@@ -259,4 +295,14 @@ namespace ofxSurfingHelpers {
 	}
 	*/
 
+	inline std::string removeNumbersStartingLines(const std::string& input)
+	{
+		// Define a regular expression to match the numbers at the start of each line
+		std::regex pattern(R"(^\d+\. )");
+
+		// Use regex_replace to remove the numbers from the input string
+		std::string output = std::regex_replace(input, pattern, "");
+
+		return output;
+	}
 }; // ofxSurfingHelpers

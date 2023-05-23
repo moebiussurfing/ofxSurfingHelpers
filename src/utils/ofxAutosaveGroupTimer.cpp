@@ -165,7 +165,7 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 			else {
 				//ss << "]";
 			}
-			ss << "  #" << (++count) << "|" << (ofxSurfingHelpers::calculateTime(ofGetElapsedTimef())) << "|" << (timeToAutosave.get()) << "secs";
+			ss << "  #" << (++count) << " | " << (ofxSurfingHelpers::calculateTime(ofGetElapsedTimef())) << " | " << (timeToAutosave.get()) << "secs";
 
 			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Autosave to " << path_Global.c_str() << ss.str();
 
