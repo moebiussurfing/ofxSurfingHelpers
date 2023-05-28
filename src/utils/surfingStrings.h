@@ -20,7 +20,7 @@ namespace ofxSurfingHelpers {
 		for (auto& str : vec) {
 			str.erase(0, str.find_first_not_of(' '));
 		}
-	};
+	}
 
 	//--------------------------------------------------------------
 	inline int countNewlines(std::string str) {
@@ -31,7 +31,7 @@ namespace ofxSurfingHelpers {
 			}
 		}
 		return count;
-	};
+	}
 
 	//--------------------------------------------------------------
 	inline string loadFileText(string path)
@@ -60,7 +60,7 @@ namespace ofxSurfingHelpers {
 		}
 
 		return text;
-	};
+	}
 
 	/*
 	//#include <unordered_set>//required
@@ -110,7 +110,7 @@ namespace ofxSurfingHelpers {
 		removeLeadingSpaces(blocks);
 
 		return blocks;
-	};
+	}
 	*/
 
 	inline std::vector<std::string> splitTextBlocks(const std::string& s) {
@@ -143,8 +143,7 @@ namespace ofxSurfingHelpers {
 		removeLeadingSpaces(blocks);
 
 		return blocks;
-	};
-
+	}
 
 	// regex_replace
 	// https://stackoverflow.com/questions/3654617/remove-number-then-a-space-from-the-start-of-a-string
@@ -231,7 +230,7 @@ namespace ofxSurfingHelpers {
 		//removeNumberPatternsFromBlocks(blocks);
 
 		return blocks;
-	};
+	}
 
 	//----
 
@@ -260,12 +259,10 @@ namespace ofxSurfingHelpers {
 	};
 	*/
 
+	//--
 
-
-//--
-
-//TODO: break lines for text formatting by setting a with of amount of of chars.
-//https://stackoverflow.com/questions/6891652/formatting-a-string-into-multiple-lines-of-a-specific-length-in-c-c
+	//TODO: break lines for text formatting by setting a with of amount of of chars.
+	//https://stackoverflow.com/questions/6891652/formatting-a-string-into-multiple-lines-of-a-specific-length-in-c-c
 
 	inline string splitInLines(string source, std::size_t width, string whitespace = " \t\r")
 	{
@@ -305,4 +302,35 @@ namespace ofxSurfingHelpers {
 
 		return output;
 	}
+
+	// Url Helpers
+	inline char toHex(unsigned char c) {
+		if (c <= 9) {
+			return '0' + c;
+		}
+		else {
+			return 'A' + (c - 10);
+		}
+	}
+
+	inline std::string urlEncode(const string& str) {
+		string encodedStr;
+		char c;
+		for (size_t i = 0; i < str.length(); i++) {
+			c = str[i];
+			if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+				encodedStr += c;
+			}
+			else if (c == ' ') {
+				encodedStr += '+';
+			}
+			else {
+				encodedStr += '%';
+				encodedStr += toHex((unsigned char)c >> 4);
+				encodedStr += toHex((unsigned char)c & 0xF);
+			}
+		}
+		return encodedStr;
+	}
+
 }; // ofxSurfingHelpers
