@@ -53,7 +53,7 @@ void ofxAutosaveGroupTimer::setup()
 
 	bAutoSave.set("auto save", true);
 	bSilent.set("silent", true);
-	timeToAutosave.set("time", 30, 1, 120);
+	timeToAutosave.set("time", 60, 1, 240);
 
 	params.setName("ofxAutosaveGroupTimer");
 	params.add(bAutoSave);

@@ -4,6 +4,9 @@
 
 String Helpers
 
+https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
+
+
 */
 
 //----
