@@ -2,8 +2,11 @@
 
 /*
 
-String Helpers
+TODO:
+Get tools from here:
+https://github.com/chrberger/stringtoolbox
 
+String info
 https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
 
 

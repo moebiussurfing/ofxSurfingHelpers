@@ -1,6 +1,16 @@
 #pragma once
 #include "ofMain.h"
 
+/*
+
+Simple sounds manager to add sounds to your app ui.
+
+TODO:
+add handle by name instead of index
+
+
+*/
+
 class SurfingSounds
 {
 private:
@@ -63,6 +73,7 @@ public:
 		ofLogNotice("SurfingSounds - Destructor");
 	}
 
+	// play sound by index
 	void play(int i) {
 		if (i > sounds.size() - 1) {
 			ofLogError("SurfingSounds") << "play. Out of range " << i;
@@ -73,6 +84,7 @@ public:
 		sounds[i].play();
 	}
 
+	// trig random sound to imitate a mechanical kyboard clicking.
 	void playKeys() {
 		int i = ofRandom(soundsKeys.size());
 		ofLogNotice("SurfingSounds") << "Sound keys: " << i;
