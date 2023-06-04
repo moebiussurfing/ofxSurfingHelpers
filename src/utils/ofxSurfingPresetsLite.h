@@ -5,10 +5,12 @@
 	TODO
 
 	BUG
-	autosave required to ctrl + copy
+	auto save required to ctrl + copy
 
 */
 
+#define OFX_SURFING_PRESETS_LITE__DISABLE_WORKFLOW
+//that removes all preset files or creates new ones if not present or first startup.
 
 //--
 
@@ -71,7 +73,7 @@ EXAMPLE
 class ofxSurfingPresetsLite
 {
 public:
-    ofxSurfingPresetsLite::ofxSurfingPresetsLite()
+    ofxSurfingPresetsLite()
     {
         ofAddListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
         ofAddListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
@@ -96,10 +98,8 @@ public:
         ofSetLogLevel("ofxSurfingPresetsLite", OF_LOG_NOTICE);
     }
 
-    ofxSurfingPresetsLite::~ofxSurfingPresetsLite()
+    ~ofxSurfingPresetsLite()
     {
-        //exit();
-
         ofRemoveListener(params.parameterChangedE(), this, &ofxSurfingPresetsLite::Changed);
         ofRemoveListener(ofEvents().update, this, &ofxSurfingPresetsLite::update);
         ofRemoveListener(ofEvents().exit, this, &ofxSurfingPresetsLite::exit);
@@ -328,7 +328,7 @@ public:
                             {
                                 if (ImGui::Button("OK", ImVec2(120, 2 * _h)))
                                 {
-                                    ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "CLEAR";
+                                    ofLogNotice("ofxSurfingPresetsLite") << "CLEAR";
                                     doClearPresets();
                                     ImGui::CloseCurrentPopup();
                                 }
@@ -341,7 +341,7 @@ public:
                             }
                             else
                             {
-                                ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "CLEAR";
+                                ofLogNotice("ofxSurfingPresetsLite") << "CLEAR";
                                 doClearPresets(false);
                                 ImGui::CloseCurrentPopup();
 
@@ -657,20 +657,20 @@ private:
 
     ofParameter<bool> bClicker{"CLICKER", false};
     ofParameter<bool> bAutoSave{"AutoSave", true};
-    ofParameter<bool> bExpand{"Expand", true};
+    ofParameter<bool> bExpand{"Expand", false};
 
     //public:
 private:
     void setup()
     {
-        ofLogNotice(__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "setup";
 
         doRefreshFiles(); //TODO:
-    };
+    }
 
     void startup()
     {
-        ofLogNotice(__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "startup";
 
         doRefreshFiles();
 
@@ -702,7 +702,7 @@ private:
             }
             keyCommandsChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         }
-    };
+    }
 
     void update(ofEventArgs& args)
     {
@@ -711,21 +711,21 @@ private:
         {
             startup();
         }
-    };
+    }
 
     void draw()
     {
         //ImVec2 sz(100,30);
         //if (ofxSurfingGui::AddButton("Save", sz)) {
         //}
-    };
+    }
 
     //--
 
     void doSave()
     {
         //save the previously settled name
-        ofLogNotice(__FUNCTION__) << " : " << filename;
+        ofLogNotice("ofxSurfingPresetsLite") << "doSave: " << filename;
 
         if (bDoingNew) bDoingNew = false;
 
@@ -733,27 +733,25 @@ private:
 
         // Save Settings
         ofxSurfingHelpers::saveGroup(params_Preset, pathPresets + "/" + filename + ".json");
-    };
+    }
 
     void doLoad()
     {
-        ofLogNotice(__FUNCTION__) << " : " << filename;
+        ofLogNotice("ofxSurfingPresetsLite") << "doLoad: " << filename;
 
         if (bDoingNew) bDoingNew = false;
 
         // Load Settings
         ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
-    };
+    }
 
 
     //void load(string path)
     //{
     //	ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
-
     //	// Load Settings
     //	ofxSurfingHelpers::loadGroup(params_Preset, pathPresets + "/" + filename + ".json");
     //}
-
 
     //void doResetParams()
     //{
@@ -783,13 +781,13 @@ public:
         path_Settings = s;
 
         setup();
-    };
+    }
 
     void setPathGlobal(std::string path)
     {
         path_Global = path;
         ofxSurfingHelpers::CheckFolder(path_Global);
-    };
+    }
 
 private:
     std::string path_Global = ""; //main folder where nested folder goes inside
@@ -799,31 +797,31 @@ public:
     {
         pathPresets = p + "/Presets";
         ofxSurfingHelpers::CheckFolder(pathPresets);
-    };
+    }
 
     void setFilename(string p)
     {
         filename = p;
-        ofLogNotice(__FUNCTION__) << " : " << filename;
-    };
+        ofLogNotice("ofxSurfingPresetsLite") << "setFilename: " << filename;
+    }
 
     void doLoadPrevious()
     {
         if (index > index.getMin()) index--;
         else if (index == index.getMin()) index = index.getMax();
-    };
+    }
 
     void doLoadNext()
     {
         if (index < index.getMax()) index++;
         else if (index == index.getMax()) index = index.getMin();
-    };
+    }
 
 private:
     void Changed(ofAbstractParameter& e)
     {
         string name = e.getName();
-        ofLogNotice(__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite");
         ofLogNotice("ofxSurfingPresetsLite") << name << " " << e;
 
         if (0)
@@ -1059,7 +1057,7 @@ private:
             // make new
             */
         }
-    };
+    }
 
     //--
 
@@ -1085,12 +1083,12 @@ private:
     int getNumFiles()
     {
         return filenames.size();
-    };
+    }
 
     bool doRefreshFiles()
     {
         // Load dragged images folder
-        ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__) << "list files " << pathPresets;
+        ofLogNotice("ofxSurfingPresetsLite") << "doRefreshFiles: list files " << pathPresets;
 
         bool b = false;
 
@@ -1130,11 +1128,11 @@ private:
         // true if there's some file
 
         return b;
-    };
+    }
 
     void doClearPresets(bool createOne = true)
     {
-        ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "doClearPresets";
 
         // Remove all files
         for (int i = 0; i < dir.size(); i++)
@@ -1148,7 +1146,7 @@ private:
         if (bOverInputText) bOverInputText = false;
 
         index = 0;
-    };
+    }
 
     //TODO:
     string _namePreset = "";
@@ -1160,7 +1158,7 @@ private:
         //only sets a name, 
         //correlated to the amount of files
 
-        ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "doNewPreset";
         if (!bOverInputText) bOverInputText = true;
 
         bDoingNew = true;
@@ -1181,11 +1179,11 @@ private:
         //TODO: should rename if file is already there!
 
         setFilename(_namePreset);
-    };
+    }
 
     void doPopulatePresets(int amount = 9)
     {
-        ofLogNotice("ofxSurfingPresetsLite") << (__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "doPopulatePresets";
 
         doClearPresets(false);
 
@@ -1213,7 +1211,7 @@ private:
 
         // Workflow
         index = 0;
-    };
+    }
 
     //----
 
@@ -1431,7 +1429,7 @@ private:
     //--------------------------------------------------------------
     void doRandomizeParams(bool bSilent = false)
     {
-        ofLogNotice(__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "doRandomizeParams";
 
         //TODO:
         // this is not recursive inside the group content!
@@ -1469,13 +1467,13 @@ private:
                 ofLogNotice("ofxSurfingPresetsLite") << pr.getName() << " = " << pr.get();
             }
         }
-    };
+    }
 
     // Reset Simple
     //--------------------------------------------------------------
     void doResetParams(bool bSilent = false)
     {
-        ofLogNotice(__FUNCTION__);
+        ofLogNotice("ofxSurfingPresetsLite") << "doResetParams";
 
         for (int i = 0; i < params_Preset.size(); i++)
         {
@@ -1509,13 +1507,13 @@ private:
         }
 
         //if (!bSilent) bIsRetrigged = true;
-    };
+    }
 
     //--------------------------------------------------------------
     void keyPressed(ofKeyEventArgs& eventArgs)
     {
         const int& key = eventArgs.key;
-        ofLogVerbose("ofxSurfingPresetsLite") << (__FUNCTION__) << ": " << (char)key /*<< " [" << key << "]"*/;
+        ofLogVerbose("ofxSurfingPresetsLite") << "keyPressed: " << (char)key /*<< " [" << key << "]"*/;
 
         // Modifiers
         bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -1525,13 +1523,13 @@ private:
 
         if (mod_CONTROL) bKeyCtrl = true;
         if (mod_ALT) bKeyAlt = true;
-    };
+    }
 
     //--------------------------------------------------------------
     void keyReleased(ofKeyEventArgs& eventArgs)
     {
         const int& key = eventArgs.key;
-        ofLogVerbose("ofxSurfingPresetsLite") << (__FUNCTION__) << ": " << (char)key /*<< " [" << key << "]"*/;
+        ofLogVerbose("ofxSurfingPresetsLite") << "keyReleased: " << (char)key /*<< " [" << key << "]"*/;
 
         // Modifiers
         bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -1543,19 +1541,21 @@ private:
         if (!mod_ALT) bKeyAlt = false;
 
         //if (!bKeys) return;
-    };
+    }
+
     //--------------------------------------------------------------
     void addKeysListeners()
     {
         ofAddListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
         ofAddListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
-    };
+    }
+
     //--------------------------------------------------------------
     void removeKeysListeners()
     {
         ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingPresetsLite::keyPressed);
         ofRemoveListener(ofEvents().keyReleased, this, &ofxSurfingPresetsLite::keyReleased);
-    };
+    }
 
     // easy callback to know when the preset index/selector changed
 private:
@@ -1569,5 +1569,5 @@ public:
             return true;
         }
         else return false;
-    };
+    }
 };
