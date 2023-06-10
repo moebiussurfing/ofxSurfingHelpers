@@ -3,11 +3,12 @@
 
 /*
 
-Simple sounds manager to add sounds to your app ui.
+	Simple sounds manager to add sounds to your app ui.
 
-TODO:
-add handle by name instead of index
-
+	TODO:
+	add handle by name instead of index
+	auto load all files from a folder
+	add/play sounds by index name pair/map
 
 */
 

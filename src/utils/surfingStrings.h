@@ -3,10 +3,10 @@
 /*
 
 TODO:
-Get tools from here:
+Get some methods / learn from here:
 https://github.com/chrberger/stringtoolbox
-
-String info
+https://github.com/robhz786/strf
+https://www.geeksforgeeks.org/getline-string-c/
 https://learn.microsoft.com/en-us/cpp/cpp/string-and-character-literals-cpp?view=msvc-170
 
 

@@ -569,7 +569,7 @@ public:
 
         if (bClicker)
         {
-            if (ui->bMinimize) ui->AddSpacingSeparated();
+            if (ui->bMinimize && !bMinimal) ui->AddSpacingSeparated();
 
             float _h2 = ui->getWidgetsHeightUnit();
             _h2 *= 1.5f;
