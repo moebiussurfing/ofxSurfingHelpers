@@ -3,12 +3,12 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
-	ofxSurfingHelpers::setMonitorsLayout(1);
+	ofxSurfingHelpers::setMonitorsLayout(-1, true, true);
 
-	sceneGrid.setCameraPtr(&camera);
+	ofSetCircleResolution(200);
+
+	sceneGrid.setCameraPtr(&cam);
 	sceneGrid.setPathGlobal("data");
-
-	doResetCamera();
 
 	g.add(bGui);
 	g.add(scale);
@@ -17,6 +17,8 @@ void ofApp::setup()
 	g.add(bObject);
 	g.add(bFlipColors);
 	ofxSurfingHelpers::load(g);
+
+	cam.setup();
 }
 
 //--------------------------------------------------------------
@@ -34,10 +36,9 @@ void ofApp::draw()
 
 	//--
 
-	camera.begin();
+	ofEnableDepthTest();
+	cam.begin();
 	{
-		//ofEnableDepthTest();
-
 		// Camera transforms will need fixes!
 		float _scaleTotal = 1.f;
 
@@ -108,7 +109,11 @@ void ofApp::draw()
 
 		sceneGrid.drawInsideCam();
 	}
-	camera.end();
+	cam.end();
+
+	ofDisableDepthTest();
+	cam.drawInteractionArea();
+	cam.drawHelpText();
 
 	//ofDisableDepthTest();//optional
 	sceneGrid.drawOutsideCam();
@@ -126,6 +131,8 @@ void ofApp::drawImGui()
 
 	ui.Begin();
 	{
+		cam.drawImGui(ui);
+
 		if (ui.BeginWindow(bGui))
 		{
 			ui.AddLabelBig("Scene");
@@ -135,7 +142,7 @@ void ofApp::drawImGui()
 			ui.AddSpacingSeparated();
 
 			ui.AddLabelBig("Camera");
-
+			ui.Add(cam.bGui, OFX_IM_TOGGLE_ROUNDED);
 			ui.Add(zoom, OFX_IM_HSLIDER_SMALL);
 			ui.Add(bRotate);
 			ui.AddSpacing();
@@ -145,18 +152,6 @@ void ofApp::drawImGui()
 			if (ui.AddButton("Reset Scale"))
 			{
 				scale = 1;
-			}
-
-			ui.AddSpacingSeparated();
-
-			bool b = camera.getMouseInputEnabled();
-			if (ui.AddButton("Mouse Cam",
-				!b ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK)) {
-				if (b) camera.disableMouseInput();
-				else camera.enableMouseInput();
-			}
-			if (ui.AddButton("Reset Camera")) {
-				doResetCamera();
 			}
 
 #ifdef USE_IM_GUI__SCENE
@@ -181,21 +176,11 @@ void ofApp::keyPressed(int key)
 {
 	if (key == ' ') bGui = !bGui;
 	if (key == OF_KEY_RETURN) sceneGrid.bForceBitmap = !sceneGrid.bForceBitmap;
-	if (key == OF_KEY_LEFT_CONTROL) {
-		bool b = camera.getMouseInputEnabled();
-		if (b) camera.disableMouseInput();
-		else camera.enableMouseInput();
-	}
+
+	cam.keyPressed(key);
 }
 
 //--------------------------------------------------------------
-void ofApp::doResetCamera() {
-	camera.setupPerspective();
-	camera.setVFlip(0);
-	camera.setPosition(100, 100, 100);
-	camera.lookAt(glm::vec3(0));
-	camera.disableMouseInput();
-	camera.setFarClip(10000);
-	camera.setNearClip(0);
-	camera.enableMouseInput();
+void ofApp::keyReleased(int key) {
+	cam.keyReleased(key);
 }
