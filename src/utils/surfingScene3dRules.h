@@ -9,10 +9,20 @@
 
 /*
 
+	BUGS:
+
+	fix transform problems for ttf (non bitmap) fonts bc cam scaling 
+	fix unit/big lines breaks and hides the others if overlap!
+		transparency is not working
+
+
 	TODO:
 
 	units can't be disabled. if disable can't draw text labels on bitmap mode.
-	ttf fonts work bad when translations applied to the camera, like rotation. Scale is handled well.
+	ttf fonts work bad when translations applied to the camera, 
+		like rotation. 
+		Scale is handled well.
+	fix buttons width overlap text!
 
 */
 
@@ -33,14 +43,31 @@ namespace ofxSurfingHelpers
 	{
 	public:
 		SurfSceneGrids() {
-			//setup();
-		};
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Constructor()";
+				
+			// Fix some exit exceptions.
+			int minValue = std::numeric_limits<int>::min();
+			ofAddListener(ofEvents().exit, this, &SurfSceneGrids::exit, minValue);
+		}
 
 		~SurfSceneGrids() {
-			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor() Save settings";
-			doSave();
-		};
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor()";
 
+			ofRemoveListener(ofEvents().exit, this, &SurfSceneGrids::exit);
+		}
+		
+	private:
+		void exit(ofEventArgs& args)
+		{
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "exit(ofEventArgs& args)";
+			exit();
+		}
+		void exit() {
+			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "exit()";
+			doSave();
+		}
+
+	public:
 		void setCameraPtr(ofCamera* _camera) { camera = _camera; };
 
 	private:
@@ -64,13 +91,13 @@ namespace ofxSurfingHelpers
 
 		ofParameter<bool> bGui{ "FloorGrid", true };
 
-		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cSixteenth{ "C Sixteenth", ofColor(ofColor::yellow, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255,255) };
-		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255,255) };
+		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cSixteenth{ "C Sixteenth", ofColor(ofColor::yellow, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
 
 		ofParameter<bool> bBig{ "Big", true };
 		ofParameter<bool> bQuarter{ "Quarter", true };
@@ -146,7 +173,7 @@ namespace ofxSurfingHelpers
 			doLoad();
 
 			bDoneSetup = true;
-		};
+		}
 
 		void drawBg()
 		{
@@ -163,7 +190,7 @@ namespace ofxSurfingHelpers
 				// Bg gradient
 				ofxSurfingHelpers::ofxDrawBgGradient((bFlipBg ? cBg1 : cBg2), (bFlipBg ? cBg2 : cBg1), ofGradientMode(gradientType.get() - 1));
 			}
-		};
+		}
 
 		void drawOutsideCam()//draw labels
 		{
@@ -181,6 +208,9 @@ namespace ofxSurfingHelpers
 				return;
 			}
 
+			//TODO: fixing overlap transparencies..
+			ofEnableAlphaBlending();
+
 			//workaround 
 			// Draw labels, out of the camera
 			// custom font
@@ -191,7 +221,7 @@ namespace ofxSurfingHelpers
 				if (bDefaultColors) ofxSurfingHelpers::ofxDrawGridPlaneLabelsTrueTypeFont(stepSize, numberOfSteps, f, bOffsetLabels, camera, scale);
 				else ofxSurfingHelpers::ofxDrawGridPlaneLabelsTrueTypeFont(stepSize, numberOfSteps, f, bOffsetLabels, camera, scale, cText);
 			}
-		};
+		}
 
 		void drawInsideCam() {
 			if (!bDoneSetup) setup();
@@ -203,6 +233,9 @@ namespace ofxSurfingHelpers
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
 				return;
 			}
+
+			//TODO: fixing overlap transparencies..
+			ofEnableAlphaBlending();
 
 			gridSize = numberOfSteps * stepSize;
 
@@ -240,9 +273,9 @@ namespace ofxSurfingHelpers
 				}
 			}
 			//separated labels here
-				if (bForceBitmap && bLabels)
-					ofxSurfingHelpers::ofxDrawGridLabelsBitmapFonts(stepSize, numberOfSteps, false, true, false, 
-						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
+			if (bForceBitmap && bLabels)
+				ofxSurfingHelpers::ofxDrawGridLabelsBitmapFonts(stepSize, numberOfSteps, false, true, false,
+					bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
 
 			// 2 Quarters
 			// 3 Sixteenth
@@ -261,7 +294,7 @@ namespace ofxSurfingHelpers
 				ofSetColor(bDefaultColors ? SURFING_RULES_COLOR_LINES_BIG : cBig);
 				ofxSurfingHelpers::ofxDrawFloorRectangle(gridSize);
 			}
-		};
+		}
 
 		//--
 
@@ -272,7 +305,7 @@ namespace ofxSurfingHelpers
 			ofxSurfingHelpers::saveGroup(params, path);
 
 			ofLogNotice("of xSurfingHelpers::SurfSceneGrids") << "Setup() Save settings: " << path;
-		};
+		}
 
 		void doLoad() {
 			string path;
@@ -281,7 +314,7 @@ namespace ofxSurfingHelpers
 			ofxSurfingHelpers::loadGroup(params, path);
 
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Setup() Load settings: " << path;
-		};
+		}
 
 		void doResetSettings() {
 			bDraw = true;
@@ -290,7 +323,7 @@ namespace ofxSurfingHelpers
 			bLabels = true;
 			bFontSmall = true;
 			bOffsetLabels = false;
-		};
+		}
 
 		void doResetColors() {
 #if(DEBUG_COLORS__SCENE)
@@ -311,12 +344,12 @@ namespace ofxSurfingHelpers
 			cBg2 = ofColor{ 0, 0, 0 };
 #endif
 
-		};
+		}
 
 		void doResetAll() {
 			doResetSettings();
 			doResetColors();
-		};
+		}
 
 	private:
 		ofTrueTypeFont font;
@@ -327,7 +360,7 @@ namespace ofxSurfingHelpers
 #ifdef USE_IM_GUI__SCENE
 	public:
 
-		void drawImGuiDebug(ofxSurfingGui& ui)
+		void drawImGuiWindow(ofxSurfingGui& ui)
 		{
 			if (!bDoneSetup) setup();
 			if (!bGui) return;
@@ -438,7 +471,7 @@ namespace ofxSurfingHelpers
 						doLoad();
 					}
 
-					/*
+#if 1 
 					ui.AddSpacingSeparated();
 					static bool bDebug = false;
 					ui.AddToggle("Debug", bDebug, OFX_IM_TOGGLE_ROUNDED_MINI);
@@ -450,7 +483,7 @@ namespace ofxSurfingHelpers
 						s += "\nScale: " + ofToString(scale);
 						ui.AddLabel(s);
 					}
-					*/
+#endif
 				}
 
 				ui.EndWindow();
