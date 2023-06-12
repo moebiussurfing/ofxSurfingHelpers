@@ -86,7 +86,7 @@ namespace ofxSurfingHelpers
 
 		ofSetWindowPosition(x, y);
 		ofSetWindowShape(w, h);
-	};
+	}
 
 	// Legacy
 	//--------------------------------------------------------------
@@ -119,7 +119,7 @@ namespace ofxSurfingHelpers
 			ofSetWindowPosition(-1920, h);
 			ofSetWindowShape(1920, 1080 - hw);
 		}
-	};
+	}
 
 	//----
 
@@ -167,7 +167,7 @@ namespace ofxSurfingHelpers
 			rr.scaleTo(ofGetCurrentViewport(), scaleMode);
 			imageFloat.draw(rr.x, rr.y, rr.width, rr.height);
 		}
-	};
+	}
 	//--------------------------------------------------------------
 	inline void drawImageFullScreenFit(ofImage& image, ofScaleMode scaleMode = OF_SCALEMODE_FIT, bool bflip = false)
 	{
@@ -186,7 +186,7 @@ namespace ofxSurfingHelpers
 			image.draw(rr.x, rr.y, rr.width, rr.height);
 			ofPopMatrix();
 		}
-	};
+	}
 	//--------------------------------------------------------------
 	inline void drawImageAtBottom(ofImage& image, bool bLine = true)
 	{
@@ -205,7 +205,7 @@ namespace ofxSurfingHelpers
 			ofDrawLine(r.getTopLeft(), r.getTopRight());
 		}
 		ofPopStyle();
-	};
+	}
 	//--------------------------------------------------------------
 	inline void drawImageAtRight(ofImage& image, bool bLine = true)
 	{
@@ -225,7 +225,7 @@ namespace ofxSurfingHelpers
 		}
 
 		ofPopStyle();
-	};
+	}
 	//--------------------------------------------------------------
 	inline void drawImageAtBottomRight(ofImage& image, string label = "")
 	{
@@ -261,13 +261,13 @@ namespace ofxSurfingHelpers
 		}
 
 		ofPopStyle();
-	};
+	}
 	//--------------------------------------------------------------
 	inline void drawImageResponsive(ofImage& image, bool bLine = true)
 	{
 		if (ofGetWidth() > ofGetHeight()) ofxSurfingHelpers::drawImageAtRight(image);//landscape
 		else ofxSurfingHelpers::drawImageAtBottom(image);//portrait
-	};
+	}
 
 	//----
 
@@ -339,7 +339,7 @@ namespace ofxSurfingHelpers
 		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` at " << path;
 
 		return b;
-	};
+	}
 
 	//----
 
@@ -349,13 +349,13 @@ namespace ofxSurfingHelpers
 	inline bool load(ofParameterGroup& g)
 	{
 		return loadGroup(g);
-	};
+	}
 
 	//--------------------------------------------------------------
 	inline bool save(ofParameterGroup& g)
 	{
 		return saveGroup(g);
-	};
+	}
 
 	//--
 
@@ -408,7 +408,7 @@ namespace ofxSurfingHelpers
 		{
 			ofLogVerbose("ofxSurfingHelpers") << _path << " Found!";// nothing to do
 		}
-	};
+	}
 
 	//--
 
@@ -458,7 +458,7 @@ namespace ofxSurfingHelpers
 				}
 			}
 		}
-	};
+	}
 
 
 	//----
@@ -573,7 +573,7 @@ namespace ofxSurfingHelpers
 			return "00:00";
 		else
 			return (mins + ":" + secs);
-	};
+	}
 	inline std::string getTimeFromSecond(float _time) { return calculateTime(_time); }
 
 	//----
@@ -585,7 +585,7 @@ namespace ofxSurfingHelpers
 	inline void debugCoutParam(ofAbstractParameter& ap)
 	{
 		cout << ap.getName() << ": " << ap << endl;
-	};
+	}
 
 }; // namespace ofxSurfingHelpers 
 
