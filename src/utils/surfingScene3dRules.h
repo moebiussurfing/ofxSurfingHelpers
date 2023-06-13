@@ -204,7 +204,7 @@ namespace ofxSurfingHelpers
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
-				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call floorGrid.setCameraPtr(camera) on setup()";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
 				return;
 			}
@@ -233,7 +233,7 @@ namespace ofxSurfingHelpers
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
-				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call floorGrid.setCameraPtr(camera) on setup()";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
 				return;
 			}
