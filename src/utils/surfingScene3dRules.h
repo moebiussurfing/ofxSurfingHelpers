@@ -12,17 +12,13 @@
 	BUGS:
 
 	fix transform problems for ttf (non bitmap) fonts bc cam scaling
-	fix unit/big lines breaks and hides the others if overlap!
-		transparency is not working
-
-
-	TODO:
-
-	units can't be disabled. if disable can't draw text labels on bitmap mode.
-	ttf fonts work bad when translations applied to the camera,
+		ttf fonts work bad when translations applied to the camera,
 		like rotation.
 		Scale is handled well.
-	fix buttons width overlap text!
+
+	These are the main methods where text coords are converted to 2D:
+		get3dGraphics().drawGridPlane(stepSize,numberOfSteps,labels);
+		renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 
 */
 
@@ -257,7 +253,7 @@ namespace ofxSurfingHelpers
 			//--
 
 			// Floor lines: 
-			
+
 			// 1. Big
 			// (outer square)
 			if (bBig)
@@ -358,7 +354,7 @@ namespace ofxSurfingHelpers
 			//cUnits = ofColor{ 96, 96, 96, 24 };
 #endif
 
-		}
+	}
 
 		void doResetAll() {
 			doResetSettings();
@@ -379,8 +375,8 @@ namespace ofxSurfingHelpers
 			if (!bDoneSetup) setup();
 			if (!bGui) return;
 
-			if (ui.isMinimized() && bGui) { 
-				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL; 
+			if (ui.isMinimized() && bGui) {
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
 			}
 			else {
 				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
@@ -514,5 +510,5 @@ namespace ofxSurfingHelpers
 		}
 #endif
 
-	};
+};
 }

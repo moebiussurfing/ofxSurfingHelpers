@@ -273,7 +273,8 @@ public:
 
 		ofPushStyle();
 		ofSetLineWidth(3);
-		ofSetColor(255, 255, 0);
+		ofSetColor(0, 0, 0, 128);
+		//ofSetColor(255, 255, 0);
 		ofNoFill();
 		glDepthMask(false);
 		ofDrawCircle(x, y, r);

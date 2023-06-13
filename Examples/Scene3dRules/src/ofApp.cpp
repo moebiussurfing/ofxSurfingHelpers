@@ -31,6 +31,17 @@ void ofApp::exit()
 void ofApp::draw()
 {
 	ofSetWindowTitle(ofToString(ofGetFrameRate(), 0) + " FPS");
+	
+	{
+		// Enables mouse cam control only when mouse is not over gui.
+		bool b = ui.isMouseOverGui();
+		if (b && cam.getMouseInputEnabled()) {
+			cam.disableMouseInput();
+		}
+		else if (!b && !cam.getMouseInputEnabled()) {
+			cam.enableMouseInput();
+		}
+	}
 
 	sceneGrid.drawBg();
 
