@@ -11,7 +11,7 @@
 
 	BUGS:
 
-	fix transform problems for ttf (non bitmap) fonts bc cam scaling 
+	fix transform problems for ttf (non bitmap) fonts bc cam scaling
 	fix unit/big lines breaks and hides the others if overlap!
 		transparency is not working
 
@@ -19,8 +19,8 @@
 	TODO:
 
 	units can't be disabled. if disable can't draw text labels on bitmap mode.
-	ttf fonts work bad when translations applied to the camera, 
-		like rotation. 
+	ttf fonts work bad when translations applied to the camera,
+		like rotation.
 		Scale is handled well.
 	fix buttons width overlap text!
 
@@ -44,7 +44,7 @@ namespace ofxSurfingHelpers
 	public:
 		SurfSceneGrids() {
 			ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Constructor()";
-				
+
 			// Fix some exit exceptions.
 			int minValue = std::numeric_limits<int>::min();
 			ofAddListener(ofEvents().exit, this, &SurfSceneGrids::exit, minValue);
@@ -55,7 +55,7 @@ namespace ofxSurfingHelpers
 
 			ofRemoveListener(ofEvents().exit, this, &SurfSceneGrids::exit);
 		}
-		
+
 	private:
 		void exit(ofEventArgs& args)
 		{
@@ -115,6 +115,7 @@ namespace ofxSurfingHelpers
 		ofParameter<bool> bFontSmall{ "Small Font", false };
 		ofParameter<bool> bOffsetLabels{ "Offset Labels", false };
 		ofParameter<int> gradientType{ "Gradient Type", 2, 0, 3 };
+		vector<string> gradienTypeNames{ "One Color", "Linear", "Circular", "Bar"};
 
 	public:
 
@@ -208,8 +209,11 @@ namespace ofxSurfingHelpers
 				return;
 			}
 
+#ifdef USE_SURFING_DEBUG_ALPHA
 			//TODO: fixing overlap transparencies..
 			ofEnableAlphaBlending();
+			ofEnableDepthTest();
+#endif
 
 			//workaround 
 			// Draw labels, out of the camera
@@ -234,8 +238,11 @@ namespace ofxSurfingHelpers
 				return;
 			}
 
+#ifdef USE_SURFING_DEBUG_ALPHA
 			//TODO: fixing overlap transparencies..
 			ofEnableAlphaBlending();
+			ofEnableDepthTest();
+#endif
 
 			gridSize = numberOfSteps * stepSize;
 
@@ -249,7 +256,26 @@ namespace ofxSurfingHelpers
 
 			//--
 
-			// floor lines: 
+			// Floor lines: 
+			
+			// 1. Big
+			// (outer square)
+			if (bBig)
+			{
+				ofSetColor(bDefaultColors ? SURFING_RULES_COLOR_LINES_BIG : cBig);
+				ofxSurfingHelpers::ofxDrawFloorRectangle(gridSize);
+			}
+
+			// 2 Quarters
+			// 3 Sixteenth
+			// (without labels)
+			if (bQuarter || bSixteenth)
+			{
+				if (bDefaultColors)
+					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth);
+				else
+					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth, cQuarter.get(), cSixteenth.get());
+			}
 
 			// 4. Units 
 			// (with labels when ofBitmapFont)
@@ -272,28 +298,11 @@ namespace ofxSurfingHelpers
 						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
 				}
 			}
-			//separated labels here
+
+			// separated labels here
 			if (bForceBitmap && bLabels)
 				ofxSurfingHelpers::ofxDrawGridLabelsBitmapFonts(stepSize, numberOfSteps, false, true, false,
 					bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
-
-			// 2 Quarters
-			// 3 Sixteenth
-			// (without labels)
-			if (bQuarter || bSixteenth)
-			{
-				if (bDefaultColors)
-					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth);
-				else
-					ofxSurfingHelpers::ofxDrawFloor(gridSize, bQuarter, bSixteenth, cQuarter.get(), cSixteenth.get());
-			}
-
-			// 1. Big
-			// (outer square)
-			if (bBig) {
-				ofSetColor(bDefaultColors ? SURFING_RULES_COLOR_LINES_BIG : cBig);
-				ofxSurfingHelpers::ofxDrawFloorRectangle(gridSize);
-			}
 		}
 
 		//--
@@ -336,12 +345,17 @@ namespace ofxSurfingHelpers
 			cBg2 = SURFING_RULES_COLOR_BG_2;
 #else
 			cText = ofColor{ 255, 255, 255, 200 };
-			cBig = ofColor{ 96, 96, 96, 150 };
-			cQuarter = ofColor{ 64, 64, 64, 150 };
-			cSixteenth = ofColor{ 64, 64, 64, 150 };
-			cUnits = ofColor{ 96, 96, 96, 24 };
-			cBg1 = ofColor{ 40, 40, 40 };
-			cBg2 = ofColor{ 0, 0, 0 };
+			cBig = ofColor{ 0, 255, 175, 150 };
+			cQuarter = ofColor{ 0, 255, 203, 75 };
+			cSixteenth = ofColor{ 181, 181, 181, 48 };
+			cUnits = ofColor{ 0, 0, 0, 24 };
+			cBg1 = ofColor{ 0, 0, 0 };
+			cBg2 = ofColor{ 64, 64, 64 };
+
+			//cBig = ofColor{ 96, 96, 96, 150 };
+			//cQuarter = ofColor{ 64, 64, 64, 150 };
+			//cSixteenth = ofColor{ 64, 64, 64, 150 };
+			//cUnits = ofColor{ 96, 96, 96, 24 };
 #endif
 
 		}
@@ -365,7 +379,12 @@ namespace ofxSurfingHelpers
 			if (!bDoneSetup) setup();
 			if (!bGui) return;
 
-			if (ui.isMinimized() && bGui) IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
+			if (ui.isMinimized() && bGui) { 
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL; 
+			}
+			else {
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
+			}
 
 			if (ui.BeginWindow(bGui))
 			{
@@ -381,7 +400,7 @@ namespace ofxSurfingHelpers
 
 				if (bDraw)
 				{
-					ui.Indent();
+					//ui.Indent();
 
 					ui.Add(bLabels, OFX_IM_TOGGLE);
 					ui.Add(bEnableBg, OFX_IM_TOGGLE);
@@ -394,9 +413,8 @@ namespace ofxSurfingHelpers
 						ui.AddSpacingSeparated();
 					}
 
-					ui.Unindent();
+					//ui.Unindent();
 				}
-				//ui.AddSpacing();
 
 				//--
 
@@ -411,6 +429,7 @@ namespace ofxSurfingHelpers
 							ui.EndTree();
 						}
 					}
+					ui.AddSpacing();
 					if (ui.BeginTree("Lines")) {
 						ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
@@ -430,8 +449,11 @@ namespace ofxSurfingHelpers
 
 						ui.EndTree();
 					}
+					ui.AddSpacing();
 					if (bEnableBg) {
 						if (ui.BeginTree("Background")) {
+							ui.AddCombo(gradientType, gradienTypeNames);
+							/*
 							ui.Add(gradientType);
 							string s;
 							switch (gradientType)
@@ -442,6 +464,7 @@ namespace ofxSurfingHelpers
 							case 3: s = "Bar"; break;
 							}
 							ui.AddLabel(s);
+							*/
 							ui.Add(cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
 							ui.Add(cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);
 							ui.Add(bFlipBg);

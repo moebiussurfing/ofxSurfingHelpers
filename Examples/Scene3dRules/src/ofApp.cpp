@@ -30,7 +30,7 @@ void ofApp::exit()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-	ofSetWindowTitle(ofToString(ofGetFrameRate(), 0) + "Fps");
+	ofSetWindowTitle(ofToString(ofGetFrameRate(), 0) + " FPS");
 
 	sceneGrid.drawBg();
 
@@ -165,7 +165,7 @@ void ofApp::drawImGui()
 		//-
 
 #ifdef USE_IM_GUI__SCENE
-		sceneGrid.drawImGuiDebug(ui);
+		sceneGrid.drawImGuiWindow(ui);
 #endif
 	}
 	ui.End();

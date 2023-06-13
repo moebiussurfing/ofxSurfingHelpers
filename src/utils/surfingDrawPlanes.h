@@ -7,6 +7,8 @@
 
 */
 
+//#define USE_SURFING_DEBUG_ALPHA // -> uncomment for testing alpha problems between lines
+
 //--
 
 // WARNING!
@@ -22,15 +24,26 @@ namespace ofxSurfingHelpers
 #define DEBUG_COLORS__SCENE 0
 #if(DEBUG_COLORS__SCENE==0)
 	// Colors
+	
+	// grey scale
+	//static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
+	//static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
+	//static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+
+	// green scale
 	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
-	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
-	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 0, 255, 175, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 0, 255, 203, 75 };
+	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 181, 181, 181, 48 };
+	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 0, 0, 0, 24 };
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 0, 0, 0 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 64, 64, 64 };
 #else
-	// Debug colors
+	// Debug colors. weird colors to have big contrast
 	static const char a = 65;
 	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor(0, 255, 255, a);
 	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor(255, 0, 0, a);//big
@@ -94,6 +107,13 @@ namespace ofxSurfingHelpers
 		ofPushStyle();
 
 		auto renderer = ofGetCurrentRenderer();
+
+//#ifdef USE_SURFING_DEBUG_ALPHA
+		//TODO: fixing overlap transparencies..
+		ofEnableAlphaBlending();
+		ofEnableDepthTest();
+		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
+//#endif
 
 		float scale = stepSize * numberOfSteps;
 		float lineWidth = renderer->getStyle().lineWidth;
@@ -193,6 +213,13 @@ namespace ofxSurfingHelpers
 		//TODO: must implement disable enableLines! 
 
 		auto renderer = ofGetCurrentRenderer();
+		
+#ifdef USE_SURFING_DEBUG_ALPHA
+		//TODO: fixing overlap transparencies..
+		ofEnableAlphaBlending();
+		ofEnableDepthTest();
+		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
+#endif
 
 		//ofPushStyle();
 		ofColor prevColor = ofGetStyle().color;
@@ -690,6 +717,13 @@ namespace ofxSurfingHelpers
 
 		float lineWidth = renderer->getStyle().lineWidth;
 		renderer->setLineWidth(2);
+
+#ifdef USE_SURFING_DEBUG_ALPHA
+		//TODO: fixing overlap transparencies..
+		ofEnableAlphaBlending();
+		ofEnableDepthTest();
+		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
+#endif
 
 		renderer->drawLine(scale, 0, -scale, scale, 0, scale);
 		renderer->drawLine(-scale, 0, -scale, -scale, 0, scale);
