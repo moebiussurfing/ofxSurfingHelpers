@@ -332,6 +332,11 @@ namespace ofxSurfingHelpers
 			bLabels = true;
 			bFontSmall = true;
 			bOffsetLabels = false;
+
+			bBig = 1;
+			bQuarter = 1;
+			bSixteenth = 1;
+			bUnits = 1;
 		}
 
 		void doResetColors() {
