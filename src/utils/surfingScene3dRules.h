@@ -200,7 +200,7 @@ namespace ofxSurfingHelpers
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
-				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call floorGrid.setCameraPtr(camera) on setup()";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
 				return;
 			}
@@ -229,7 +229,7 @@ namespace ofxSurfingHelpers
 			if (camera == nullptr)
 			{
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Pointer to camera hast not been passed!";
-				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call sceneGrid.setCameraPtr(camera) on setup()";
+				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Call floorGrid.setCameraPtr(camera) on setup()";
 				ofLogError("ofxSurfingHelpers::SurfSceneGrids") << "Forced ofBitmapFont!";
 				return;
 			}
@@ -328,6 +328,11 @@ namespace ofxSurfingHelpers
 			bLabels = true;
 			bFontSmall = true;
 			bOffsetLabels = false;
+
+			bBig = 1;
+			bQuarter = 1;
+			bSixteenth = 1;
+			bUnits = 1;
 		}
 
 		void doResetColors() {
