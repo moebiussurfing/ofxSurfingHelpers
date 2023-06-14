@@ -85,7 +85,8 @@ namespace ofxSurfingHelpers
 
 		ofParameterGroup params{ "SceneGrids" };
 
-		ofParameter<bool> bGui{ "FloorGrid", true };
+		ofParameter<bool> bGui{ "FLOOR GRID", true };
+		//ofParameter<bool> bGui{ "FloorGrid", true };
 
 		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255, 255) };
@@ -116,9 +117,13 @@ namespace ofxSurfingHelpers
 	public:
 
 		// Grid sizes
-		float stepSize = 10;//exposed to user
-		float numberOfSteps = 10;//exposed to user
-		float gridSize = 100;//for debug only
+		//exposed to user
+		ofParameter<float> stepSize{ "StepSize", 10, 0.1, 50 };
+		ofParameter<int> numberOfSteps { "NumSteps", 10, 4, 50 };
+		float gridSize = 100;
+		//ofParameter<int> gridSize { "Size", 100, 4, 500 };
+
+		ofParameterGroup paramsGrid{ "Grid" };
 
 		float scale = 1;//TODO: workaround trick to avoid transform errors..(only for ofScale, rotations fails!)
 
@@ -153,6 +158,11 @@ namespace ofxSurfingHelpers
 			params.add(cBg1);
 			params.add(cBg2);
 			params.add(bFlipBg);
+
+			paramsGrid.add(stepSize);
+			paramsGrid.add(numberOfSteps);
+			//paramsGrid.add(gridSize);
+			params.add(paramsGrid);
 
 			float sz = 10;
 			string _FONT_FILES_PATH = "assets/fonts/";
@@ -328,11 +338,30 @@ namespace ofxSurfingHelpers
 			bLabels = true;
 			bFontSmall = true;
 			bOffsetLabels = false;
+			//bForceBitmap = 1;
 
 			bBig = 1;
 			bQuarter = 1;
 			bSixteenth = 1;
 			bUnits = 1;
+
+			//doResetGrid();
+		}
+
+		void doResetGrid() {
+#if 0
+			stepSize = 10;
+			numberOfSteps = 10;
+#else
+			// Based on RF 1.0: 
+			//// 5x5 meters
+			//stepSize = 0.5;
+			//numberOfSteps = 10;
+
+			// 12x12 meters
+			stepSize = 0.5;
+			numberOfSteps = 24;
+#endif
 		}
 
 		void doResetColors() {
@@ -345,6 +374,7 @@ namespace ofxSurfingHelpers
 			cBg1 = SURFING_RULES_COLOR_BG_1;
 			cBg2 = SURFING_RULES_COLOR_BG_2;
 #else
+			//green and grey
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 0, 255, 175, 150 };
 			cQuarter = ofColor{ 0, 255, 203, 75 };
@@ -353,17 +383,19 @@ namespace ofxSurfingHelpers
 			cBg1 = ofColor{ 0, 0, 0 };
 			cBg2 = ofColor{ 64, 64, 64 };
 
+			//grey
 			//cBig = ofColor{ 96, 96, 96, 150 };
 			//cQuarter = ofColor{ 64, 64, 64, 150 };
 			//cSixteenth = ofColor{ 64, 64, 64, 150 };
 			//cUnits = ofColor{ 96, 96, 96, 24 };
 #endif
 
-	}
+		}
 
 		void doResetAll() {
 			doResetSettings();
 			doResetColors();
+			doResetGrid();
 		}
 
 	private:
@@ -375,63 +407,126 @@ namespace ofxSurfingHelpers
 #ifdef USE_IM_GUI__SCENE
 	public:
 
-		void drawImGuiWindow(ofxSurfingGui& ui)
+		void drawImGuiWidgets(ofxSurfingGui& ui)
 		{
-			if (!bDoneSetup) setup();
 			if (!bGui) return;
 
-			if (ui.isMinimized() && bGui) {
-				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
-			}
-			else {
-				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
-			}
+			//ui.AddMinimizerToggle();
+			//ui.AddSpacingSeparated();
+			//ui.AddSpacing();
 
-			if (ui.BeginWindow(bGui))
+			//--
+
+			string s = bGui.getName();
+			s = ofToUpper(s);
+			ui.AddLabelBig(s, false, true);
+
+			ui.Add(bDraw, OFX_IM_TOGGLE_BIG);
+
+			if (bDraw)
 			{
-				ui.AddMinimizerToggle();
+				ui.Add(bLabels, OFX_IM_TOGGLE);
+				ui.Add(bEnableBg, OFX_IM_TOGGLE);
+			}
 
-				ui.AddSpacingSeparated();
+			ui.AddSpacingBigSeparated();
 
-				//--
+			//--
 
-				ui.AddLabelBig("FloorGrid", false, true);
+			if (bDraw)
+			{
+				ui.Indent();
 
-				ui.Add(bDraw, OFX_IM_TOGGLE_BIG);
-
-				if (bDraw)
+				// We have two different populations,
+				// one for minimized and another when not-minimized (aka maximized)
+				if (ui.isMinimized())
 				{
-					//ui.Indent();
-
-					ui.Add(bLabels, OFX_IM_TOGGLE);
-					ui.Add(bEnableBg, OFX_IM_TOGGLE);
+					string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
+					ui.AddLabel(s);
 					ui.AddSpacing();
 
-					if (ui.isMaximized())
-					{
-						ui.Add(bForceBitmap);
-						ui.Add(bDefaultColors);
-						ui.AddSpacingSeparated();
+					ui.Add(stepSize, OFX_IM_STEPPER);
+					ui.Add(numberOfSteps, OFX_IM_STEPPER);
+					ui.AddSpacing();
+					if (ui.AddButton("Reset##GRID")) {
+						doResetGrid();
 					}
+					ui.AddSpacingBigSeparated();
 
-					//ui.Unindent();
-				}
+					ui.Add(bForceBitmap);
+					ui.Add(bDefaultColors);
+					ui.AddSpacingBigSeparated();
 
-				//--
-
-				if (ui.isMaximized() && bDraw)
-				{
 					if (!bForceBitmap) {
-						if (ui.BeginTree("Labels")) {
-							ui.Add(bFontSmall);
-							ui.Add(bOffsetLabels);
-							if (!bForceBitmap) ui.Add(cText);
-
-							ui.EndTree();
+						if (bLabels) {
+							ui.Add(cText);
+							if (!bDefaultColors) ui.AddSpacingBig();
 						}
 					}
+
+					if (!bDefaultColors)
+					{
+						if (bBig) ui.Add(cBig);
+						if (bQuarter) ui.Add(cQuarter);
+						if (bSixteenth) ui.Add(cSixteenth);
+						if (bUnits) ui.Add(cUnits);
+					}
+
+					if (bEnableBg) {
+						ui.AddSpacingBig();
+						ui.Add(cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
+						ui.Add(cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);
+					}
+
 					ui.AddSpacing();
-					if (ui.BeginTree("Lines")) {
+					ui.Add(bAxis);
+
+					ui.AddSpacingBigSeparated();
+
+					if (ui.AddButton("Reset All", OFX_IM_BUTTON)) {
+						doResetAll();
+					}
+					ui.AddSpacingBigSeparated();
+
+					if (ui.AddButton("Save", OFX_IM_BUTTON, 2, true)) {
+						doSave();
+					}
+					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
+						doLoad();
+					}
+				}
+				else //if (ui.isMaximized())
+				{
+					ui.Add(bForceBitmap);
+					ui.Add(bDefaultColors);
+					ui.AddSpacingSeparated();
+
+					string s;
+
+					s = "Grid";
+					s = ofToUpper(s);
+					if (ui.BeginTree(s)) {
+						string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
+						ui.AddLabel(s);
+						ui.AddSpacing();
+
+						ui.Add(stepSize, OFX_IM_STEPPER);
+						ui.Add(numberOfSteps, OFX_IM_STEPPER);
+						ui.AddSpacing();
+
+						if (ui.AddButton("Reset##GRID")) {
+							doResetGrid();
+						}
+
+						ui.EndTree();
+					}
+
+					ui.AddSpacingSeparated();
+
+					s = "Lines";
+					s = ofToUpper(s);
+					if (ui.BeginTree(s)) {
+						ui.AddSpacing();
 						ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bSixteenth, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
@@ -445,27 +540,20 @@ namespace ofxSurfingHelpers
 							if (bUnits) ui.Add(cUnits);
 						}
 
+						ui.AddSpacing();
 						ui.Add(bAxis);
-						//ui.Add(bAxis, OFX_IM_TOGGLE);
 
 						ui.EndTree();
 					}
-					ui.AddSpacing();
+
 					if (bEnableBg) {
-						if (ui.BeginTree("Background")) {
+						ui.AddSpacingSeparated();
+
+						s = "Background";
+						s = ofToUpper(s);
+						if (ui.BeginTree(s)) {
 							ui.AddCombo(gradientType, gradienTypeNames);
-							/*
-							ui.Add(gradientType);
-							string s;
-							switch (gradientType)
-							{
-							case 0: s = "One Color"; break;
-							case 1: s = "Linear"; break;
-							case 2: s = "Circular"; break;
-							case 3: s = "Bar"; break;
-							}
-							ui.AddLabel(s);
-							*/
+							//ui.Add(gradientType);
 							ui.Add(cBg1, OFX_IM_COLOR_INPUTS_NO_ALPHA);
 							ui.Add(cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);
 							ui.Add(bFlipBg);
@@ -474,19 +562,41 @@ namespace ofxSurfingHelpers
 						}
 					}
 
-					bool b = !bEnableBg && bForceBitmap && bDefaultColors;
-					if (!b) ui.AddSpacingSeparated();
+					if (bLabels) {
+						if (!bForceBitmap) {
+							ui.AddSpacingSeparated();
+							s = "Labels";
+							s = ofToUpper(s);
+							if (ui.BeginTree(s)) {
 
-					if (ui.AddButton("Reset", OFX_IM_BUTTON, 3, true)) {
+								ui.Add(bFontSmall);
+								ui.Add(bOffsetLabels);
+								if (!bForceBitmap && bLabels) ui.Add(cText);
+
+								ui.EndTree();
+							}
+						}
+					}
+
+					//ui.AddSpacingSeparated();
+
+					//bool b = !bEnableBg && bForceBitmap && bDefaultColors;
+					//if (!b) ui.AddSpacingSeparated();
+					//if (!b) ui.AddSpacing();
+
+					ui.AddSpacingBigSeparated();
+
+					if (ui.AddButton("Reset", OFX_IM_BUTTON, 2, true)) {
 						doResetSettings();
 					}
-					if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 3, true)) {
+					if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 2)) {
 						doResetColors();
 					}
-					if (ui.AddButton("Reset All", OFX_IM_BUTTON, 3)) {
+					if (ui.AddButton("Reset All", OFX_IM_BUTTON)) {
 						doResetAll();
 					}
-					ui.AddSpacing();
+
+					ui.AddSpacingBigSeparated();
 
 					if (ui.AddButton("Save", OFX_IM_BUTTON, 2, true)) {
 						doSave();
@@ -494,26 +604,34 @@ namespace ofxSurfingHelpers
 					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
 						doLoad();
 					}
-
-#if 1 
-					ui.AddSpacingSeparated();
-					static bool bDebug = false;
-					ui.AddToggle("Debug", bDebug, OFX_IM_TOGGLE_ROUNDED_MINI);
-					if (bDebug) {
-						string s = "";
-						s += "StepSize: " + ofToString(stepSize);
-						s += "\nNumberOfSteps: " + ofToString(numberOfSteps);
-						s += "\nSize: " + ofToString(gridSize);
-						s += "\nScale: " + ofToString(scale);
-						ui.AddLabel(s);
-					}
-#endif
 				}
+
+				ui.Unindent();
+			}
+		}
+
+		void drawImGuiWindow(ofxSurfingGui& ui)
+		{
+			if (!bDoneSetup) setup();
+			if (!bGui) return;
+
+			if (ui.isMinimized() && bGui)
+			{
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
+			}
+			else
+			{
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
+			}
+
+			if (ui.BeginWindow(bGui))
+			{
+				drawImGuiWidgets(ui);
 
 				ui.EndWindow();
 			}
 		}
 #endif
 
-};
+	};
 }

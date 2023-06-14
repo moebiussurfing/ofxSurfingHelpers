@@ -71,8 +71,11 @@ namespace ofxSurfingHelpers
 		int x, y, w, h;
 
 		// window bar height on WIN_32.
-		int yOffset = 38;
-		int hOffset = 12;
+		//int yOffset = 38;
+		//int hOffset = 12;
+		//fix
+		int yOffset = 36;
+		int hOffset = 36;
 
 		x = y = 0;
 		y = yOffset;

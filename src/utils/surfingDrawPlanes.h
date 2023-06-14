@@ -21,29 +21,29 @@
 
 namespace ofxSurfingHelpers
 {
+	// Default Colors
 #define DEBUG_COLORS__SCENE 0
 #if(DEBUG_COLORS__SCENE==0)
-	// Colors
 	
-	// grey scale
-	//static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
-	//static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
-	//static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
-
-	// green scale
+	// Grey scale
 	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
-	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 0, 255, 175, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 0, 255, 203, 75 };
-	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 181, 181, 181, 48 };
-	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 0, 0, 0, 24 };
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 0, 0, 0 };
-	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 64, 64, 64 };
+	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
+	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+
+	//// Green scale
+	//static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 0, 255, 175, 150 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 0, 255, 203, 75 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 181, 181, 181, 48 };
+	//static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 0, 0, 0, 24 };
+	//static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 0, 0, 0 };
+	//static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 64, 64, 64 };
 #else
-	// Debug colors. weird colors to have big contrast
+	// Debug colors. Weird colors to have big contrast
 	static const char a = 65;
 	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor(0, 255, 255, a);
 	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor(255, 0, 0, a);//big
@@ -620,24 +620,37 @@ namespace ofxSurfingHelpers
 
 					// floor x and floor z
 
+					//TODO: remove unnecessary decimals
+					int ndigits;
+					auto nDigitsFor = [](float v) {
+						int n=1;//default
+						if (std::floor(v) == v)//isInt 
+							n = 0;
+						return n;
+					};
+
 					// fix flipped
 					//(yz), 0, yz, 0;
-					s = ofToString(yz);
+					ndigits = nDigitsFor(yz);
+					s = ofToString(yz, ndigits);
 					pp = doConvertCoord(s, yz_, 0, 0, bOffset);
 					font->drawString(s, pp.x, pp.y);
 
 
 					// fix flipped
 					//(-yz), 0, -yz, 0;
-					s = ofToString(-yz);
+					ndigits = nDigitsFor(yz);
+					s = ofToString(-yz, ndigits);
 					pp = doConvertCoord(s, -yz_, 0, 0, bOffset);
 					font->drawString(s, pp.x, pp.y);
 
-					s = ofToString(yz);
+					ndigits = nDigitsFor(yz);
+					s = ofToString(yz, ndigits);
 					pp = doConvertCoord(s, 0, 0, yz_, bOffset);
 					font->drawString(s, pp.x, pp.y);
 
-					s = ofToString(-yz);
+					ndigits = nDigitsFor(yz);
+					s = ofToString(-yz, ndigits);
 					pp = doConvertCoord(s, 0, 0, -yz_, bOffset);
 					font->drawString(s, pp.x, pp.y);
 				}
