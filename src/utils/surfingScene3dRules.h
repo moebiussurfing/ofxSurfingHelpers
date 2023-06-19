@@ -442,7 +442,7 @@ namespace ofxSurfingHelpers
 				if (ui.isMinimized())
 				{
 					string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
-					ui.AddLabel(s);
+					ui.AddLabelBig(s);
 					ui.AddSpacing();
 
 					ui.Add(stepSize, OFX_IM_STEPPER);
@@ -507,7 +507,7 @@ namespace ofxSurfingHelpers
 					s = ofToUpper(s);
 					if (ui.BeginTree(s)) {
 						string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
-						ui.AddLabel(s);
+						ui.AddLabelBig(s);
 						ui.AddSpacing();
 
 						ui.Add(stepSize, OFX_IM_STEPPER);
