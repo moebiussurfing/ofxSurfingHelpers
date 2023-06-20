@@ -490,16 +490,19 @@ namespace ofxSurfingHelpers
 
 					ui.AddSpacingBigSeparated();
 
-					if (ui.AddButton("Reset", OFX_IM_BUTTON)) {
+					int n_widgets = 2;
+					float w = ui.getWidgetsWidth(n_widgets);
+					float h = ui.getWidgetsHeightUnit() * 1.5f;
+					ImVec2 sz1(ui.getWidgetsWidth(), h);
+					ImVec2 sz2(w, h);
+					if (ui.AddButton("Reset", sz1)) {
 						doResetAll();
 					}
-					//ui.AddSpacingBigSeparated();
-					//ui.AddSpacing();
-
-					if (ui.AddButton("Load", OFX_IM_BUTTON, 2, true)) {
+					if (ui.AddButton("Load", sz2)) {
 						doLoad();
 					}
-					if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
+					ui.SameLine();
+					if (ui.AddButton("Save", sz2)) {
 						doSave();
 					}
 				} // Minimized
@@ -513,7 +516,7 @@ namespace ofxSurfingHelpers
 
 					s = "Grid";
 					s = ofToUpper(s);
-					if (ui.BeginTree(s)) {
+					if (ui.BeginTree(s, true)) {
 						string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
 						ui.AddLabelBig(s);
 						ui.AddSpacing();
@@ -533,7 +536,7 @@ namespace ofxSurfingHelpers
 
 					s = "Lines";
 					s = ofToUpper(s);
-					if (ui.BeginTree(s)) {
+					if (ui.BeginTree(s, true)) {
 						ui.AddSpacing();
 						ui.Add(bBig, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
@@ -596,23 +599,29 @@ namespace ofxSurfingHelpers
 
 					ui.AddSpacingBigSeparated();
 
-					if (ui.AddButton("Reset Settings", OFX_IM_BUTTON, 2, true)) {
+					int n_widgets = 2;
+					float w = ui.getWidgetsWidth(n_widgets);
+					float h = ui.getWidgetsHeightUnit() * 1.5f;
+					ImVec2 sz2(w, h);
+					ImVec2 sz1(ui.getWidgetsWidth(), h);
+
+					if (ui.AddButton("Reset Settings", sz2)) {
 						doResetSettings();
 					}
-					if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 2)) {
+					ui.SameLine();
+					if (ui.AddButton("Reset Colors", sz2)) {
 						doResetColors();
 					}
-					if (ui.AddButton("Reset", OFX_IM_BUTTON)) {
+
+					if (ui.AddButton("Reset", sz1)) {
 						doResetAll();
 					}
 
-					//ui.AddSpacingBigSeparated();
-					//ui.AddSpacing();
-
-					if (ui.AddButton("Load", OFX_IM_BUTTON, 2, true)) {
+					if (ui.AddButton("Load", sz2)) {
 						doLoad();
 					}
-					if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
+					ui.SameLine();
+					if (ui.AddButton("Save", sz2)) {
 						doSave();
 					}
 				} // Maximized
