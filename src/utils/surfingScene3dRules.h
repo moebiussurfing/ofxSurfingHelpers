@@ -91,14 +91,14 @@ namespace ofxSurfingHelpers
 		ofParameter<ofColor> cText{ "C Text", ofColor(250), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cBig{ "C Big", ofColor(ofColor::blue, 128), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cQuarter{ "C Quarter", ofColor(ofColor::orange, 128), ofColor(0), ofColor(255, 255) };
-		ofParameter<ofColor> cSixteenth{ "C Sixteenth", ofColor(ofColor::yellow, 128), ofColor(0), ofColor(255, 255) };
+		ofParameter<ofColor> cSixteenth{ "C 16th", ofColor(ofColor::yellow, 128), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cUnits{ "C Units", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cBg1{ "C Bg1", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
 		ofParameter<ofColor> cBg2{ "C Bg2", ofColor(128, 128), ofColor(0), ofColor(255, 255) };
 
 		ofParameter<bool> bBig{ "Big", true };
 		ofParameter<bool> bQuarter{ "Quarter", true };
-		ofParameter<bool> bSixteenth{ "Sixteenth", true };
+		ofParameter<bool> bSixteenth{ "16th", true };
 		ofParameter<bool> bUnits{ "Units", true };
 		ofParameter<bool> bAxis{ "Axis", true };
 
@@ -439,7 +439,7 @@ namespace ofxSurfingHelpers
 
 				// We have two different populations,
 				// one for minimized and another when not-minimized (aka maximized)
-				if (ui.isMinimized())
+				if (ui.isMinimized()) // Minimized
 				{
 					string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
 					ui.AddLabelBig(s);
@@ -453,12 +453,12 @@ namespace ofxSurfingHelpers
 					}
 					ui.AddSpacingBigSeparated();
 
-					ui.Add(bForceBitmap);
+					if (bLabels) ui.Add(bForceBitmap);
 					ui.Add(bDefaultColors);
 					ui.AddSpacingBigSeparated();
 
-					if (!bForceBitmap) {
-						if (bLabels) {
+					if (bLabels) {
+						if (!bForceBitmap) {
 							ui.Add(cText);
 							if (!bDefaultColors) ui.AddSpacingBig();
 						}
@@ -466,10 +466,17 @@ namespace ofxSurfingHelpers
 
 					if (!bDefaultColors)
 					{
-						if (bBig) ui.Add(cBig);
-						if (bQuarter) ui.Add(cQuarter);
-						if (bSixteenth) ui.Add(cSixteenth);
-						if (bUnits) ui.Add(cUnits);
+						SurfingGuiTypes t = OFX_IM_DEFAULT;
+						//SurfingGuiTypes t = OFX_IM_COLOR_BOX_FULL_WIDTH_NO_ALPHA;
+						if (bBig) ui.Add(cBig, t);
+						if (bQuarter) ui.Add(cQuarter, t);
+						if (bSixteenth) ui.Add(cSixteenth, t);
+						if (bUnits) ui.Add(cUnits, t);
+
+						//if (bBig) ui.Add(cBig);
+						//if (bQuarter) ui.Add(cQuarter);
+						//if (bSixteenth) ui.Add(cSixteenth);
+						//if (bUnits) ui.Add(cUnits);
 					}
 
 					if (bEnableBg) {
@@ -478,24 +485,25 @@ namespace ofxSurfingHelpers
 						ui.Add(cBg2, OFX_IM_COLOR_INPUTS_NO_ALPHA);
 					}
 
-					ui.AddSpacing();
+					ui.AddSpacingBig();
 					ui.Add(bAxis);
 
 					ui.AddSpacingBigSeparated();
 
-					if (ui.AddButton("Reset All", OFX_IM_BUTTON)) {
+					if (ui.AddButton("Reset", OFX_IM_BUTTON)) {
 						doResetAll();
 					}
-					ui.AddSpacingBigSeparated();
+					//ui.AddSpacingBigSeparated();
+					//ui.AddSpacing();
 
-					if (ui.AddButton("Save", OFX_IM_BUTTON, 2, true)) {
-						doSave();
-					}
-					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
+					if (ui.AddButton("Load", OFX_IM_BUTTON, 2, true)) {
 						doLoad();
 					}
-				}
-				else //if (ui.isMaximized())
+					if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
+						doSave();
+					}
+				} // Minimized
+				else //if (ui.isMaximized()) // Maximized
 				{
 					ui.Add(bForceBitmap);
 					ui.Add(bDefaultColors);
@@ -531,16 +539,18 @@ namespace ofxSurfingHelpers
 						ui.Add(bQuarter, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bSixteenth, OFX_IM_TOGGLE_SMALL, 4); ui.SameLine();
 						ui.Add(bUnits, OFX_IM_TOGGLE_SMALL, 4);
+						ui.AddSpacingBig();
 
 						if (!bDefaultColors)
 						{
-							if (bBig) ui.Add(cBig);
-							if (bQuarter) ui.Add(cQuarter);
-							if (bSixteenth) ui.Add(cSixteenth);
-							if (bUnits) ui.Add(cUnits);
+							SurfingGuiTypes t = OFX_IM_DEFAULT;
+							if (bBig) ui.Add(cBig, t);
+							if (bQuarter) ui.Add(cQuarter, t);
+							if (bSixteenth) ui.Add(cSixteenth, t);
+							if (bUnits) ui.Add(cUnits, t);
 						}
 
-						ui.AddSpacing();
+						ui.AddSpacingBig();
 						ui.Add(bAxis);
 
 						ui.EndTree();
@@ -586,25 +596,26 @@ namespace ofxSurfingHelpers
 
 					ui.AddSpacingBigSeparated();
 
-					if (ui.AddButton("Reset", OFX_IM_BUTTON, 2, true)) {
+					if (ui.AddButton("Reset Settings", OFX_IM_BUTTON, 2, true)) {
 						doResetSettings();
 					}
 					if (ui.AddButton("Reset Colors", OFX_IM_BUTTON, 2)) {
 						doResetColors();
 					}
-					if (ui.AddButton("Reset All", OFX_IM_BUTTON)) {
+					if (ui.AddButton("Reset", OFX_IM_BUTTON)) {
 						doResetAll();
 					}
 
-					ui.AddSpacingBigSeparated();
+					//ui.AddSpacingBigSeparated();
+					//ui.AddSpacing();
 
-					if (ui.AddButton("Save", OFX_IM_BUTTON, 2, true)) {
-						doSave();
-					}
-					if (ui.AddButton("Load", OFX_IM_BUTTON, 2)) {
+					if (ui.AddButton("Load", OFX_IM_BUTTON, 2, true)) {
 						doLoad();
 					}
-				}
+					if (ui.AddButton("Save", OFX_IM_BUTTON, 2)) {
+						doSave();
+					}
+				} // Maximized
 
 				ui.Unindent();
 			}
