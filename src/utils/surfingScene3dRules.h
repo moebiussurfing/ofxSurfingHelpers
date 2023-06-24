@@ -374,20 +374,26 @@ namespace ofxSurfingHelpers
 			cBg1 = SURFING_RULES_COLOR_BG_1;
 			cBg2 = SURFING_RULES_COLOR_BG_2;
 #else
-			//green and grey
+			//green and grey. dark
+#if 0
+			cBg1 = ofColor{ 40, 40, 40 };
+			cBg2 = ofColor{ 0, 0, 0 };
 			cText = ofColor{ 255, 255, 255, 200 };
 			cBig = ofColor{ 0, 255, 175, 150 };
 			cQuarter = ofColor{ 0, 255, 203, 75 };
 			cSixteenth = ofColor{ 181, 181, 181, 48 };
 			cUnits = ofColor{ 0, 0, 0, 24 };
-			cBg1 = ofColor{ 0, 0, 0 };
-			cBg2 = ofColor{ 64, 64, 64 };
-
-			//grey
-			//cBig = ofColor{ 96, 96, 96, 150 };
-			//cQuarter = ofColor{ 64, 64, 64, 150 };
-			//cSixteenth = ofColor{ 64, 64, 64, 150 };
-			//cUnits = ofColor{ 96, 96, 96, 24 };
+#else
+			//grey. light
+			cBg1 = SURFING_RULES_COLOR_BG_1;
+			cBg2 = SURFING_RULES_COLOR_BG_2;
+			cText = SURFING_RULES_COLOR_TEXT;
+			cBig = SURFING_RULES_COLOR_LINES_BIG;
+			cQuarter = SURFING_RULES_COLOR_LINES_QUARTER;
+			cSixteenth = SURFING_RULES_COLOR_LINES_SIXTEENTH;
+			cUnits = SURFING_RULES_COLOR_LINES_UNITS;
+#endif
+			
 #endif
 
 		}
@@ -441,7 +447,7 @@ namespace ofxSurfingHelpers
 				// one for minimized and another when not-minimized (aka maximized)
 				if (ui.isMinimized()) // Minimized
 				{
-					string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
+					string s = ofToString(2*gridSize, 0) + "mts x " + ofToString(2*gridSize, 0) + "mts";
 					ui.AddLabelBig(s);
 					ui.AddSpacing();
 
@@ -517,7 +523,7 @@ namespace ofxSurfingHelpers
 					s = "Grid";
 					s = ofToUpper(s);
 					if (ui.BeginTree(s, true)) {
-						string s = ofToString(gridSize, 0) + "mts x " + ofToString(gridSize, 0) + "mts";
+						string s = ofToString(2*gridSize, 0) + "mts x " + ofToString(2*gridSize, 0) + "mts";
 						ui.AddLabelBig(s);
 						ui.AddSpacing();
 

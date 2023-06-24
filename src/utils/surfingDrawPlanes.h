@@ -21,27 +21,36 @@
 
 namespace ofxSurfingHelpers
 {
-	// Default Colors
+    // Default Colors
 #define DEBUG_COLORS__SCENE 0
 #if(DEBUG_COLORS__SCENE==0)
-	
-	// Grey scale
-	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
-	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 128, 128, 128, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 96, 96, 96, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 64, 64, 64, 150 };
-	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 64, 64, 64, 32 };
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
-	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
 
-	//// Green scale
-	//static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 0, 255, 175, 150 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 0, 255, 203, 75 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 181, 181, 181, 48 };
-	//static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 0, 0, 0, 24 };
-	//static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 0, 0, 0 };
-	//static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 64, 64, 64 };
+    // Grey scale
+    //dark
+    // static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{255, 255, 255, 200};
+    // static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{128, 128, 128, 150};
+    // static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{96, 96, 96, 150};
+    // static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{64, 64, 64, 150};
+    // static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{64, 64, 64, 32};
+    // static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
+    // static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
+    //light
+	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{0, 0, 0, 200};
+	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{0, 0, 0, 150};
+	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{24, 24, 24, 55};
+	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{48, 48, 48, 66};
+	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{64, 64, 64, 22};
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{66, 66, 66};
+    static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{225, 225, 225};
+
+    //// Green scale
+    //static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
+    //static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{ 0, 255, 175, 150 };
+    //static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{ 0, 255, 203, 75 };
+    //static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{ 181, 181, 181, 48 };
+    //static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{ 0, 0, 0, 24 };
+    //static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 0, 0, 0 };
+    //static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 64, 64, 64 };
 #else
 	// Debug colors. Weird colors to have big contrast
 	static const char a = 65;
@@ -54,166 +63,176 @@ namespace ofxSurfingHelpers
 	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 10, 10, 10 };
 #endif
 
-	//--
+    //--
 
-// Drawing methods. Mostly based on OF internals.
+    // Drawing methods. Mostly based on OF internals.
 
-//--------------------------------------------------------------
-	inline void ofxDrawString(string s, float x, float y, float z, ofTrueTypeFont* font, ofCamera* camera) {
-		if (font == nullptr) return;
-		if (camera == nullptr) return;
+    //--------------------------------------------------------------
+    inline void ofxDrawString(string s, float x, float y, float z, ofTrueTypeFont* font, ofCamera* camera)
+    {
+        if (font == nullptr) return;
+        if (camera == nullptr) return;
 
-		//TODO: trying to do a function to draw true types inside a cam, as billboard like ofBitmapFont does..
-		/*
-		bool bWorldTo2D = false;
-		if (bWorldTo2D)
-		{
-			//TODO: wrong position..is no centered ?
-			// could be related to ofScale(100.f); on StageManager::draw() ?
-			//glm::vec3 posScreen = camera->worldToScreen(glm::vec3(x / 100.f, y / 100.f, z / 100.f));
+        //TODO: trying to do a function to draw true types inside a cam, as billboard like ofBitmapFont does..
+        /*
+        bool bWorldTo2D = false;
+        if (bWorldTo2D)
+        {
+            //TODO: wrong position..is no centered ?
+            // could be related to ofScale(100.f); on StageManager::draw() ?
+            //glm::vec3 posScreen = camera->worldToScreen(glm::vec3(x / 100.f, y / 100.f, z / 100.f));
 
-			ofRectangle r = ofGetCurrentViewport();
-			glm::vec3 posScreen = camera->worldToScreen(glm::vec3(x, y, z), r);
+            ofRectangle r = ofGetCurrentViewport();
+            glm::vec3 posScreen = camera->worldToScreen(glm::vec3(x, y, z), r);
 
-			float _x = posScreen.x;
-			float _y = posScreen.y;
+            float _x = posScreen.x;
+            float _y = posScreen.y;
 
-			////debug
-			//float _x = ofGetWidth() / 2;
-			//float _y = ofGetHeight() / 2;
+            ////debug
+            //float _x = ofGetWidth() / 2;
+            //float _y = ofGetHeight() / 2;
 
-			font->drawString(s, _x, _y);
-		}
-		else
-		{
-			//TODO: not works
+            font->drawString(s, _x, _y);
+        }
+        else
+        {
+            //TODO: not works
 
 #ifdef USE_TTF_TO_3D
-			ofxDrawStringTrueType(s, x, y, z, &font);
+            ofxDrawStringTrueType(s, x, y, z, &font);
 #else
-			font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
+            font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
 #endif
-		}
-		*/
+        }
+        */
 
-		font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
-	};
+        font->drawString(s, x, y); // draw fonts in 3d, not to viewer/screen perpendicular oriented..
+    };
 
-	// From libs\openFrameworks\graphics\of3dGraphics.cpp
-	// Allows passing a font and the camera to customize style instead of using bitmap font
-	//--------------------------------------------------------------
-	inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font, ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_SIXTEENTH, ofColor c2 = SURFING_RULES_COLOR_TEXT)
-	{
-		ofPushStyle();
+    // From libs\openFrameworks\graphics\of3dGraphics.cpp
+    // Allows passing a font and the camera to customize style instead of using bitmap font
+    //--------------------------------------------------------------
+    inline void ofxDrawGridPlane(float stepSize, size_t numberOfSteps, bool labels, ofTrueTypeFont* font,
+                                 ofCamera* camera, ofColor c1 = SURFING_RULES_COLOR_LINES_SIXTEENTH,
+                                 ofColor c2 = SURFING_RULES_COLOR_TEXT)
+    {
+        ofPushStyle();
 
-		auto renderer = ofGetCurrentRenderer();
+        auto renderer = ofGetCurrentRenderer();
 
-//#ifdef USE_SURFING_DEBUG_ALPHA
-		//TODO: fixing overlap transparencies..
-		ofEnableAlphaBlending();
-		ofEnableDepthTest();
-		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
-//#endif
+        //#ifdef USE_SURFING_DEBUG_ALPHA
+        //TODO: fixing overlap transparencies..
+        ofEnableAlphaBlending();
+        ofEnableDepthTest();
+        renderer->setBlendMode(OF_BLENDMODE_ALPHA);
+        //#endif
 
-		float scale = stepSize * numberOfSteps;
-		float lineWidth = renderer->getStyle().lineWidth;
+        float scale = stepSize * numberOfSteps;
+        float lineWidth = renderer->getStyle().lineWidth;
 
-		// Draw all the lines
+        // Draw all the lines
 
-		ofSetColor(c1);
-		for (int iDimension = 0; iDimension < 2; iDimension++)
-		{
-			for (size_t i = 0; i <= numberOfSteps; i++)
-			{
-				float yz = i * stepSize;
+        ofSetColor(c1);
+        for (int iDimension = 0; iDimension < 2; iDimension++)
+        {
+            for (size_t i = 0; i <= numberOfSteps; i++)
+            {
+                float yz = i * stepSize;
 
-				if (i == numberOfSteps || i == 0)
-					renderer->setLineWidth(2); // central axis or cap line
-				else if (i % 2 == 0) {
-					renderer->setLineWidth(1.5); // major
-				}
-				else {
-					renderer->setLineWidth(1); // minor
-				}
+                if (i == numberOfSteps || i == 0)
+                    renderer->setLineWidth(2); // central axis or cap line
+                else if (i % 2 == 0)
+                {
+                    renderer->setLineWidth(1.5); // major
+                }
+                else
+                {
+                    renderer->setLineWidth(1); // minor
+                }
 
-				if (iDimension == 0) {
-					renderer->drawLine(0, yz, -scale, 0, yz, scale);
-					if (yz != 0) renderer->drawLine(0, -yz, -scale, 0, -yz, scale);
-				}
-				else {
-					renderer->drawLine(0, -scale, yz, 0, scale, yz);
-					if (yz != 0) renderer->drawLine(0, -scale, -yz, 0, scale, -yz);
-				}
-			}
-		}
-		renderer->setLineWidth(lineWidth);
+                if (iDimension == 0)
+                {
+                    renderer->drawLine(0, yz, -scale, 0, yz, scale);
+                    if (yz != 0) renderer->drawLine(0, -yz, -scale, 0, -yz, scale);
+                }
+                else
+                {
+                    renderer->drawLine(0, -scale, yz, 0, scale, yz);
+                    if (yz != 0) renderer->drawLine(0, -scale, -yz, 0, scale, -yz);
+                }
+            }
+        }
+        renderer->setLineWidth(lineWidth);
 
-		// Draw all the labels
+        // Draw all the labels
 
-		if (labels) {
-			//draw numbers on axes
-			if (font == nullptr || camera == nullptr) // bitmap
-			{
-				ofColor prevColor = renderer->getStyle().color;
-				ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
+        if (labels)
+        {
+            //draw numbers on axes
+            if (font == nullptr || camera == nullptr) // bitmap
+            {
+                ofColor prevColor = renderer->getStyle().color;
+                ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
 
-				renderer->setColor(c2);
-				renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-				renderer->drawString(ofToString(0), 0, 0, 0);
+                renderer->setColor(c2);
+                renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
+                renderer->drawString(ofToString(0), 0, 0, 0);
 
-				for (float i = 1; i <= numberOfSteps; i++)
-				{
-					float yz = i * stepSize;
+                for (float i = 1; i <= numberOfSteps; i++)
+                {
+                    float yz = i * stepSize;
 
-					renderer->drawString(ofToString(yz), 0, yz, 0);
-					renderer->drawString(ofToString(-yz), 0, -yz, 0);
-					renderer->drawString(ofToString(yz), 0, 0, yz);
-					renderer->drawString(ofToString(-yz), 0, 0, -yz);
-				}
+                    renderer->drawString(ofToString(yz), 0, yz, 0);
+                    renderer->drawString(ofToString(-yz), 0, -yz, 0);
+                    renderer->drawString(ofToString(yz), 0, 0, yz);
+                    renderer->drawString(ofToString(-yz), 0, 0, -yz);
+                }
 
-				renderer->setColor(prevColor);
-				renderer->setBitmapTextMode(mode);
-			}
-			/*
-			else // custom
-			{
-				//TODO:
-				// skip labels. we will draw using the out-of-the-camera approach!
-				ofPopStyle();
-				return;
+                renderer->setColor(prevColor);
+                renderer->setBitmapTextMode(mode);
+            }
+            /*
+            else // custom
+            {
+                //TODO:
+                // skip labels. we will draw using the out-of-the-camera approach!
+                ofPopStyle();
+                return;
 
 
-				//ofSetColor(c2_);
+                //ofSetColor(c2_);
 
-				//ofxDrawString(ofToString(0), 0, 0, 0, font, camera);
+                //ofxDrawString(ofToString(0), 0, 0, 0, font, camera);
 
-				//for (float i = 1; i <= numberOfSteps; i++)
-				//{
-				//	float yz = i * stepSize;
-				//	ofxDrawString(ofToString(yz), 0, yz, 0, font, camera);
-				//	ofxDrawString(ofToString(-yz), 0, -yz, 0, font, camera);
-				//	ofxDrawString(ofToString(yz), 0, 0, yz, font, camera);
-				//	ofxDrawString(ofToString(-yz), 0, 0, -yz, font, camera);
-				//}
+                //for (float i = 1; i <= numberOfSteps; i++)
+                //{
+                //	float yz = i * stepSize;
+                //	ofxDrawString(ofToString(yz), 0, yz, 0, font, camera);
+                //	ofxDrawString(ofToString(-yz), 0, -yz, 0, font, camera);
+                //	ofxDrawString(ofToString(yz), 0, 0, yz, font, camera);
+                //	ofxDrawString(ofToString(-yz), 0, 0, -yz, font, camera);
+                //}
 
-				ofPopStyle();
-			}
-			*/
-		}
+                ofPopStyle();
+            }
+            */
+        }
 
-		ofPopStyle();
-	};
+        ofPopStyle();
+    };
 
-	// Draws a grid of the three planes with labels. Can use ofTrueTypeFont for labels if passed font and camera.
-	// Taken from OF of\libs\openFrameworks\graphics\of3dGraphics.cpp
-	// void of3dGraphics::drawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z);
-	//--------------------------------------------------------------
-	inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, ofTrueTypeFont* font, ofCamera* camera, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_TEXT)
-	{
-		//TODO: must implement disable enableLines! 
+    // Draws a grid of the three planes with labels. Can use ofTrueTypeFont for labels if passed font and camera.
+    // Taken from OF of\libs\openFrameworks\graphics\of3dGraphics.cpp
+    // void of3dGraphics::drawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z);
+    //--------------------------------------------------------------
+    inline void ofxDrawGrid(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z,
+                            ofTrueTypeFont* font, ofCamera* camera, bool enableLines = true,
+                            ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_TEXT)
+    {
+        //TODO: must implement disable enableLines! 
 
-		auto renderer = ofGetCurrentRenderer();
-		
+        auto renderer = ofGetCurrentRenderer();
+
 #ifdef USE_SURFING_DEBUG_ALPHA
 		//TODO: fixing overlap transparencies..
 		ofEnableAlphaBlending();
@@ -221,108 +240,122 @@ namespace ofxSurfingHelpers
 		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
 #endif
 
-		//ofPushStyle();
-		ofColor prevColor = ofGetStyle().color;
+        //ofPushStyle();
+        ofColor prevColor = ofGetStyle().color;
 
-		ofSetColor(c1);
+        ofSetColor(c1);
 
-		// lines with each plane labels
+        // lines with each plane labels
 
-		if (font == nullptr || camera == nullptr) { // bitmap
-			if (x) {
-				ofDrawGridPlane(stepSize, numberOfSteps, labels);
-			}
-			if (y) {
-				glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
-				renderer->pushMatrix();
-				renderer->multMatrix(m);
-				ofDrawGridPlane(stepSize, numberOfSteps, labels);
-				renderer->popMatrix();
-			}
-			if (z) {
-				glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
-				renderer->pushMatrix();
-				renderer->multMatrix(m);
-				ofDrawGridPlane(stepSize, numberOfSteps, labels);
-				renderer->popMatrix();
-			}
-		}
-		else { // custom ttf
+        if (font == nullptr || camera == nullptr)
+        {
+            // bitmap
+            if (x)
+            {
+                ofDrawGridPlane(stepSize, numberOfSteps, labels);
+            }
+            if (y)
+            {
+                glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
+                renderer->pushMatrix();
+                renderer->multMatrix(m);
+                ofDrawGridPlane(stepSize, numberOfSteps, labels);
+                renderer->popMatrix();
+            }
+            if (z)
+            {
+                glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
+                renderer->pushMatrix();
+                renderer->multMatrix(m);
+                ofDrawGridPlane(stepSize, numberOfSteps, labels);
+                renderer->popMatrix();
+            }
+        }
+        else
+        {
+            // custom ttf
 
-			if (x) {
-				ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
-			}
-			if (y) {
-				glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
-				ofPushMatrix();
-				ofMultMatrix(m);
-				ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
-				ofPopMatrix();
-			}
-			if (z) {
-				glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
-				ofPushMatrix();
-				ofMultMatrix(m);
-				ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
-				ofPopMatrix();
-			}
-		}
+            if (x)
+            {
+                ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
+            }
+            if (y)
+            {
+                glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
+                ofPushMatrix();
+                ofMultMatrix(m);
+                ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
+                ofPopMatrix();
+            }
+            if (z)
+            {
+                glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
+                ofPushMatrix();
+                ofMultMatrix(m);
+                ofxDrawGridPlane(stepSize, numberOfSteps, labels, font, camera, c1, c2);
+                ofPopMatrix();
+            }
+        }
 
-		if (labels) { // xyz
-			if (font == nullptr || camera == nullptr)
-			{
-				//ofPushStyle();
-				ofSetColor(c2); //color is not internal
+        if (labels)
+        {
+            // xyz
+            if (font == nullptr || camera == nullptr)
+            {
+                //ofPushStyle();
+                ofSetColor(c2); //color is not internal
 
-				// bitmap
-				ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
-				float labelPos = stepSize * (numberOfSteps + 0.5);
+                // bitmap
+                ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
+                float labelPos = stepSize * (numberOfSteps + 0.5);
 
-				ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-				ofDrawBitmapString("x", labelPos, 0, 0);
-				ofDrawBitmapString("y", 0, labelPos, 0);
-				ofDrawBitmapString("z", 0, 0, labelPos);
+                ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
+                ofDrawBitmapString("x", labelPos, 0, 0);
+                ofDrawBitmapString("y", 0, labelPos, 0);
+                ofDrawBitmapString("z", 0, 0, labelPos);
 
-				ofSetDrawBitmapMode(mode);
+                ofSetDrawBitmapMode(mode);
 
-				//ofPopStyle();
-			}
-			/*
-			else
-			{
-				// custom ttf
-				//TODO:
-				// skip labels. we will draw using the out-of-the-camera approach!
+                //ofPopStyle();
+            }
+            /*
+            else
+            {
+                // custom ttf
+                //TODO:
+                // skip labels. we will draw using the out-of-the-camera approach!
 
-				//ofPopStyle();
-				ofSetColor(prevColor);
-				return;
-
-
-				//float labelPos = stepSize * (numberOfSteps + 0.5);
-
-				//ofxDrawString("x", labelPos, 0, 0, font, camera);
-				//ofxDrawString("y", 0, labelPos, 0, font, camera);
-				//ofxDrawString("z", 0, 0, labelPos, font, camera);
-			}
-			*/
-		}
-
-		//ofPopStyle();
-		ofSetColor(prevColor);
-	};
+                //ofPopStyle();
+                ofSetColor(prevColor);
+                return;
 
 
-	//--------------------------------------------------------------
-	inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z, bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS, ofColor c2 = SURFING_RULES_COLOR_TEXT)
-	{
-		ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, enableLines, c1, c2);
-	}
+                //float labelPos = stepSize * (numberOfSteps + 0.5);
 
-	//----
+                //ofxDrawString("x", labelPos, 0, 0, font, camera);
+                //ofxDrawString("y", 0, labelPos, 0, font, camera);
+                //ofxDrawString("z", 0, 0, labelPos, font, camera);
+            }
+            */
+        }
 
-	//TODO: WIP
-	//#define USE_TTF_TO_3D // -> Enable to go fixing..
+        //ofPopStyle();
+        ofSetColor(prevColor);
+    };
+
+
+    //--------------------------------------------------------------
+    inline void ofxDrawGridBitmapFont(float stepSize, size_t numberOfSteps, bool labels, bool x, bool y, bool z,
+                                      bool enableLines = true, ofColor c1 = SURFING_RULES_COLOR_LINES_UNITS,
+                                      ofColor c2 = SURFING_RULES_COLOR_TEXT)
+    {
+        ofxDrawGrid(stepSize, numberOfSteps, labels, x, y, z, nullptr, nullptr, enableLines, c1, c2);
+    }
+
+    //----
+
+    //TODO: WIP
+    //#define USE_TTF_TO_3D // -> Enable to go fixing..
 #ifdef USE_TTF_TO_3D
 	// Getting from of\libs\openFrameworks\gl\ofGLRenderer.cpp
 	//void ofGLRenderer::drawString(string textString, float x, float y, float z)
@@ -511,7 +544,6 @@ namespace ofxSurfingHelpers
 #endif
 
 
-
 		//// A. Draw mesh text 
 		//ofMesh charMesh = bitmapFont.getMesh(textString, sx, sy, currentStyle.drawBitmapMode, vflipped);
 		//mutThis->bind(bitmapFont.getTexture(), 0);
@@ -547,189 +579,201 @@ namespace ofxSurfingHelpers
 	}
 #endif
 
-	//TODO:
-	// Another approach is to draw the labels out of the camera,
-	// using worldTo2D
+    //TODO:
+    // Another approach is to draw the labels out of the camera,
+    // using worldTo2D
 
-	// Allows passing a font and the camera to customize style instead of using bitmap font
-	//--------------------------------------------------------------
-	inline void ofxDrawGridPlaneLabelsTrueTypeFont(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font, bool bOffset, ofCamera* camera, float scale = -1.0f, ofColor c = SURFING_RULES_COLOR_TEXT)
-	{
-		if (font == nullptr) return;
-		if (camera == nullptr) return;
+    // Allows passing a font and the camera to customize style instead of using bitmap font
+    //--------------------------------------------------------------
+    inline void ofxDrawGridPlaneLabelsTrueTypeFont(float stepSize, size_t numberOfSteps, ofTrueTypeFont* font,
+                                                   bool bOffset, ofCamera* camera, float scale = -1.0f,
+                                                   ofColor c = SURFING_RULES_COLOR_TEXT)
+    {
+        if (font == nullptr) return;
+        if (camera == nullptr) return;
 
-		//offset labels
-		bool bO = false;
+        //offset labels
+        bool bO = false;
 
-		//ofPushStyle();
-		ofColor prevColor = ofGetStyle().color;
+        //ofPushStyle();
+        ofColor prevColor = ofGetStyle().color;
 
-		ofSetColor(c);
+        ofSetColor(c);
 
-		string s;
-		glm::vec2 p;
-		glm::vec2 bb;
-		ofRectangle r = ofGetCurrentViewport();
+        string s;
+        glm::vec2 p;
+        glm::vec2 bb;
+        ofRectangle r = ofGetCurrentViewport();
 
-		// pass the label and world 3d cords and gets the screen 2d coord.
-		auto doConvertCoord = [&](const std::string& _s, const int _x, const int _y, const int _z, const bool _bOffset = false) {
-			const ofRectangle _r = ofGetCurrentViewport();
-			glm::vec3 _p = camera->worldToScreen(glm::vec3(_x, _y, _z), _r);
+        // pass the label and world 3d cords and gets the screen 2d coord.
+        auto doConvertCoord = [&](const std::string& _s, const int _x, const int _y, const int _z,
+                                  const bool _bOffset = false)
+        {
+            const ofRectangle _r = ofGetCurrentViewport();
+            glm::vec3 _p = camera->worldToScreen(glm::vec3(_x, _y, _z), _r);
 
-			if (_bOffset) {
-				const glm::vec2 _bb = font->getStringBoundingBox(_s, 0, 0).getTopRight();
-				_p = _p - glm::vec2(_bb.x / 2, -_bb.x / 2);
-			}
+            if (_bOffset)
+            {
+                const glm::vec2 _bb = font->getStringBoundingBox(_s, 0, 0).getTopRight();
+                _p = _p - glm::vec2(_bb.x / 2, -_bb.x / 2);
+            }
 
-			return _p;
-		};
+            return _p;
+        };
 
-		glm::vec3 pp(0);
+        glm::vec3 pp(0);
 
-		// Draw all the labels
-		{
-			// Draw numbers on axes
-			{
-				// point zero 
-				s = ofToString(0);
-				pp = doConvertCoord(s, 0, 0, 0, bOffset);
-				font->drawString(s, pp.x, pp.y);
+        // Draw all the labels
+        {
+            // Draw numbers on axes
+            {
+                // point zero 
+                s = ofToString(0);
+                pp = doConvertCoord(s, 0, 0, 0, bOffset);
+                font->drawString(s, pp.x, pp.y);
 
-				for (float i = 1; i <= numberOfSteps; i++)
-				{
-					float yz = i * stepSize;
+                for (float i = 1; i <= numberOfSteps; i++)
+                {
+                    float yz = i * stepSize;
 
-					float yz_ = yz;//for labels without scale fix!
+                    float yz_ = yz; //for labels without scale fix!
 
-					// From OF:
-					/*
-					renderer->drawString(ofToString(yz), 0, yz, 0);
-					renderer->drawString(ofToString(-yz), 0, -yz, 0);
-					renderer->drawString(ofToString(yz), 0, 0, yz);
-					renderer->drawString(ofToString(-yz), 0, 0, -yz);
-					*/
+                    // From OF:
+                    /*
+                    renderer->drawString(ofToString(yz), 0, yz, 0);
+                    renderer->drawString(ofToString(-yz), 0, -yz, 0);
+                    renderer->drawString(ofToString(yz), 0, 0, yz);
+                    renderer->drawString(ofToString(-yz), 0, 0, -yz);
+                    */
 
-					//TODO: workaround fix
-					// how to fix without using billboard mode like as ofBitmapFont?
-					if (scale != -1.0f) yz_ *= scale;
+                    //TODO: workaround fix
+                    // how to fix without using billboard mode like as ofBitmapFont?
+                    if (scale != -1.0f) yz_ *= scale;
 
-					////TODO: fix
-					//float ratio = 20;
-					////float ratio = numberOfSteps / stepSize;
-					//if (scale != -1.0f) yz_ *= scale * ratio;
+                    ////TODO: fix
+                    //float ratio = 20;
+                    ////float ratio = numberOfSteps / stepSize;
+                    //if (scale != -1.0f) yz_ *= scale * ratio;
 
-					// floor x and floor z
+                    // floor x and floor z
 
-					//TODO: remove unnecessary decimals
-					int ndigits;
-					auto nDigitsFor = [](float v) {
-						int n=1;//default
-						if (std::floor(v) == v)//isInt 
-							n = 0;
-						return n;
-					};
+                    //TODO: remove unnecessary decimals
+                    int ndigits;
+                    auto nDigitsFor = [](float v)
+                    {
+                        int n = 1; //default
+                        if (std::floor(v) == v) //isInt 
+                            n = 0;
+                        return n;
+                    };
 
-					// fix flipped
-					//(yz), 0, yz, 0;
-					ndigits = nDigitsFor(yz);
-					s = ofToString(yz, ndigits);
-					pp = doConvertCoord(s, yz_, 0, 0, bOffset);
-					font->drawString(s, pp.x, pp.y);
+                    // fix flipped
+                    //(yz), 0, yz, 0;
+                    ndigits = nDigitsFor(yz);
+                    s = ofToString(yz, ndigits);
+                    pp = doConvertCoord(s, yz_, 0, 0, bOffset);
+                    font->drawString(s, pp.x, pp.y);
 
 
-					// fix flipped
-					//(-yz), 0, -yz, 0;
-					ndigits = nDigitsFor(yz);
-					s = ofToString(-yz, ndigits);
-					pp = doConvertCoord(s, -yz_, 0, 0, bOffset);
-					font->drawString(s, pp.x, pp.y);
+                    // fix flipped
+                    //(-yz), 0, -yz, 0;
+                    ndigits = nDigitsFor(yz);
+                    s = ofToString(-yz, ndigits);
+                    pp = doConvertCoord(s, -yz_, 0, 0, bOffset);
+                    font->drawString(s, pp.x, pp.y);
 
-					ndigits = nDigitsFor(yz);
-					s = ofToString(yz, ndigits);
-					pp = doConvertCoord(s, 0, 0, yz_, bOffset);
-					font->drawString(s, pp.x, pp.y);
+                    ndigits = nDigitsFor(yz);
+                    s = ofToString(yz, ndigits);
+                    pp = doConvertCoord(s, 0, 0, yz_, bOffset);
+                    font->drawString(s, pp.x, pp.y);
 
-					ndigits = nDigitsFor(yz);
-					s = ofToString(-yz, ndigits);
-					pp = doConvertCoord(s, 0, 0, -yz_, bOffset);
-					font->drawString(s, pp.x, pp.y);
-				}
-			}
+                    ndigits = nDigitsFor(yz);
+                    s = ofToString(-yz, ndigits);
+                    pp = doConvertCoord(s, 0, 0, -yz_, bOffset);
+                    font->drawString(s, pp.x, pp.y);
+                }
+            }
 
-			//--
+            //--
 
-			// Draw x, y, z labels
-			{
-				float labelPos = stepSize * (numberOfSteps + 0.5);
-				float labelPos_ = labelPos;
+            // Draw x, y, z labels
+            {
+                float labelPos = stepSize * (numberOfSteps + 0.5);
+                float labelPos_ = labelPos;
 
-				//TODO: workaround fix
-				// how to fix without using billboard mode like as ofBitmapFont?
-				if (scale != -1.0f) labelPos_ *= scale;
+                //TODO: workaround fix
+                // how to fix without using billboard mode like as ofBitmapFont?
+                if (scale != -1.0f) labelPos_ *= scale;
 
-				s = "x";
-				pp = doConvertCoord(s, labelPos_, 0, 0, bOffset);
-				font->drawString(s, pp.x, pp.y);
+                s = "x";
+                pp = doConvertCoord(s, labelPos_, 0, 0, bOffset);
+                font->drawString(s, pp.x, pp.y);
 
-				s = "y";
-				pp = doConvertCoord(s, 0, labelPos_, 0, bOffset);
-				font->drawString(s, pp.x, pp.y);
+                s = "y";
+                pp = doConvertCoord(s, 0, labelPos_, 0, bOffset);
+                font->drawString(s, pp.x, pp.y);
 
-				s = "z";
-				pp = doConvertCoord(s, 0, 0, labelPos_, bOffset);
-				font->drawString(s, pp.x, pp.y);
-			}
-		}
+                s = "z";
+                pp = doConvertCoord(s, 0, 0, labelPos_, bOffset);
+                font->drawString(s, pp.x, pp.y);
+            }
+        }
 
-		//ofPopStyle();
-		ofSetColor(prevColor);
-	};
+        //ofPopStyle();
+        ofSetColor(prevColor);
+    };
 
-	//--
+    //--
 
-	// 3D Scene Grids and Bg Helpers
+    // 3D Scene Grids and Bg Helpers
 
-	//--------------------------------------------------------------
-	inline void ofxDrawBgGradient(ofColor c1 = SURFING_RULES_COLOR_BG_1, ofColor c2 = SURFING_RULES_COLOR_BG_2, ofGradientMode g = OF_GRADIENT_CIRCULAR)
-	{
-		ofBackgroundGradient(c1, c2, g);
-	};
+    //--------------------------------------------------------------
+    inline void ofxDrawBgGradient(ofColor c1 = SURFING_RULES_COLOR_BG_1, ofColor c2 = SURFING_RULES_COLOR_BG_2,
+                                  ofGradientMode g = OF_GRADIENT_CIRCULAR)
+    {
+        ofBackgroundGradient(c1, c2, g);
+    };
 
-	//--------------------------------------------------------------
-	inline void ofxDrawFloor(float size, bool bEnable1 = true, bool bEnable2 = true, ofColor c1 = SURFING_RULES_COLOR_LINES_QUARTER, ofColor c2 = SURFING_RULES_COLOR_LINES_SIXTEENTH, float offsetHeight = 0)
-	{
-		bool bFlipz = true;//make it floor
-		bool b = (bFlipz || (offsetHeight != 0));
-		if (b) ofPushMatrix();
-		ofPushStyle();
+    //--------------------------------------------------------------
+    inline void ofxDrawFloor(float size, bool bEnable1 = true, bool bEnable2 = true,
+                             ofColor c1 = SURFING_RULES_COLOR_LINES_QUARTER,
+                             ofColor c2 = SURFING_RULES_COLOR_LINES_SIXTEENTH, float offsetHeight = 0)
+    {
+        bool bFlipz = true; //make it floor
+        bool b = (bFlipz || (offsetHeight != 0));
+        if (b) ofPushMatrix();
+        ofPushStyle();
 
-		if (offsetHeight != 0) ofTranslate(0, offsetHeight, 0);
-		if (bFlipz) ofRotate(90, 0, 0, 1);
+        if (offsetHeight != 0) ofTranslate(0, offsetHeight, 0);
+        if (bFlipz) ofRotate(90, 0, 0, 1);
 
-		{
-			if (bEnable1) {
-				ofSetColor(c1);
-				ofDrawGridPlane(size, 1, false);
-			}
+        {
+            if (bEnable1)
+            {
+                ofSetColor(c1);
+                ofDrawGridPlane(size, 1, false);
+            }
 
-			if (bEnable2) {
-				ofSetColor(c2);
-				ofDrawGridPlane(size / 2.f, 2, false);
-			}
-		}
+            if (bEnable2)
+            {
+                ofSetColor(c2);
+                ofDrawGridPlane(size / 2.f, 2, false);
+            }
+        }
 
-		ofPopStyle();
-		if (b) ofPopMatrix();
-	};
+        ofPopStyle();
+        if (b) ofPopMatrix();
+    };
 
-	//--------------------------------------------------------------
-	inline void ofxDrawFloorRectangle(float gridSize) {
-		float scale = gridSize;
+    //--------------------------------------------------------------
+    inline void ofxDrawFloorRectangle(float gridSize)
+    {
+        float scale = gridSize;
 
-		auto renderer = ofGetCurrentRenderer();
+        auto renderer = ofGetCurrentRenderer();
 
-		float lineWidth = renderer->getStyle().lineWidth;
-		renderer->setLineWidth(2);
+        float lineWidth = renderer->getStyle().lineWidth;
+        renderer->setLineWidth(2);
 
 #ifdef USE_SURFING_DEBUG_ALPHA
 		//TODO: fixing overlap transparencies..
@@ -738,85 +782,90 @@ namespace ofxSurfingHelpers
 		renderer->setBlendMode(OF_BLENDMODE_ALPHA);
 #endif
 
-		renderer->drawLine(scale, 0, -scale, scale, 0, scale);
-		renderer->drawLine(-scale, 0, -scale, -scale, 0, scale);
-		renderer->drawLine(-scale, 0, scale, scale, 0, scale);
-		renderer->drawLine(-scale, 0, -scale, scale, 0, -scale);
+        renderer->drawLine(scale, 0, -scale, scale, 0, scale);
+        renderer->drawLine(-scale, 0, -scale, -scale, 0, scale);
+        renderer->drawLine(-scale, 0, scale, scale, 0, scale);
+        renderer->drawLine(-scale, 0, -scale, scale, 0, -scale);
 
-		renderer->setLineWidth(lineWidth);
-	}
-
-
-	//--------------------------------------------------------------
-	inline void ofxDrawGridPlaneLabelsBitmapFonts(float stepSize, size_t numberOfSteps, ofColor c = SURFING_RULES_COLOR_TEXT) {
-
-		float scale = stepSize * numberOfSteps;
-		auto renderer = ofGetCurrentRenderer();
-		float lineWidth = renderer->getStyle().lineWidth;
-
-		//draw numbers on axes
-		ofColor prevColor = renderer->getStyle().color;
-		ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
-
-		renderer->setColor(c);
-		//renderer->setColor(255, 255, 255);
-
-		renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-
-		renderer->drawString(ofToString(0), 0, 0, 0);
-
-		for (float i = 1; i <= numberOfSteps; i++)
-		{
-			float yz = i * stepSize;
-			renderer->drawString(ofToString(yz), 0, yz, 0);
-			renderer->drawString(ofToString(-yz), 0, -yz, 0);
-			renderer->drawString(ofToString(yz), 0, 0, yz);
-			renderer->drawString(ofToString(-yz), 0, 0, -yz);
-		}
-
-		renderer->setColor(prevColor);
-		renderer->setBitmapTextMode(mode);
-	}
+        renderer->setLineWidth(lineWidth);
+    }
 
 
-	//--------------------------------------------------------------
-	inline void ofxDrawGridLabelsBitmapFonts(float stepSize, size_t numberOfSteps, bool x, bool y, bool z, ofColor c = SURFING_RULES_COLOR_TEXT)
-	{
-		auto renderer = ofGetCurrentRenderer();
+    //--------------------------------------------------------------
+    inline void ofxDrawGridPlaneLabelsBitmapFonts(float stepSize, size_t numberOfSteps,
+                                                  ofColor c = SURFING_RULES_COLOR_TEXT)
+    {
+        float scale = stepSize * numberOfSteps;
+        auto renderer = ofGetCurrentRenderer();
+        float lineWidth = renderer->getStyle().lineWidth;
 
-		ofColor prevColor = ofGetStyle().color;
+        //draw numbers on axes
+        ofColor prevColor = renderer->getStyle().color;
+        ofDrawBitmapMode mode = renderer->getStyle().drawBitmapMode;
 
-		if (x) {
-			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
-		}
-		if (y) {
-			glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
-			renderer->pushMatrix();
-			renderer->multMatrix(m);
-			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
-			renderer->popMatrix();
-		}
-		if (z) {
-			glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
-			renderer->pushMatrix();
-			renderer->multMatrix(m);
-			ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
-			renderer->popMatrix();
-		}
+        renderer->setColor(c);
+        //renderer->setColor(255, 255, 255);
 
-		ofSetColor(c); //color is not internal
+        renderer->setBitmapTextMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 
-		// bitmap
-		ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
-		float labelPos = stepSize * (numberOfSteps + 0.5);
+        renderer->drawString(ofToString(0), 0, 0, 0);
 
-		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-		ofDrawBitmapString("x", labelPos, 0, 0);
-		ofDrawBitmapString("y", 0, labelPos, 0);
-		ofDrawBitmapString("z", 0, 0, labelPos);
+        for (float i = 1; i <= numberOfSteps; i++)
+        {
+            float yz = i * stepSize;
+            renderer->drawString(ofToString(yz), 0, yz, 0);
+            renderer->drawString(ofToString(-yz), 0, -yz, 0);
+            renderer->drawString(ofToString(yz), 0, 0, yz);
+            renderer->drawString(ofToString(-yz), 0, 0, -yz);
+        }
 
-		ofSetDrawBitmapMode(mode);
+        renderer->setColor(prevColor);
+        renderer->setBitmapTextMode(mode);
+    }
 
-		ofSetColor(prevColor);
-	};
+
+    //--------------------------------------------------------------
+    inline void ofxDrawGridLabelsBitmapFonts(float stepSize, size_t numberOfSteps, bool x, bool y, bool z,
+                                             ofColor c = SURFING_RULES_COLOR_TEXT)
+    {
+        auto renderer = ofGetCurrentRenderer();
+
+        ofColor prevColor = ofGetStyle().color;
+
+        if (x)
+        {
+            ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+        }
+        if (y)
+        {
+            glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 0, -1));
+            renderer->pushMatrix();
+            renderer->multMatrix(m);
+            ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+            renderer->popMatrix();
+        }
+        if (z)
+        {
+            glm::mat4 m = glm::rotate(glm::mat4(1.0), glm::half_pi<float>(), glm::vec3(0, 1, 0));
+            renderer->pushMatrix();
+            renderer->multMatrix(m);
+            ofxDrawGridPlaneLabelsBitmapFonts(stepSize, numberOfSteps, c);
+            renderer->popMatrix();
+        }
+
+        ofSetColor(c); //color is not internal
+
+        // bitmap
+        ofDrawBitmapMode mode = ofGetStyle().drawBitmapMode;
+        float labelPos = stepSize * (numberOfSteps + 0.5);
+
+        ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
+        ofDrawBitmapString("x", labelPos, 0, 0);
+        ofDrawBitmapString("y", 0, labelPos, 0);
+        ofDrawBitmapString("z", 0, 0, labelPos);
+
+        ofSetDrawBitmapMode(mode);
+
+        ofSetColor(prevColor);
+    };
 };
