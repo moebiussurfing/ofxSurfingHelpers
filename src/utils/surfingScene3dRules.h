@@ -40,9 +40,9 @@ namespace ofxSurfingHelpers
     public:
         SurfSceneGrids()
         {
+#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Constructor()";
 
-#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             // Fix some exit exceptions.
             int minValue = std::numeric_limits<int>::min();
             ofAddListener(ofEvents().exit, this, &SurfSceneGrids::exit, minValue);
@@ -51,9 +51,9 @@ namespace ofxSurfingHelpers
 
         ~SurfSceneGrids()
         {
+#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor()";
 
-#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             ofRemoveListener(ofEvents().exit, this, &SurfSceneGrids::exit);
 #endif
         }

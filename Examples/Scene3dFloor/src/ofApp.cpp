@@ -31,7 +31,7 @@ void ofApp::resetCam()
 void ofApp::setup()
 {
 	// Left monitor portrait
-#if 1
+#if 0
 	ofxSurfingHelpers::setMonitorsLayout(-1, true, true);
 #endif
 
