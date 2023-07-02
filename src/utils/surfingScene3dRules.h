@@ -42,29 +42,38 @@ namespace ofxSurfingHelpers
         {
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Constructor()";
 
+#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             // Fix some exit exceptions.
             int minValue = std::numeric_limits<int>::min();
             ofAddListener(ofEvents().exit, this, &SurfSceneGrids::exit, minValue);
+#endif
         }
 
         ~SurfSceneGrids()
         {
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "Destructor()";
 
+#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
             ofRemoveListener(ofEvents().exit, this, &SurfSceneGrids::exit);
+#endif
         }
 
     private:
+
+#ifdef SURFING_IMGUI__CREATE_EXIT_LISTENER
         void exit(ofEventArgs& args)
         {
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "exit(ofEventArgs& args)";
             exit();
         }
+#endif
 
         void exit()
         {
+#ifdef SURFING_IMGUI__ENABLE_SAVE_ON_EXIT
             ofLogNotice("ofxSurfingHelpers::SurfSceneGrids") << "exit()";
             doSave();
+#endif
         }
 
     public:
@@ -690,7 +699,7 @@ namespace ofxSurfingHelpers
             if (!bDoneSetup) setup();
             if (!bGui) return;
 
-            if (ui.isMinimized() && bGui)
+            if (ui.isMinimized())
             {
                 IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL;
             }

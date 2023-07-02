@@ -14,6 +14,29 @@
 
 */
 
+/*
+
+	// Could avoid including this addon copying this!
+
+	// load	
+	string path = params.getName() + ".json";
+	ofJson settings;
+	settings = ofLoadJson(path);
+	ofDeserialize(settings, params);
+	ofLogWarning() << "Loaded: " << path;
+
+	// save
+	string path = params.getName() + ".json";
+	if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
+		ofFilePath::createEnclosingDirectory(path);
+		ofLogWarning() << "Created enclosing folder for: " << path;
+	}
+	ofJson settings;
+	ofSerialize(settings, params);
+	ofSavePrettyJson(path, settings);
+*/
+
+
 //---------
 
 #ifndef OF_APP_DEFINED_ofxSurfingHelpers

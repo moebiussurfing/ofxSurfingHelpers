@@ -116,6 +116,10 @@ void ofApp::drawImGui()
 
 		if (ui.BeginWindow(bGui))
 		{
+			ui.AddMinimizerToggle();
+			ui.AddAutoResizeToggle();
+			ui.AddSpacingBigSeparated();
+
 			ui.AddLabelBig("Scene");
 			ui.Add(bObject, OFX_IM_TOGGLE_SMALL);
 			ui.AddSpacingSeparated();
