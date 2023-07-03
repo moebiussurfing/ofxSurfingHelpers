@@ -26,7 +26,7 @@ namespace ofxSurfingHelpers
 #if(DEBUG_COLORS__SCENE==0)
 
     // Grey scale
-    //dark
+    // dark
     // static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{255, 255, 255, 200};
     // static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{128, 128, 128, 150};
     // static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{96, 96, 96, 150};
@@ -34,14 +34,14 @@ namespace ofxSurfingHelpers
     // static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{64, 64, 64, 32};
     // static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{ 40, 40, 40 };
     // static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{ 0, 0, 0 };
-    //light
+    // light
 	static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{0, 0, 0, 200};
 	static const ofColor SURFING_RULES_COLOR_LINES_BIG = ofColor{0, 0, 0, 150};
 	static const ofColor SURFING_RULES_COLOR_LINES_QUARTER = ofColor{24, 24, 24, 55};
 	static const ofColor SURFING_RULES_COLOR_LINES_SIXTEENTH = ofColor{48, 48, 48, 66};
 	static const ofColor SURFING_RULES_COLOR_LINES_UNITS = ofColor{64, 64, 64, 22};
-	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{66, 66, 66};
-    static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{225, 225, 225};
+	static const ofColor SURFING_RULES_COLOR_BG_1 = ofColor{20, 20, 20};
+	static const ofColor SURFING_RULES_COLOR_BG_2 = ofColor{130, 130, 130};
 
     //// Green scale
     //static const ofColor SURFING_RULES_COLOR_TEXT = ofColor{ 255, 255, 255, 200 };
