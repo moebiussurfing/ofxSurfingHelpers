@@ -36,7 +36,8 @@ void ofApp::setup()
 #endif
 
 	sceneGrid.setCameraPtr(&cam);
-	sceneGrid.setPathGlobal("data");
+	sceneGrid.setPathGlobal("myData");
+	//sceneGrid.setLogLevel(OF_LOG_SILENT);
 
 	resetCam();
 }
