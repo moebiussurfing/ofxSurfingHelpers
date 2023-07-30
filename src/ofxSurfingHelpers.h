@@ -225,11 +225,13 @@ namespace ofxSurfingHelpers
 		r.translateY(ofGetHeight() - r.getBottomLeft().y);
 		ofSetColor(255, 255);
 		image.draw(r.x, r.y, r.getWidth(), r.getHeight());
+
 		if (bLine) {
 			ofSetColor(0, 200);
 			ofSetLineWidth(2);
 			ofDrawLine(r.getTopLeft(), r.getTopRight());
 		}
+
 		ofPopStyle();
 	}
 	//--------------------------------------------------------------
