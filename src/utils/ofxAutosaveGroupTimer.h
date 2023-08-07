@@ -47,8 +47,17 @@ public:
 	void addGroup(ofParameterGroup params, string path);
 	void addGroup(ofParameterGroup params);
 
-private:
+//private:
+public:
 	ofParameterGroup params;
+private:
+	void Changed_Params(ofAbstractParameter& e);
+	void saveParams();
+
+	bool bFlagSaveParams = 0;
+private:
+	ofParameterGroup paramsQueue;
+	ofEventListener eParamsQueue;
 
 public:
 	void setPathGlobal(string path) { // call before setup or adding param groups
@@ -61,10 +70,12 @@ public:
 	void startup();//public to allow callback manually.
 	//if not, will be auto called on first frame in update!
 
-	void saveAllGroups();
+	void saveParamsQueued();
 
 private:
-	ofParameter<bool> bAutoSave;
+	bool bFlagSaveQueued = 0;
+	ofParameter<bool> bAutoSaveOnChange;
+	ofParameter<bool> bAutoSaveTimer;
 	ofParameter<bool> bSilent;//not log for every param
 	ofParameter<int> timeToAutosave;//period in seconds
 
@@ -83,7 +94,8 @@ private:
 
 	vector<ofxSurfingHelpers::SurfDataGroupSaver> data;
 
-	//workaround
+	//TODO
+	// workaround
 	// a bit of offset to make many instances to not happen at the same time..
 	bool bRandomOffset = 0;
 	int tOffset = 0;

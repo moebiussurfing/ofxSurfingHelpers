@@ -14,7 +14,6 @@
 
 #include "ofMain.h"
 
-//#include "ofxSurfingHelpers.h"
 #include "ofxAutosaveGroupTimer.h"
 
 #include "ofxSurfingImGui.h" // Not required to use this class!
@@ -29,7 +28,8 @@ class ofApp : public ofBaseApp{
 		void draw();
 		void keyPressed(int key);		
 
-		ofxSurfingGui ui; // Not required to use this class!
+		// Not required to use the class. just for this example.
+		ofxSurfingGui ui; 
 
 		void setupParams();
 
@@ -65,8 +65,9 @@ class ofApp : public ofBaseApp{
 		ofParameter<ofFloatColor> color2;
 		ofParameter<int> indexExpanded;
 
-		surfingSceneTesters sc; // scene tester to pass another group param
+		// Scene tester to pass another group param
+		surfingSceneTesters sc; 
 
 		// Manager
-		ofxAutosaveGroupTimer autosaver;
+		ofxAutosaveGroupTimer settingsManager;
 };

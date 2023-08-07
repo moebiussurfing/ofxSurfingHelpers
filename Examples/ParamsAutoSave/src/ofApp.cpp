@@ -3,29 +3,32 @@
 //--------------------------------------------------------------
 void ofApp::setup()
 {
+	ofSetWindowPosition(-1920, 28);
+	ofSetVerticalSync(true);
+
 	setupParams();
 
-	ofxSurfingHelpers::SurfDataGroupSaver d;
+	//--
 
+	// API. How to add groups.
+	// different approaches
+
+	ofxSurfingHelpers::SurfDataGroupSaver d;
 	d.params = params1;
 	d.path = "params1.json";
-	autosaver.addGroup(d);
+	settingsManager.addGroup(d);
 
-	d.params = params2;
-	d.path = "params2.json";
-	autosaver.addGroup(d);
+	settingsManager.addGroup(params2, "params2.json");
 
-	d.params = params3;
-	d.path = "params3.json";
-	autosaver.addGroup(d);
+	settingsManager.addGroup(params3);
 
 	d.params = params4;
 	d.path = "params4.json";
-	autosaver.addGroup(d);
+	settingsManager.addGroup(d);
 
 	d.params = sc.params;
 	d.path = "sceneParams.json";
-	autosaver.addGroup(d);
+	settingsManager.addGroup(d);
 }
 
 //--------------------------------------------------------------
@@ -59,7 +62,7 @@ void ofApp::setupParams()
 
 	//--
 
-	// Groups
+	// Queue Groups
 
 	params1.setName("params1");
 	params2.setName("params2");
@@ -99,10 +102,6 @@ void ofApp::draw()
 	{
 		if (ui.BeginWindow("ofApp")) 
 		{
-			//ui.AddMinimizeToggle();
-			//ui.AddAutoResizeToggle();
-			//ui.AddSpacingSeparated();
-
 			ui.AddLabelBig("Group Params", true, true);
 
 			ui.AddGroup(sc.params);
@@ -113,8 +112,8 @@ void ofApp::draw()
 
 			ui.AddSpacingBigSeparated();
 
-			ui.AddGroup(autosaver.params);
-			ofxImGuiSurfing::AddProgressBar(autosaver.getProgressPrc());
+			ui.AddGroup(settingsManager.params);
+			ofxImGuiSurfing::AddProgressBar(settingsManager.getProgressPrc());
 
 			ui.EndWindow();
 		};
