@@ -304,7 +304,7 @@ namespace ofxSurfingHelpers
 	//----
 
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
+	inline bool loadGroup(ofParameterGroup& g, string path = "", bool bSilent = false)
 	{
 		if (path == "")
 		{
@@ -312,9 +312,9 @@ namespace ofxSurfingHelpers
 			ofLogWarning("ofxSurfingHelpers") << "loadGroup " << "Path is empty! Using a default instead!";
 		}
 
-		if (debug)
+		if (!bSilent)
 		{
-			ofLogNotice("ofxSurfingHelpers") << "loadGroup `" << g.getName() << "` to `" << path << "`";
+			ofLogNotice("ofxSurfingHelpers") << "loadGroup `" << g.getName() << "` from `" << path << "`";
 			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
 
@@ -331,21 +331,21 @@ namespace ofxSurfingHelpers
 		// Returns false if no file preset yet.
 		ofFile f;
 		bool b = f.doesFileExist(path);
-		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: `" << g.getName() << "` at `" << path << "`";
-		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` at `" << path << "` Not found!";
+		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: `" << g.getName() << "` from `" << path << "`";
+		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` from `" << path << "` Not found!";
 
 		return b; // Returns true if it's ok
 	};
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup& g, string path = "", bool debug = true)
+	inline bool saveGroup(ofParameterGroup& g, string path = "", bool bSilent = false)
 	{
 		if (path == "") {
 			path = g.getName() + "_Settings.json";
 			ofLogWarning("ofxSurfingHelpers") << "saveGroup " << "Path is empty! Using a default instead!";
 		}
 
-		if (debug) {
+		if (!bSilent) {
 			ofLogNotice("ofxSurfingHelpers") << g.getName() << " to `" << path << "`";
 			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
@@ -353,7 +353,6 @@ namespace ofxSurfingHelpers
 		// Create folder if folder do not exist!
 		// From now, will not require to call manually:
 		//ofxSurfingHelpers::CheckFolder(path);
-
 		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
 			ofFilePath::createEnclosingDirectory(path);
 			ofLogWarning("ofxSurfingHelpers") << "Created enclosing folder for: " << path;
@@ -363,8 +362,8 @@ namespace ofxSurfingHelpers
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
 
-		if (b) ofLogVerbose("ofxSurfingHelpers") << "Save: `" << g.getName() << "` at " << path;
-		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers") << "Save: `" << g.getName() << "` to " << path;
+		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` to " << path;
 
 		return b;
 	}
