@@ -315,7 +315,7 @@ namespace ofxSurfingHelpers
 		if (debug)
 		{
 			ofLogNotice("ofxSurfingHelpers") << "loadGroup `" << g.getName() << "` to `" << path << "`";
-			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n  " << g.toString();
+			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
 
 		ofJson settings;
@@ -347,7 +347,7 @@ namespace ofxSurfingHelpers
 
 		if (debug) {
 			ofLogNotice("ofxSurfingHelpers") << g.getName() << " to `" << path << "`";
-			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n  " << g.toString();
+			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
 
 		// Create folder if folder do not exist!

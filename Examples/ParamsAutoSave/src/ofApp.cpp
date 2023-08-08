@@ -1,40 +1,10 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup()
-{
-	ofSetWindowPosition(-1920, 28);
-	ofSetVerticalSync(true);
-
-	setupParams();
-
-	//--
-
-	// API. How to add groups.
-	// different approaches
-
-	ofxSurfingHelpers::SurfDataGroupSaver d;
-	d.params = params1;
-	d.path = "params1.json";
-	settingsManager.addGroup(d);
-
-	settingsManager.addGroup(params2, "params2.json");
-
-	settingsManager.addGroup(params3);
-
-	d.params = params4;
-	d.path = "params4.json";
-	settingsManager.addGroup(d);
-
-	d.params = sc.params;
-	d.path = "sceneParams.json";
-	settingsManager.addGroup(d);
-}
-
-//--------------------------------------------------------------
 void ofApp::setupParams()
 {
 	// Parameters
+
 	bPrevious.set("<", false);
 	bNext.set(">", false);
 	value.set("value", 0.f, -MAX_DIST, MAX_DIST);
@@ -62,7 +32,7 @@ void ofApp::setupParams()
 
 	//--
 
-	// Queue Groups
+	// Feed groups
 
 	params1.setName("params1");
 	params2.setName("params2");
@@ -92,11 +62,41 @@ void ofApp::setupParams()
 }
 
 //--------------------------------------------------------------
+void ofApp::setup()
+{
+	ofSetWindowPosition(-1920, 28);
+	ofSetVerticalSync(true);
+
+	setupParams();
+
+	//--
+
+	// API. 
+	// Queue Groups.
+	// How to add groups.
+	// Different approaches.
+
+	ofxSurfingHelpers::SurfDataGroupSaver d;
+	d.params = params1;
+	d.path = "params1_Settings.json";
+	settingsManager.addGroup(d);
+
+	settingsManager.addGroup(params2, "params2_Settings.json");
+
+	settingsManager.addGroup(params3);
+	
+	settingsManager.addGroup(params4);
+
+	settingsManager.addGroup(scene.params, "sceneParams_Settings.json");
+}
+
+//--------------------------------------------------------------
 void ofApp::draw()
 {
-	ofBackground(sc.amount % 2 == 0 ? sc.c1 : sc.c2);
+	ofBackground(scene.amount % 2 == 0 ? scene.c1 : scene.c2);
+	scene.draw();
 
-	sc.draw();
+	//--
 
 	ui.Begin();
 	{
@@ -104,26 +104,19 @@ void ofApp::draw()
 		{
 			ui.AddLabelBig("Group Params", true, true);
 
-			ui.AddGroup(sc.params);
 			ui.AddGroup(params1);
 			ui.AddGroup(params2);
 			ui.AddGroup(params3);
 			ui.AddGroup(params4);
-
+			ui.AddGroup(scene.params);
 			ui.AddSpacingBigSeparated();
 
 			ui.AddGroup(settingsManager.params);
-			ofxImGuiSurfing::AddProgressBar(settingsManager.getProgressPrc());
-
+			ui.AddProgressBar(settingsManager.getProgressPrc());
+			
 			ui.EndWindow();
 		};
 	}
 	ui.End();
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key)
-{
-
 }
 

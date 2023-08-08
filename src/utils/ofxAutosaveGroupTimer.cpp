@@ -33,7 +33,6 @@ void ofxAutosaveGroupTimer::startup()
 
 	ofLogNotice("ofxAutosaveGroupTimer") << "startup()";
 
-	//ofxSurfingHelpers::CheckFolder(path_Global);
 	ofxSurfingHelpers::loadGroup(params, path_Global + "/" + name_Settings + fileExtension);
 
 	// load
@@ -42,7 +41,7 @@ void ofxAutosaveGroupTimer::startup()
 		ofxSurfingHelpers::loadGroup(data[i].params, data[i].path, !bSilent.get());
 	}
 
-	// store all in one group
+	// store all queued in one group
 	paramsQueue.clear();
 	for (int i = 0; i < data.size(); i++)
 	{
@@ -50,11 +49,12 @@ void ofxAutosaveGroupTimer::startup()
 	}
 	eParamsQueue = paramsQueue.parameterChangedE().newListener([&](ofAbstractParameter&) {
 		bFlagSaveQueued = 1;
+		timerLast_AutoSaveQueuedOnChange = ofGetElapsedTimeMillis();
 		});
 
-	tOffset = (int)MAX(0, ofRandom(timeToAutosave.get() / 5));
-	//tOffset = (int)ofRandom(5);
-	//tOffset = (int) MAX(0, ofRandom(timeToAutosave.get() / 100));
+	//tOffset = (int)MAX(0, ofRandom(timePeriodToAutosave.get() / 5));
+	////tOffset = (int)ofRandom(5);
+	////tOffset = (int) MAX(0, ofRandom(timePeriodToAutosave.get() / 100));
 
 	//cout << "tOffset:" << tOffset << endl;
 
@@ -66,20 +66,20 @@ void ofxAutosaveGroupTimer::setup()
 {
 	data.clear();
 
-	bAutoSaveOnChange.set("Auto Save", true);
+	bAutoSaveOnChange.set("Auto Save OnChange", true);
 	bAutoSaveTimer.set("Auto Save Timer", false);
-	timeToAutosave.set("Time Period", 60, 1, 240);
+	timePeriodToAutosave.set("Time Period ms", 60000, 2000, 20000);
 	bSilent.set("Silent", true);
 
 	params.setName("ofxAutosaveGroupTimer");
+	params.add(bSilent);
 	params.add(bAutoSaveOnChange);
 	params.add(bAutoSaveTimer);
-	params.add(timeToAutosave);
-	params.add(bSilent);
+	params.add(timePeriodToAutosave);
 
 	ofAddListener(params.parameterChangedE(), this, &ofxAutosaveGroupTimer::Changed_Params);
 
-	timerLast_Autosave = ofGetElapsedTimef();
+	timerLast_AutosaveTimer = ofGetElapsedTimeMillis();
 }
 
 //--------------------------------------------------------------
@@ -104,7 +104,7 @@ void ofxAutosaveGroupTimer::Changed_Params(ofAbstractParameter& e)
 		if (bAutoSaveTimer) {
 			if (bAutoSaveOnChange) bAutoSaveOnChange = false;
 
-			timerLast_Autosave = ofGetElapsedTimef();
+			timerLast_AutosaveTimer = ofGetElapsedTimeMillis();
 
 			//TODO
 			ofRemoveListener(ofEvents().exit, this, &ofxAutosaveGroupTimer::exit);
@@ -135,7 +135,7 @@ void ofxAutosaveGroupTimer::exit()
 //--
 
 //--------------------------------------------------------------
-void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params, string path)
+void ofxAutosaveGroupTimer::addGroup(ofParameterGroup &params, string path)
 {
 	ofxSurfingHelpers::SurfDataGroupSaver d;
 	d.params = params;
@@ -144,10 +144,11 @@ void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params, string path)
 }
 
 //--------------------------------------------------------------
-void ofxAutosaveGroupTimer::addGroup(ofParameterGroup params)
+void ofxAutosaveGroupTimer::addGroup(ofParameterGroup &params)
 {
 	string path = params.getName();
-	//path += "_Settings.json";
+	path += "_Settings";
+	path += fileExtension;
 	ofxSurfingHelpers::SurfDataGroupSaver d;
 	d.params = params;
 	d.path = path;
@@ -191,6 +192,12 @@ void ofxAutosaveGroupTimer::saveParamsQueued()
 	}
 
 	if (bSilent) ofSetLogLevel(l);
+
+	stringstream ss;
+	ss << "Saved Queue >  #" << (++count) << " | ";
+	ss << (ofxSurfingHelpers::calculateTime(ofGetElapsedTimef()));
+	ss << " to " << path_Global;
+	ofLogNotice("ofxAutosaveGroupTimer") << "> DONE " << ss.str() ;
 }
 
 //--
@@ -207,7 +214,10 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 
 	if (bAutoSaveOnChange)
 	{
-		if (bFlagSaveQueued) {
+		// make a time gap to reduce the amount of file savings!
+		uint64_t t = ofGetElapsedTimeMillis();
+
+		if (bFlagSaveQueued && (t - timerLast_AutoSaveQueuedOnChange >= timeGap)) {
 			bFlagSaveQueued = 0;
 
 			saveParamsQueued();
@@ -226,34 +236,42 @@ void ofxAutosaveGroupTimer::update(ofEventArgs& args)
 	{
 		// Elapsed
 		uint64_t t;
-		if (!bRandomOffset) t = ofGetElapsedTimef() - timerLast_Autosave;
-		else t = ofGetElapsedTimef() + tOffset - timerLast_Autosave;
+		t = ofGetElapsedTimeMillis() - timerLast_AutosaveTimer;
 
-		progressPrc = ofMap(t, 0, timeToAutosave.get(), 0, 1, true);
+		//if (!bRandomOffset) t = ofGetElapsedTimeMillis() - timerLast_AutosaveTimer;
+		//else t = ofGetElapsedTimeMillis() + tOffset - timerLast_AutosaveTimer;
 
-		if (t >= timeToAutosave.get())
+		progressPrc = ofMap(t, 0, timePeriodToAutosave.get(), 0, 1, true);
+
+		if (t >= timePeriodToAutosave.get())
 		{
-			if (!bRandomOffset) timerLast_Autosave = ofGetElapsedTimef();
-			else timerLast_Autosave = ofGetElapsedTimef() - tOffset;
+			timerLast_AutosaveTimer = ofGetElapsedTimeMillis();
+
+			//if (!bRandomOffset) timerLast_AutosaveTimer = ofGetElapsedTimeMillis();
+			//else timerLast_AutosaveTimer = ofGetElapsedTimeMillis() - tOffset;
 
 			saveParamsQueued();
 			saveParams();
 
 			stringstream ss;
-			if (bRandomOffset)
-			{
-				ss << " | " << ofToString(tOffset) << " | ";
-				ss << ofToString(timeToAutosave - tOffset) << "";
-			}
+
+			//if (bRandomOffset)
+			//{
+			//	ss << " | " << ofToString(tOffset) << " | ";
+			//	ss << ofToString(timePeriodToAutosave - tOffset) << "";
+			//}
+
 			ss << "  #" << (++count) << " | ";
 			ss << (ofxSurfingHelpers::calculateTime(ofGetElapsedTimef()));
-			ss << " | " << (timeToAutosave.get()) << "secs";
+			ss << " | Period " << ofToString(timePeriodToAutosave.get() / 1000.f, 1) << " secs";
 
-			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Auto save to " << path_Global.c_str() << ss.str();
+			ofLogNotice("ofxAutosaveGroupTimer") << "> DONE! Autosave to " << path_Global.c_str() << ss.str();
 
 			for (int i = 0; i < data.size(); i++)
 			{
-				ofLogNotice("ofxAutosaveGroupTimer") << "> Group #" << i << ": " << data[i].params.getName();
+				ofLogNotice("ofxAutosaveGroupTimer") << "> Group #" << i << ": "
+					<< data[i].params.getName()
+					<< "  " << data[i].path;
 			}
 
 			if (!bSilent.get())

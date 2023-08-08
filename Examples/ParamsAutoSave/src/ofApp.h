@@ -21,12 +21,9 @@
 #define MAX_DIST 500.0f
 
 class ofApp : public ofBaseApp{
-
 	public:
-
 		void setup();
 		void draw();
-		void keyPressed(int key);		
 
 		// Not required to use the class. just for this example.
 		ofxSurfingGui ui; 
@@ -66,7 +63,7 @@ class ofApp : public ofBaseApp{
 		ofParameter<int> indexExpanded;
 
 		// Scene tester to pass another group param
-		surfingSceneTesters sc; 
+		surfingSceneTesters scene; 
 
 		// Manager
 		ofxAutosaveGroupTimer settingsManager;
