@@ -1,20 +1,20 @@
-# surfingEasyCam
+# surfingEasyCam.h / Camera workflow.
 ![](EasyCam/Capture.PNG)  
 
-# surfingMouseHandler
+# surfingMouseHandler.h / Mouse rules.
 ![](MouseHandler/Capture.PNG)  
 
-# ofxAutosaveGroupTimer
+# ofxAutosaveGroupTimer.h / Auto handle parameters settings.
 ![](ParamsAutoSave/Capture.PNG)  
 
-# surfingParamIndexToggles
+# surfingParamIndexToggles.h / UI helper.
 ![](ParamsIndexToggles/Capture.PNG)  
 
-# ofxSurfingPresetsLite, surfingSceneTesters
+# ofxSurfingPresetsLite.h, surfingSceneTesters.h / Presets system and scene for testing.
 ![](PresetsLite/Capture.PNG)  
 
-# Scene3dFloor
+# surfingScene3dRules.h / Floor grid.
 ![](Scene3dFloor/Capture.PNG)  
 
-# surfingScene3dRules
-![](EasScene3dRulesyCam/Capture.PNG)  
+# surfingScene3dRules.h, surfingMaths.h / Floor grid.
+![](Scene3dRules/Capture.PNG)  

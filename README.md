@@ -3,6 +3,8 @@ ofxSurfingHelpers
 
 # OVERVIEW
 
+[SCREENSHOTS](Examples/README.md)  
+
 A ( **WIP** ) personal collection of some useful stuff for **openFrameworks**:  
 
 OF-Utils / Classes / Snippets / Helpers / Serializers / Rectangles / Interactive objects / OF Native UI Widgets and many ImGui / ofxSurfingImGui modules ...
