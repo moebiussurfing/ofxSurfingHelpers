@@ -174,6 +174,14 @@ namespace ofxSurfingHelpers
 		ofSetWindowTitle(s);
 	}
 
+	// Get the OF project file path name and set to the window title.
+	//--------------------------------------------------------------
+	inline void setWindowTitleAsProjectName() {
+		of::filesystem::path path = ofToDataPath("", true);
+		string s = (path.parent_path().parent_path().filename()).string();
+		ofSetWindowTitle(s);
+	}
+
 	//----
 
 	// Images drawing
