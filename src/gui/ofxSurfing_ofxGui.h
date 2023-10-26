@@ -10,145 +10,133 @@
 // https://github.com/openframeworks/openFrameworks/pull/6479
 // https://github.com/openframeworks/openFrameworks/issues/6470
 
-// Snippets
-//#include "ofxSurfing_ofxGui.h"
-//ofxSurfingHelpers::setThemeDark_ofxGui();
+// Example snippets
+// #include "ofxSurfing_ofxGui.h"
+// call before gui.setup()!
+// ofxSurfingHelpers::setThemeDark_ofxGui();
 
-//#define FONT_PATH_DEFAULT "assets/fonts/overpass-mono-bold.otf"
-//#define FONT_SIZE_DEFAULT 9
+namespace ofxSurfingHelpers {
 
-#define FONT_PATH_DEFAULT "assets/fonts/JetBrainsMono-Bold.ttf"
-#define FONT_PATH_DEFAULT_LEGACY "assets/fonts/telegrama_render.otf"
-#define FONT_SIZE_DEFAULT 8
+//--------------------------------------------------------------
+// My ofxGui Dark Theme
+//--------------------------------------------------------------
 
-namespace ofxSurfingHelpers
-{
+//--------------------------------------------------------------
+inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false) {
 
-	//--------------------------------------------------------------
-	// My ofxGui Dark Theme
-	//--------------------------------------------------------------
+#ifdef SURFING__DISABLE_CUSTOMIZE_OFX_GUI 
+	return;
+#endif
 
-	//// Legacy. Now default is the mini version.
-	////--------------------------------------------------------------
-	//inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
-	//{
-	//	//setThemeDarkMini_ofxGui();
-	//	setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
-	//}
-	//--------------------------------------------------------------
-	inline void setThemeDark_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
-	{
-		if (bMini) {
-			size = 8;
-			//size = 7;
-		}
+	if (bMini) {
+		size = 8;
+		//size = 7;
+	}
 
-		ofFile file(pathFont);
-		if (file.exists())
-		{
+	ofFile file(pathFont);
+	bool b = file.exists();
+	if (b) {
+		ofxGuiSetFont(pathFont, size);
+	} else {
+		ofLogWarning(__FUNCTION__) << "file " << pathFont << " not found!";
+		pathFont = FONT_PATH_DEFAULT_LEGACY;
+		ofLogWarning(__FUNCTION__) << "Try to load Legacy font " << pathFont << "!";
+
+		ofFile file2(pathFont);
+		b = file2.exists();
+		if (b)
 			ofxGuiSetFont(pathFont, size);
-		}
 		else {
-			ofLogWarning(__FUNCTION__) << "file " << pathFont << " not found!";
-			pathFont = FONT_PATH_DEFAULT_LEGACY;
-			ofLogWarning(__FUNCTION__) << "Try to load Legacy font " << pathFont << "!";
-
-			ofFile file2(pathFont);
-			if (file2.exists())
-				ofxGuiSetFont(pathFont, size);
-			else {
-				ofLogError(__FUNCTION__) << "File " << pathFont << " not found!";
-				ofLogError(__FUNCTION__) << "Custom font can not be loaded!";
-			}
+			ofLogError(__FUNCTION__) << "File " << pathFont << " not found!";
+			ofLogError(__FUNCTION__) << "Custom font can not be loaded!";
 		}
+	}
 
-		//-
+	//-
 
-		//ofxGuiSetDefaultHeight(20);
-		//ofxGuiSetBorderColor(32);
-		//ofxGuiSetFillColor(ofColor(24));
-		//ofxGuiSetTextColor(ofColor::white);
-		//ofxGuiSetHeaderColor(ofColor(12));
-		//ofxGuiSetBackgroundColor(ofColor::black);
+	//ofxGuiSetDefaultHeight(20);
+	//ofxGuiSetBorderColor(32);
+	//ofxGuiSetFillColor(ofColor(24));
+	//ofxGuiSetTextColor(ofColor::white);
+	//ofxGuiSetHeaderColor(ofColor(12));
+	//ofxGuiSetBackgroundColor(ofColor::black);
 
-		//-
+	//-
 
+	//ofFloatColor cHead = ofFloatColor(0.0f, 0.0f, 0.0f, 1.0f);
+	ofFloatColor cHead = ofFloatColor(0.05f, 0.05f, 0.05f, 0.90f);
+	//ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
+	ofFloatColor cBg = ofFloatColor(0.2f, 0.2f, 0.2f, 0.8f);
+	//ofFloatColor cBg = ofFloatColor(0.16f, 0.16f, 0.16f, 0.8f);
+	ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.7f);
+	ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.8f);
+	ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
+	//ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
 
-		ofFloatColor cHead = ofFloatColor(0.05f, 0.05f, 0.05f, 0.90f);
-		//ofFloatColor cBg = ofFloatColor(0.12f, 0.12f, 0.12f, 0.8f);
-		ofFloatColor cBg = ofFloatColor(0.2f, 0.2f, 0.2f, 0.8f);
-		//ofFloatColor cBg = ofFloatColor(0.16f, 0.16f, 0.16f, 0.8f);
-		ofFloatColor cBorder = ofFloatColor(0.10f, 0.10f, 0.10f, 0.7f);
-		ofFloatColor cSlider = ofFloatColor(0.03f, 0.03f, 0.03f, 0.8f);
-		ofFloatColor cText = ofFloatColor(0.76f, 0.76f, 0.76f, 0.94f);
-		//ofFloatColor cBut = ofFloatColor(0.18f, 0.18f, 0.18f, 1.00f);
+	ofxGuiSetHeaderColor(cHead);
+	ofxGuiSetBackgroundColor(cBg);
+	ofxGuiSetBorderColor(cBorder);
+	ofxGuiSetFillColor(cSlider);
+	ofxGuiSetTextColor(cText);
 
-		ofxGuiSetHeaderColor(cHead);
-		ofxGuiSetBackgroundColor(cBg);
-		ofxGuiSetBorderColor(cBorder);
-		ofxGuiSetFillColor(cSlider);
-		ofxGuiSetTextColor(cText);
+	// default
+	//ofxGuiSetDefaultHeight(18);
+	//ofxGuiSetTextPadding(4);
 
-		// default
-		//ofxGuiSetDefaultHeight(18);
+	if (bMini) {
+		//ofxGuiSetDefaultHeight(19);
 		//ofxGuiSetTextPadding(4);
+		////ofxGuiSetDefaultHeight(18);
+		////ofxGuiSetDefaultHeight(17);
+		////ofxGuiSetTextPadding(8);
+	} else {
+		//ofxGuiSetDefaultHeight(21);
+		//ofxGuiSetTextPadding(14);
+	}
+}
 
-		if (bMini) {
-			ofxGuiSetDefaultHeight(19);
-			//ofxGuiSetDefaultHeight(18);
-			ofxGuiSetTextPadding(4);
-			//ofxGuiSetDefaultHeight(17);
-			//ofxGuiSetTextPadding(8);
-		}
-		else {
-			ofxGuiSetDefaultHeight(21);
-			ofxGuiSetTextPadding(14);
-		}
+//--------------------------------------------------------------
+inline void setThemeDarkMini_ofxGui() { 
+	setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
+}
+
+//--------------------------------------------------------------
+inline void setThemeSurfing_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false) {
+
+#ifdef SURFING__DISABLE_CUSTOMIZE_OFX_GUI 
+	return;
+#endif
+
+	if (bMini) {
+		size = 7;
 	}
 
-	//--------------------------------------------------------------
-	inline void setThemeDarkMini_ofxGui() {//call before gui.setup()!
-		setThemeDark_ofxGui(FONT_PATH_DEFAULT, FONT_SIZE_DEFAULT, true);
+	ofFile file(pathFont);
+	if (file.exists()) {
+		ofxGuiSetFont(pathFont, size);
+	} else {
+		ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
 	}
 
+	//-
 
-	//--------------------------------------------------------------
-	inline void setThemeSurfing_ofxGui(std::string pathFont = FONT_PATH_DEFAULT, int size = FONT_SIZE_DEFAULT, bool bMini = false)
-	{
-		if (bMini) {
-			size = 7;
-		}
+	ofxGuiSetBorderColor(32);
+	ofxGuiSetFillColor(ofColor(48));
+	ofxGuiSetTextColor(ofColor::white);
+	ofxGuiSetHeaderColor(ofColor(24));
 
-		ofFile file(pathFont);
-		if (file.exists())
-		{
-			ofxGuiSetFont(pathFont, size);
-		}
-		else {
-			ofLogError(__FUNCTION__) << "file " << pathFont << " not found!";
-		}
-
-		//-
-
-		ofxGuiSetBorderColor(32);
-		ofxGuiSetFillColor(ofColor(48));
-		ofxGuiSetTextColor(ofColor::white);
-		ofxGuiSetHeaderColor(ofColor(24));
-
-		if (bMini) {
-			ofxGuiSetDefaultHeight(17);
-			ofxGuiSetTextPadding(4);
-			//ofxGuiSetDefaultHeight(17);
-			//ofxGuiSetTextPadding(8);
-		}
-		else {
-			ofxGuiSetDefaultHeight(20);
-			//ofxGuiSetTextPadding(14);
-		}
+	if (bMini) {
+		ofxGuiSetDefaultHeight(17);
+		ofxGuiSetTextPadding(4);
+		//ofxGuiSetDefaultHeight(17);
+		//ofxGuiSetTextPadding(8);
+	} else {
+		ofxGuiSetDefaultHeight(20);
+		//ofxGuiSetTextPadding(14);
 	}
+}
 
 }; // ofxSurfingHelpers
-
 
 //--
 
