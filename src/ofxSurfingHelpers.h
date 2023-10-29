@@ -15,6 +15,7 @@
 */
 
 /*
+* NOTE
 
 	// Could avoid including this addon copying this!
 
@@ -36,6 +37,17 @@
 	ofSavePrettyJson(path, settings);
 */
 
+
+/*
+* 
+* EXAMPLE
+
+#ifdef OF_APP_DEFINED_ofxSurfingHelpers
+	ofxSurfingHelpers::setWindowTitleAsProjectName();
+	ofxSurfingHelpers::setMonitorsLayout(0, false, true);
+#endif
+
+*/
 
 //---------
 
