@@ -2,7 +2,7 @@
 
 //---------
 //
-// TODO: no implemented
+// TODO: not implemented
 //
 //#define USE_IM_GUI
 //#define USE_ofxGui
@@ -27,7 +27,7 @@
 
 #define SURFING__DISABLE_CUSTOMIZE_OFX_GUI 
 // uncomment to disable all customizations 
-// (font and sizes/colors)
+// Default font and sizes/colors will be used for ofxGui!
 
 #define FONT_PATH_DEFAULT "assets/fonts/JetBrainsMono-Bold.ttf"
 #define FONT_PATH_DEFAULT_LEGACY "assets/fonts/telegrama_render.otf"

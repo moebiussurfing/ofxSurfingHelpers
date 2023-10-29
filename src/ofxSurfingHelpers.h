@@ -97,11 +97,11 @@ namespace ofxSurfingHelpers
 		//int yOffset = 38;
 		//int hOffset = 12;
 		//fix
-		int yOffset = 36;
+		int yPos = 36;
 		int hOffset = 36;
 
 		x = y = 0;
-		y = yOffset;
+		y = yPos;
 
 		w = bPortrait ? 1080 : 1920;
 		h = bPortrait ? 1920 : 1080;
@@ -176,10 +176,14 @@ namespace ofxSurfingHelpers
 
 	// Get the OF project file path name and set to the window title.
 	//--------------------------------------------------------------
-	inline void setWindowTitleAsProjectName() {
+	inline string getProjectName() {
 		of::filesystem::path path = ofToDataPath("", true);
 		string s = (path.parent_path().parent_path().filename()).string();
-		ofSetWindowTitle(s);
+		return s;
+	}
+	//--------------------------------------------------------------
+	inline void setWindowTitleAsProjectName() {
+		ofSetWindowTitle(getProjectName());
 	}
 
 	//----
