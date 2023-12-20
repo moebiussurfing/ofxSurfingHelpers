@@ -1,46 +1,59 @@
 #pragma once
-
 #include "ofMain.h"
 
 /*
 	ofParameterGroup g{ "ofApp" };
-
-
 */
 
 /*
-
 	TODO:
 
 */
 
 /*
+* 
 * NOTE
-
+* 
+	// For file settings serialize for an ofParameterGroup
 	// Could avoid including this addon copying this!
-
-	// load	
-	string path = params.getName() + ".json";
-	ofJson settings;
-	settings = ofLoadJson(path);
-	ofDeserialize(settings, params);
-	ofLogWarning() << "Loaded: " << path;
-
-	// save
-	string path = params.getName() + ".json";
-	if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
-		ofFilePath::createEnclosingDirectory(path);
-		ofLogWarning() << "Created enclosing folder for: " << path;
+	//	ofParameterGroup parameters;
+	//	string path = "myFile.json";
+	// Load 
+	{
+		ofFile f;
+		bool b = f.doesFileExist(path);
+		if (b)
+			ofLogNotice("ofxSurfing") << "Found file: `" << path << "`";
+		else
+			ofLogError("ofxSurfing") << "File `" << path << "` not found!";
+		if (b) {
+			ofJson settings;
+			settings = ofLoadJson(path);
+			ofDeserialize(settings, parameters);
+		}
 	}
-	ofJson settings;
-	ofSerialize(settings, params);
-	ofSavePrettyJson(path, settings);
+	
+	// Save
+	{
+		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
+			if(ofFilePath::createEnclosingDirectory(path))
+				ofLogWarning("ofxSurfingPBR") << "Created enclosing folder for: " << path;
+		}
+		ofJson settings;
+		ofSerialize(settings, parameters);
+		bool b = ofSavePrettyJson(path, settings);
+		if (b)
+			ofLogNotice("ofxSurfing") << "Saved: `" << parameters.getName() << "` to " << path;
+		else
+			ofLogError("ofxSurfing") << "Error saving: `" << parameters.getName() << "` to " << path;
+	}
 */
 
 
 /*
 * 
 * EXAMPLE
+* 
 
 #ifdef OF_APP_DEFINED_ofxSurfingHelpers
 	ofxSurfingHelpers::setWindowTitleAsProjectName();
@@ -55,7 +68,7 @@
 #define OF_APP_DEFINED_ofxSurfingHelpers 
 // To avoid include it twice. 
 // useful when using other helpers with the same namespace. 
-// as we do in ofxSurfingImGui
+// as we do in ofxSurfingImGui.
 
 //--
 
@@ -64,6 +77,8 @@
 // that are not included here, then you have to include them manually.
 
 #include "ofxSurfingConstants.h"
+
+//--
 
 #include "surfingTimers.h"
 #include "ofxSurfing_Widgets.h"
