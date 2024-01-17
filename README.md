@@ -1,7 +1,13 @@
 ofxSurfingHelpers
 =============================
 
+# IMPORTANT
+
+Currently using improved and simple classes from here: https://github.com/moebiussurfing/ofxSurfingHelpersLite
+
 # OVERVIEW
+
+[SCREENSHOTS](Examples/README.md)  
 
 A ( **WIP** ) personal collection of some useful stuff for **openFrameworks**:  
 
@@ -53,15 +59,12 @@ Look to the available classes in **OF_ADDON/src/** for details.
   <p>
  
 ### PresetsLite 
-![](Examples/PresetsLite/Capture.PNG)  
 Presets from an ofParmeterGroup.  
 
 ### ParamsIndexToggles 
-![](Examples/ParamsIndexToggles/Capture.PNG)  
 Matrix toggles from an ofParameter<int> index.  
 
 ### MouseHandler
-![](Examples/MouseHandler/Capture.PNG)  
 Auto hides the mouse using a timer and shows a pointer rule to show mouse coordinates and measure distances.  
 
 ### ParamsAutoSave
@@ -70,7 +73,6 @@ Also on exit and reloaded when starting the app.
 That allows your settings saved even when your app crashes, even if you usually make the saving only on exit.
 
 ### Scene3dRules
-![](Examples/Scene3dRules/Capture.PNG)  
 Custom colors and grid plane.  
 
 </p>

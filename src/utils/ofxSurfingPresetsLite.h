@@ -53,7 +53,6 @@ EXAMPLE
 //----
 
 /*
-
 	BUG:
 	Seems that overwrites presets..
 
@@ -93,7 +92,8 @@ public:
         params.add(bAutoSave); //edit
         params.add(bClicker);
         params.add(bExpand);
-        params.add(amountButtonsPerRowClicker);
+		params.add(amountButtonsPerRowClicker);
+		params.add(bFloating);
 
         ofSetLogLevel("ofxSurfingPresetsLite", OF_LOG_NOTICE);
     }
@@ -171,6 +171,7 @@ public:
     //----
 
 public:
+
     // Presets
 
     void drawImGui(bool bWindowed = false, bool bShowMinimizer = false, bool bFolder = false, bool bOpen = true)
@@ -185,7 +186,7 @@ public:
         {
             if (bGui)
             {
-                IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI;
+				IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL_LOCKED_RESIZE;
             }
 
             bw = ui->BeginWindow(bGui);
@@ -199,20 +200,9 @@ public:
 
         if (bw)
         {
-            ////TODO:
-            //static string _namePreset = "";
-            ////static bool bTyping = false;
-            //static bool bOverInputText = false;
-
-            //string s = "presetName";
             string s = filename;
-
-            //bool bFolder = !bWindowed;
-            //bool bFolder = true;
-
-            bool b = true;
-
             string sn = "PRESETS";
+            bool b = true;
 
             if (!bFolder)
             {
@@ -222,7 +212,6 @@ public:
             else
             {
                 b = ui->BeginTree(sn, bOpen);
-                //b = ui->BeginTree(sn);
 
                 if (b) ui->AddSpacing();
             }
@@ -286,9 +275,9 @@ public:
 
                         if (ui->Add(vRename, OFX_IM_BUTTON_SMALL, 2, true))
                         {
-                            //delete
+                            // delete
                             vDelete.trigger();
-                            //create new
+                            // create new
                             if (!bOverInputText) bOverInputText = true;
                             _namePreset = "";
                             setFilename(_namePreset);
@@ -434,11 +423,6 @@ public:
                 {
                     ui->Add(vSave, (bAutoSave ? OFX_IM_BUTTON_MEDIUM : OFX_IM_BUTTON_MEDIUM_BORDER_BLINK), 2, true);
 
-                    //if (ui->AddButton("Next", OFX_IM_BUTTON_MEDIUM, 2))
-                    //{
-                    //	doLoadNext();
-                    //};
-
                     if (ui->AddButton("<", OFX_IM_BUTTON_MEDIUM, 4, true))
                     {
                         doLoadPrevious();
@@ -455,9 +439,6 @@ public:
 
                 if (bExpand) // expanded
                 {
-                    // Combo
-                    //ui->AddComboButtonDual(index, filenames, true);
-
                     if (ui->bMinimize)
                     {
                         float p = ui->getWidgetsSpacingX();
@@ -513,7 +494,6 @@ public:
                 //--
 
                 if (!ui->bMinimize) ui->AddSpacingSeparated();
-                //ui->AddSpacingSeparated();
 
                 //--
 
@@ -576,9 +556,8 @@ public:
 
             bool bResponsiveButtonsClicker = true;
 
-            //TODO: add public var
+            //TODO: add a public var
             bool bFlip = false;
-            //bool bFlip = true;
 
             string toolTip = "";
             if (bKeyCtrl) toolTip = "Copy To";
@@ -625,13 +604,15 @@ public:
     //--
 
 public:
-    //exposed to trig an external method
+    // exposed to trig an external method
     ofParameter<void> vReset{"Reset"};
     ofParameter<void> vRandom{"Random"};
 
     ofParameter<int> index{"Index", 0, 0, 0};
 
-    ofParameter<int> amountButtonsPerRowClicker{"Amount", 1, 1, 4};
+    ofParameter<int> amountButtonsPerRowClicker{"Row", 1, 1, 4};
+
+	ofParameter<bool> bFloating { "Floating", true };
 
     //--
 
@@ -644,7 +625,7 @@ public:
     //--
 
 private:
-    int index_PRE = -1; //pre
+    int index_PRE = -1; // pre
 
     ofParameter<void> vPrevious{"<"};
     ofParameter<void> vNext{">"};

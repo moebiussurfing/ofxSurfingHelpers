@@ -2,7 +2,7 @@
 
 //---------
 //
-// OPTIONAL
+// TODO: not implemented
 //
 //#define USE_IM_GUI
 //#define USE_ofxGui
@@ -23,24 +23,12 @@
 
 //--
 
-// EXAMPLE TO CHECK IF FONT FILES ARE LOCATED OR NOT TO AVOID CRASHES
-/*
-	fPath = "fonts/GTAmerica-ExtendedBlack.ttf";
-	//fPath = "fonts/GTAmerica-ExtendedBold.ttf";
+// ofxGui
 
-	if (!ofFile::doesFileExist(fPath.get())) {
-		fPath = FONT_FILES_PATH + ofToString(FONT_FILE_BIG);
-		if (!ofFile::doesFileExist(fPath.get())) {
-			fPath = FONT_FILES_PATH + ofToString(FONT_FILE_SMALL);
-			if (!ofFile::doesFileExist(fPath.get())) {
-				fPath = FONT_FILES_PATH + ofToString(FONT_FILE_ALT1);
-				if (!ofFile::doesFileExist(fPath.get())) {
-					fPath = FONT_FILES_PATH + ofToString(FONT_FILE_ALT2);
-					if (!ofFile::doesFileExist(fPath.get())) {
-						fPath = OF_TTF_SANS;
-					}
-				}
-			}
-		}
-	}
-*/
+#define SURFING__DISABLE_CUSTOMIZE_OFX_GUI 
+// uncomment to disable all customizations 
+// Default font and sizes/colors will be used for ofxGui!
+
+#define FONT_PATH_DEFAULT "assets/fonts/JetBrainsMono-Bold.ttf"
+#define FONT_PATH_DEFAULT_LEGACY "assets/fonts/telegrama_render.otf"
+#define FONT_SIZE_DEFAULT 8

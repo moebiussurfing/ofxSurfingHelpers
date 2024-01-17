@@ -1,41 +1,66 @@
 #pragma once
-
 #include "ofMain.h"
 
 /*
 	ofParameterGroup g{ "ofApp" };
-
-
 */
 
 /*
-
 	TODO:
 
 */
 
 /*
-
+* 
+* NOTE
+* 
+	// For file settings serialize for an ofParameterGroup
 	// Could avoid including this addon copying this!
-
-	// load	
-	string path = params.getName() + ".json";
-	ofJson settings;
-	settings = ofLoadJson(path);
-	ofDeserialize(settings, params);
-	ofLogWarning() << "Loaded: " << path;
-
-	// save
-	string path = params.getName() + ".json";
-	if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
-		ofFilePath::createEnclosingDirectory(path);
-		ofLogWarning() << "Created enclosing folder for: " << path;
+	//	ofParameterGroup parameters;
+	//	string path = "myFile.json";
+	// Load 
+	{
+		ofFile f;
+		bool b = f.doesFileExist(path);
+		if (b)
+			ofLogNotice("ofxSurfing") << "Found file: `" << path << "`";
+		else
+			ofLogError("ofxSurfing") << "File `" << path << "` not found!";
+		if (b) {
+			ofJson settings;
+			settings = ofLoadJson(path);
+			ofDeserialize(settings, parameters);
+		}
 	}
-	ofJson settings;
-	ofSerialize(settings, params);
-	ofSavePrettyJson(path, settings);
+	
+	// Save
+	{
+		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
+			if(ofFilePath::createEnclosingDirectory(path))
+				ofLogWarning("ofxSurfingPBR") << "Created enclosing folder for: " << path;
+		}
+		ofJson settings;
+		ofSerialize(settings, parameters);
+		bool b = ofSavePrettyJson(path, settings);
+		if (b)
+			ofLogNotice("ofxSurfing") << "Saved: `" << parameters.getName() << "` to " << path;
+		else
+			ofLogError("ofxSurfing") << "Error saving: `" << parameters.getName() << "` to " << path;
+	}
 */
 
+
+/*
+* 
+* EXAMPLE
+* 
+
+#ifdef OF_APP_DEFINED_ofxSurfingHelpers
+	ofxSurfingHelpers::setWindowTitleAsProjectName();
+	ofxSurfingHelpers::setMonitorsLayout(0, false, true);
+#endif
+
+*/
 
 //---------
 
@@ -43,7 +68,7 @@
 #define OF_APP_DEFINED_ofxSurfingHelpers 
 // To avoid include it twice. 
 // useful when using other helpers with the same namespace. 
-// as we do in ofxSurfingImGui
+// as we do in ofxSurfingImGui.
 
 //--
 
@@ -52,6 +77,8 @@
 // that are not included here, then you have to include them manually.
 
 #include "ofxSurfingConstants.h"
+
+//--
 
 #include "surfingTimers.h"
 #include "ofxSurfing_Widgets.h"
@@ -97,11 +124,11 @@ namespace ofxSurfingHelpers
 		//int yOffset = 38;
 		//int hOffset = 12;
 		//fix
-		int yOffset = 36;
+		int yPos = 36;
 		int hOffset = 36;
 
 		x = y = 0;
-		y = yOffset;
+		y = yPos;
 
 		w = bPortrait ? 1080 : 1920;
 		h = bPortrait ? 1920 : 1080;
@@ -172,6 +199,18 @@ namespace ofxSurfingHelpers
 		}
 
 		ofSetWindowTitle(s);
+	}
+
+	// Get the OF project file path name and set to the window title.
+	//--------------------------------------------------------------
+	inline string getProjectName() {
+		of::filesystem::path path = ofToDataPath("", true);
+		string s = (path.parent_path().parent_path().filename()).string();
+		return s;
+	}
+	//--------------------------------------------------------------
+	inline void setWindowTitleAsProjectName() {
+		ofSetWindowTitle(getProjectName());
 	}
 
 	//----
@@ -304,7 +343,7 @@ namespace ofxSurfingHelpers
 	//----
 
 	//--------------------------------------------------------------
-	inline bool loadGroup(ofParameterGroup& g, string path = "", bool debug = true)
+	inline bool loadGroup(ofParameterGroup& g, string path = "", bool bSilent = false)
 	{
 		if (path == "")
 		{
@@ -312,9 +351,9 @@ namespace ofxSurfingHelpers
 			ofLogWarning("ofxSurfingHelpers") << "loadGroup " << "Path is empty! Using a default instead!";
 		}
 
-		if (debug)
+		if (!bSilent)
 		{
-			ofLogNotice("ofxSurfingHelpers") << "loadGroup `" << g.getName() << "` to `" << path << "`";
+			ofLogNotice("ofxSurfingHelpers") << "loadGroup `" << g.getName() << "` from `" << path << "`";
 			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
 
@@ -331,21 +370,21 @@ namespace ofxSurfingHelpers
 		// Returns false if no file preset yet.
 		ofFile f;
 		bool b = f.doesFileExist(path);
-		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: `" << g.getName() << "` at `" << path << "`";
-		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` at `" << path << "` Not found!";
+		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: `" << g.getName() << "` from `" << path << "`";
+		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` from `" << path << "` Not found!";
 
 		return b; // Returns true if it's ok
 	};
 
 	//--------------------------------------------------------------
-	inline bool saveGroup(ofParameterGroup& g, string path = "", bool debug = true)
+	inline bool saveGroup(ofParameterGroup& g, string path = "", bool bSilent = false)
 	{
 		if (path == "") {
 			path = g.getName() + "_Settings.json";
 			ofLogWarning("ofxSurfingHelpers") << "saveGroup " << "Path is empty! Using a default instead!";
 		}
 
-		if (debug) {
+		if (!bSilent) {
 			ofLogNotice("ofxSurfingHelpers") << g.getName() << " to `" << path << "`";
 			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
@@ -353,7 +392,6 @@ namespace ofxSurfingHelpers
 		// Create folder if folder do not exist!
 		// From now, will not require to call manually:
 		//ofxSurfingHelpers::CheckFolder(path);
-
 		if (!ofDirectory::doesDirectoryExist(ofFilePath::getEnclosingDirectory(path))) {
 			ofFilePath::createEnclosingDirectory(path);
 			ofLogWarning("ofxSurfingHelpers") << "Created enclosing folder for: " << path;
@@ -363,8 +401,8 @@ namespace ofxSurfingHelpers
 		ofSerialize(settings, g);
 		bool b = ofSavePrettyJson(path, settings);
 
-		if (b) ofLogVerbose("ofxSurfingHelpers") << "Save: `" << g.getName() << "` at " << path;
-		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` at " << path;
+		if (b) ofLogVerbose("ofxSurfingHelpers") << "Save: `" << g.getName() << "` to " << path;
+		else ofLogError("ofxSurfingHelpers") << "Error saving: `" << g.getName() << "` to " << path;
 
 		return b;
 	}
