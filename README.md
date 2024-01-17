@@ -1,6 +1,10 @@
 ofxSurfingHelpers
 =============================
 
+# IMPORTANT
+
+Currently using improved and simple classes from here: https://github.com/moebiussurfing/ofxSurfingHelpersLite
+
 # OVERVIEW
 
 [SCREENSHOTS](Examples/README.md)  
