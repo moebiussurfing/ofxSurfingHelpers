@@ -195,13 +195,13 @@ inline void to_json(nlohmann::json& j, const ofMatrix3x3& v)
     to_json(j, toGlm(v));
 }
 
-
-inline void from_json(const nlohmann::json& j, ofMatrix3x3& v)
-{
-    glm::mat3 g;
-    from_json(j, g);
-    v = toOf(g);
-}
+//dix error
+//inline void from_json(const nlohmann::json& j, ofMatrix3x3& v)
+//{
+//    glm::mat3 g;
+//    from_json(j, g);
+//    v = toOf(g);
+//}
 
 
 inline void to_json(nlohmann::json& j, const ofMatrix4x4& v)

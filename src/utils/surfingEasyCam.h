@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 
-#include "ofxSurfingImGui.h"
+//#include "ofxSurfingImGui.h"
 
 /*
 
@@ -20,40 +20,52 @@
 
 //--------------------------------------------------------------
 
-class SurfingEasyCam : public ofEasyCam
-{
+class SurfingEasyCam : public ofEasyCam {
 public:
 	SurfingEasyCam() {
+		ofAddListener(ofEvents().update, this, &SurfingEasyCam::update);
 	}
 
 	~SurfingEasyCam() {
+		ofRemoveListener(ofEvents().update, this, &SurfingEasyCam::update);
 	}
 
-	ofParameter<bool> bGui{ "SurfEasyCam", true };
-	ofParameter<bool> bHelp{ "Help", false };
-	ofParameter<bool> bExtra{ "Extra", true };
+	ofParameter<bool> bGui { "Camera", true };
+	ofParameter<bool> bHelp { "Help", false };
+	ofParameter<bool> bExtra { "Extra", true };
+	ofParameter<bool> bKeys { "Keys", true };
 
-private:
-	//ofEventListeners listenersEasyCamera;//TODO: group all here
-	//ofParameterGroup params_EasyCamera;//TODO: group all here
+	string sHelp;
 
 	//TODO: listener and ctrl to toggle/enable workflow
-	ofParameter<bool> bMouseCam{ "MouseCam", false };
+	ofParameter<bool> bMouseCam { "MouseCam", false };
 	ofEventListener listenerMouseCam;
 
-	ofParameter<bool> bInertia{ "Inertia", false };
+	ofParameter<bool> bInertia { "Inertia", false };
 	ofEventListener listenerIntertia;
 
-	ofParameter<float> dragInertia{ "Drag", 0.7f, 0.2, 1.0 };
+	ofParameter<bool> bOrtho { "Ortho", false };
+	ofEventListener listenerOrtho;
+
+	ofParameter<float> dragInertia { "Drag", 0.7f, 0.2, 1.0 };
 	ofEventListener listenerDrag;
 
-	ofParameter<bool> bKeyMod{ "KeyMod", false };
+	//ofEventListeners listenersEasyCamera;//TODO: group all here
+	//ofParameterGroup paramsEasyCamera;//TODO: group all here
+
+private:
+	bool bFlagBuildHelp = false;
+
+protected:
+	ofParameter<bool> bKeyMod { "KeyMod", false };
 	ofEventListener listenerKeyMod;
 
-	ofParameter<bool> bKeyModMomentary{ "Momentary", false };
+	ofParameter<bool> bKeyModMomentary { "Momentary", false };
 	ofEventListener listenerKeyModMomentary;
 	// true: mouse cam enabled while key mod pressed.
 	// false: mouse cam state switch when key mod press.
+
+	bool bDoneSetup = false;
 
 public:
 	//------------------------------------------------------------------------------------------
@@ -62,36 +74,34 @@ public:
 
 		//--
 
-		listenerMouseCam = bMouseCam.newListener([&](bool& b) {
-
-			string s = "Mouse Camera " + ofToString(b ? "TRUE" : "FALSE");
+		listenerMouseCam = bMouseCam.newListener([&](bool & b) {
+			string s = "Mouse Camera " + ofToString(b ? "True" : "False");
 			ofLogNotice("SurfingEasyCam") << s;
 
 			//TODO:
 			// fix (sometimes wrong state) with a workaround in update.
-			if (b) this->enableMouseInput();
-			else this->disableMouseInput();
-
-			});
+			if (b)
+				this->enableMouseInput();
+			else
+				this->disableMouseInput();
+			bFlagBuildHelp = true;
+		});
 
 		//-
 
-		listenerKeyMod = bKeyMod.newListener([&](bool& b) {
+		listenerKeyMod = bKeyMod.newListener([&](bool & b) {
 			static bool b_ = !bKeyMod.get();
-			if (b != b_)
-			{
+			if (b != b_) {
 				// changed
 				b_ = b;
 
 				if (!bKeyModMomentary) {
-					if (b)
-					{
+					if (b) {
 						// MODE A: switch
 						// toggle mouse cam if bKeyMod changed but to true
 						bMouseCam = !bMouseCam.get();
 					}
-				}
-				else {
+				} else {
 					// MODE B: latch
 					// mouse cam enabled while key mod pressed.
 					bMouseCam = b;
@@ -99,38 +109,50 @@ public:
 
 				string s = "ModKey " + ofToString(b ? "ENABLED" : "DISABLED");
 				ofLogNotice("SurfingEasyCam") << s;
+				bFlagBuildHelp = true;
 			}
-			});
+		});
 
 		//-
 
-		listenerKeyModMomentary = bKeyModMomentary.newListener([&](bool& b) {
+		listenerKeyModMomentary = bKeyModMomentary.newListener([&](bool & b) {
 			static bool b_ = !bKeyModMomentary.get();
-			if (b != b_)
-			{
+			if (b != b_) {
 				// changed
 				b_ = b;
 
 				if (bKeyModMomentary) {
 					bMouseCam = bKeyMod;
+				} else {
 				}
-				else {
-				}
+				bFlagBuildHelp = true;
 			}
-			});
+		});
 
 		//--
 
-		listenerIntertia = bInertia.newListener([&](bool& b) {
-			if (b) this->enableInertia();
-			else this->disableInertia();
+		listenerIntertia = bInertia.newListener([&](bool & b) {
+			if (b)
+				this->enableInertia();
+			else
+				this->disableInertia();
 
 			this->setDrag(dragInertia);
-			});
+			bFlagBuildHelp = true;
+		});
 
-		listenerDrag = dragInertia.newListener([&](float& v) {
+		listenerDrag = dragInertia.newListener([&](float & v) {
 			this->setDrag(v);
-			});
+			bFlagBuildHelp = true;
+		});
+
+		listenerOrtho = bOrtho.newListener([&](bool & b) {
+			if (b)
+				this->enableOrtho();
+			else
+				this->disableOrtho();
+			bFlagBuildHelp = true;
+		});
 
 		//--
 
@@ -142,101 +164,50 @@ public:
 		doReset();
 
 		// refresh
-		bInertia = bInertia;
-		bMouseCam = bMouseCam;
+		bInertia.set(bInertia.get());
+		bMouseCam.set(bMouseCam.get());
+		bOrtho.set(bOrtho.get());
+
+		bFlagBuildHelp = true;
+
+		bDoneSetup = true;
+	}
+
+	void update(ofEventArgs & args) {
+		if (!bDoneSetup) {
+			setup();
+		}
+
+		if (bFlagBuildHelp) {
+			bFlagBuildHelp = false;
+			buildHelp();
+		}
 	}
 
 public:
 	//------------------------------------------------------------------------------------------
-	void drawImGui(SurfingGuiManager& ui)
-	{
-		if (bGui) IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI;
-		if (ui.BeginWindow(bGui))
-		{
-			//TODO: move inside Stage Manager?
-			//TODO: add example of how to pass a f* to insert widgets from here (parent).
-
-			//ui.AddLabelBig("EasyCamera");
-			ui.Add(bMouseCam, OFX_IM_TOGGLE_BORDER_BLINK);
-			if (ui.AddButton("Reset Camera")) {
-				doReset();
-			}
-
-			if (ui.isMaximized()) {
-				ui.AddSpacing();
-				ui.Add(bExtra, OFX_IM_TOGGLE_ROUNDED_MINI);
-			}
-
-			if (ui.isMaximized() && bExtra) {
-				ui.AddSpacingSeparated();
-
-				ui.Add(bKeyModMomentary);
-				ui.AddSpacing();
-
-				ui.Add(bInertia);
-				if (bInertia)
-				{
-					//ui.Add(dragInertia);
-					//ui.Add(dragInertia, OFX_IM_STEPPER_NO_LABEL);
-					ui.Add(dragInertia, OFX_IM_STEPPER);
-					if (ui.AddButton("Reset Inertia")) {
-						//bInertia = false;
-						dragInertia = 0.7f;
-					}
-				}
-
-				ui.Add(bHelp, OFX_IM_TOGGLE_ROUNDED_MINI);
-
-				/*
-				string s;
-				//TODO: BUG: there's a bug on isMouseOverGui();
-				// that fails when over some widgets!
-				ui.AddSpacing();
-				bool b = ui.isMouseOverGui();
-				//s = "MouseOverGui " + string(b ? "TRUE" : "FALSE");
-				s = b ? "MouseOverGui" : " ";
-				ui.AddLabel(s);
-
-				s = bKeyMod ? "KeyMod" : " ";
-				ui.AddLabel(s);
-				*/
-			}
-
-			ui.EndWindow();
-		}
-	}
-
-	//------------------------------------------------------------------------------------------
-	void doReset()
-	{
+	void doReset() {
 		ofLogNotice(__FUNCTION__);
 
 		this->setupPerspective();
 		this->lookAt(glm::vec3(0));
-		//this->setPosition(0, 0, 0);
-
-		////this->disableMouseInput();
-
-		//this->setPosition(-300, 200, -300);
-		//this->lookAt(glm::vec3(0));
 
 		//this->setFarClip(10000);
 		//this->setNearClip(0);
-
-		////this->enableMouseInput();
-		////bMouseCam = true;
 	}
 
 	//--------------------------------------------------------------
 	void keyPressed(int key) {
+		if (!bKeys) return;
+
 		switch (key) {
 		case OF_KEY_LEFT_CONTROL:
 			bKeyMod = true;
 			break;
-			//case 'C':
-			//case 'c':
-			//	this->getMouseInputEnabled() ? this->disableMouseInput() : this->enableMouseInput();
-			//	break;
+		//case 'C':
+		//case 'c':
+		//	this->getMouseInputEnabled() ? this->disableMouseInput() : this->enableMouseInput();
+		//	break;
 		case ' ':
 			this->getOrtho() ? this->disableOrtho() : this->enableOrtho();
 			break;
@@ -257,6 +228,7 @@ public:
 
 	//--------------------------------------------------------------
 	void keyReleased(int key) {
+		if (!bKeys) return;
 		switch (key) {
 		case OF_KEY_LEFT_CONTROL:
 			bKeyMod = false;
@@ -283,47 +255,55 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	void drawHelpText() {
-		if (!bHelp) return;
-
-		static ofBitmapFont f;
+	void buildHelp() {
+		ofLogNotice(__FUNCTION__);
 
 		stringstream ss;
-		ss << "SurfingEasyCam: " << endl << endl;
-		ss << "MOUSE INPUT: " << (this->getMouseInputEnabled() ? "ENABLED" : "DISABLED") << endl;
-		ss << "MOMENTARY: " << (bKeyModMomentary ? "TRUE" : "FALSE") << endl;
-		ss << "MODE: " << (this->getOrtho() ? "ORTHO" : "PERSPECTIVE") << endl;
-		ss << "INERTIA: " << (this->getInertiaEnabled() ? "TRUE" : "FALSE") << endl;
-		ss << "ROTATION RELATIVE Y AXIS: " << (this->getRelativeYAxis() ? "TRUE" : "FALSE") << endl;
+		ss << "EasyCam" << endl
+		   << endl;
+		ss << "H:           Help" << endl;
+		ss << "Mouse Input: " << (this->getMouseInputEnabled() ? "Enabled" : "Disabled") << endl;
+		ss << "Momentary:   " << (bKeyModMomentary ? "True" : "False") << endl;
+		ss << "Mode:        " << (this->getOrtho() ? "Ortho" : "Perspective") << endl;
+		ss << "Inertia:     " << (this->getInertiaEnabled() ? "True" : "False") << endl;
+		ss << "Rotation Relative y Axis: " << (this->getRelativeYAxis() ? "True" : "False") << endl;
 		ss << endl;
-		ss << "CTRL:  MOUSE INPUT:" << endl;
-		ss << "SPACE: CAMERA PROJECTION MODE" << endl;
-		ss << "       (ORTHO OR PERSPECTIVE)" << endl;
-		ss << "I:     CAMERA INERTIA:" << endl;
-		ss << "Y:     ROTATION RELATIVE Y AXIS:" << endl;
-		ss << "H:     THIS HELP:" << endl;
+		ss << "CTRL:  Mouse Input:" << endl;
+		ss << "SPACE: Camera Projection Mode" << endl;
+		ss << "       " << (bOrtho ? "Ortho" : "Perspective") << endl;
+		ss << "I:     Camera Inertia:" << endl;
+		ss << "Y:     Rotation Relative y Axis:" << endl;
 		ss << endl;
-		ss << "Camera x,y ROTATION:" << endl;
-		ss << "    LEFT MOUSE BUTTON DRAG inside circle" << endl;
+		ss << "Camera x,y Rotation:" << endl;
+		ss << "    Left Mouse Button Drag inside circle" << endl;
 		ss << endl;
 		ss << "Camera z rotation or roll" << endl;
-		ss << "    LEFT MOUSE BUTTON DRAG outside circle" << endl;
-
+		ss << "    Left Mouse Button Drag outside circle" << endl;
 		ss << endl;
 		ss << "Move over x,y axis / truck and boom:" << endl;
-		ss << "    LEFT MOUSE BUTTON DRAG + m" << endl;
-		ss << "    MIDDLE MOUSE BUTTON PRESS" << endl;
+		ss << "    Left Mouse Button Drag + m" << endl;
+		ss << "    Middle Mouse Button Press" << endl;
 		ss << endl;
 		ss << "Move over z axis / dolly / zoom in or out:" << endl;
-		ss << "    RIGHT MOUSE BUTTON DRAG" << endl;
-		ss << "    VERTICAL SCROLL" << endl << endl;
-		if (this->getOrtho()) {
+		ss << "    Right Mouse Button Drag" << endl;
+		ss << "    Vertical Scroll" << endl;
+		if (bOrtho) {
+			//ss << endl;
 			ss << "Notice that in ortho mode zoom \nwill be centered at the mouse position.";
 		}
 
-		//ofDrawBitmapStringHighlight(ss.str().c_str(), 20, 25);
+		sHelp = ss.str();
+	}
 
-		auto bb = f.getBoundingBox(ss.str().c_str(), 0, 0);
-		ofDrawBitmapStringHighlight(ss.str().c_str(), ofGetWidth() - bb.getWidth() - 15, ofGetHeight() - bb.getHeight() - 30);
+	//--------------------------------------------------------------
+	void drawHelpText() {
+		if (!bHelp) return;
+#if 0
+		ofDrawBitmapStringHighlight(sHelp, 20, 25);
+#else
+		static ofBitmapFont f;
+		auto bb = f.getBoundingBox(sHelp, 0, 0);
+		ofDrawBitmapStringHighlight(sHelp, ofGetWidth() - bb.getWidth() - 15, ofGetHeight() - bb.getHeight() - 30);
+#endif
 	}
 };

@@ -2,8 +2,7 @@
 
 #include "ofMain.h"
 
-#include "ofxSurfingImGui.h"
-#include "surfingEasyCam.h"
+#include "surfingEasyCamImGui.h"
 
 class ofApp : public ofBaseApp {
 
@@ -18,5 +17,5 @@ public:
 
 	ofxSurfingGui ui;
 
-	SurfingEasyCam cam;
+	SurfingEasyCamImGui cam;
 };

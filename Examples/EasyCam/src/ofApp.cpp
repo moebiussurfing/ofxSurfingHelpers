@@ -4,7 +4,7 @@
 void ofApp::setup() {
 	ofSetCircleResolution(200);
 
-	cam.setup();
+	//cam.setup();
 }
 
 //--------------------------------------------------------------
