@@ -168,8 +168,10 @@ inline void drawCircleProg(float val) {
 inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0, int y = 0, ofColor fColor = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false) {
 	int BOX_PADDING = _pad;
 	if (!noPadding) {
+		//TODO: hardcoded..
 		x += 25;
-		y += 33;
+		y += 40;
+		//y += 33;
 	}
 
 	//int xpad = _pad/2;
@@ -190,7 +192,9 @@ inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0,
 
 		if (!font.isLoaded()) {
 			ofDrawBitmapStringHighlight(text, x, y);
-		} else //if (font.isLoaded())
+		}
+		
+		else //if (font.isLoaded())
 		{
 			//--
 
@@ -200,36 +204,24 @@ inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0,
 			ofSetColor(colorBackground);
 			ofFill();
 
-			ofRectangle _r;
-			_r = (font.getStringBoundingBox(text, x, y));
-			cout << _r.getWidth() << endl;
+			ofRectangle _r = (font.getStringBoundingBox(text, x, y));
 
-#if 0
-				_r.setWidth(_r.getWidth() + _pad);
-				_r.setX(_r.getPosition().x - _pad / 2.);
-				_r.setY(_r.getPosition().y - _pad / 2.);
-#endif
-
-			if (ofGetKeyPressed(' ')) {
-				cout << _r.x << ", ";
-				cout << _r.y << ", ";
-				cout << _r.getWidth() << ", ";
-				cout << _r.getHeight();
-				cout << endl;
-			}
-
-#if 0
-				if (heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
-				////TODO:
-				//if (heighForced == -1) 
-				//{
-				//	float _h;
-				//	bool b = !ofIsStringInString(text, "\n");//if only one line. 
-				//	if(b) _h = font.getStringBoundingBox("I", 0, 0).getHeight();//hardcoded height
-				//	else _h = _r.getHeight();
-				//	_r.setHeight(_h + _pad);
-				//}
-				else _r.setHeight(heighForced + _pad);
+			_r.setWidth(_r.getWidth() + _pad);
+			_r.setX(_r.getPosition().x - _pad / 2.);
+			_r.setY(_r.getPosition().y - _pad / 2.);
+#if 1
+			if (heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
+			////TODO:
+			//if (heighForced == -1)
+			//{
+			//	float _h;
+			//	bool b = !ofIsStringInString(text, "\n");//if only one line.
+			//	if(b) _h = font.getStringBoundingBox("I", 0, 0).getHeight();//hardcoded height
+			//	else _h = _r.getHeight();
+			//	_r.setHeight(_h + _pad);
+			//}
+			else
+				_r.setHeight(heighForced + _pad);
 #endif
 
 			// Draw

@@ -2,8 +2,6 @@
 #include "ofMain.h"
 
 #include "ofxSurfingHelpers.h"
-//#include "ofxSurfing_Widgets.h"
-//#include "ofxSurfingConstants.h"
 
 class ofApp : public ofBaseApp {
 public:
