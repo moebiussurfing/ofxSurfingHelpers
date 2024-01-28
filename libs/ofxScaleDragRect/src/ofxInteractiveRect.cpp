@@ -10,8 +10,7 @@
 #include "ofxInteractiveRect.h"
 
 //--------------------------------------------------------------
-ofxInteractiveRect::ofxInteractiveRect(string name, string path)
-{
+ofxInteractiveRect::ofxInteractiveRect(string name, string path) {
 	ofAddListener(ofEvents().exit, this, &ofxInteractiveRect::exit, OF_EVENT_ORDER_AFTER_APP);
 
 	bEditMode.addListener(this, &ofxInteractiveRect::Changed_EditMode);
@@ -42,20 +41,17 @@ ofxInteractiveRect::ofxInteractiveRect(string name, string path)
 }
 
 //--------------------------------------------------------------
-ofxInteractiveRect::~ofxInteractiveRect()
-{
+ofxInteractiveRect::~ofxInteractiveRect() {
 	ofRemoveListener(ofEvents().exit, this, &ofxInteractiveRect::exit);
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::exit(ofEventArgs& args)
-{
+void ofxInteractiveRect::exit(ofEventArgs & args) {
 	exit();
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::exit()
-{
+void ofxInteractiveRect::exit() {
 
 	bEditMode.removeListener(this, &ofxInteractiveRect::Changed_EditMode);
 	rectParam.removeListener(this, &ofxInteractiveRect::Changed_Rect);
@@ -64,18 +60,13 @@ void ofxInteractiveRect::exit()
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::enableEdit(bool enable)
-{
+void ofxInteractiveRect::enableEdit(bool enable) {
 	ofLogVerbose("ofxInteractiveRect") << " " << (__FUNCTION__) << "Rect " << this->name << " edit : " << (string)(enable ? "true" : "false");
 
-	if (enable != bIsEditing)
-	{
-		if (enable)
-		{
+	if (enable != bIsEditing) {
+		if (enable) {
 			ofRegisterMouseEvents(this);
-		}
-		else
-		{
+		} else {
 			ofUnregisterMouseEvents(this);
 			//saveSettings();
 		}
@@ -86,33 +77,27 @@ void ofxInteractiveRect::enableEdit(bool enable)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::disableEdit()
-{
+void ofxInteractiveRect::disableEdit() {
 	enableEdit(false);
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::toggleEdit()
-{
+void ofxInteractiveRect::toggleEdit() {
 	enableEdit(!bIsEditing);
 }
 
 //--------------------------------------------------------------
-ofRectangle ofxInteractiveRect::getRect()
-{
+ofRectangle ofxInteractiveRect::getRect() {
 	return ofRectangle(x, y, width, height);
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::saveSettings(string name, string path, bool bUseJson)
-{
-	if (name != "")
-	{
+void ofxInteractiveRect::saveSettings(string name, string path, bool bUseJson) {
+	if (name != "") {
 		this->name = name;
 	}
 
-	if (path != "")
-	{
+	if (path != "") {
 		this->path = path;
 	}
 
@@ -121,8 +106,7 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool bUseJson)
 	if (bUseJson) {
 		filename += ".json";
 		ofSaveJson(filename, saveToJson());
-	}
-	else {
+	} else {
 		filename += ".xml";
 		saveToXml().save(filename);
 	}
@@ -131,11 +115,10 @@ void ofxInteractiveRect::saveSettings(string name, string path, bool bUseJson)
 }
 
 //--------------------------------------------------------------
-ofJson ofxInteractiveRect::saveToJson()
-{
+ofJson ofxInteractiveRect::saveToJson() {
 	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__);
 
-	ofJson j;//("interactiveRect");
+	ofJson j; //("interactiveRect");
 
 	j["x"] = this->ofRectangle::x;
 	j["y"] = this->ofRectangle::y;
@@ -149,11 +132,10 @@ ofJson ofxInteractiveRect::saveToJson()
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::loadFromJson(const ofJson& j)
-{
+void ofxInteractiveRect::loadFromJson(const ofJson & j) {
 	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__);
 
-	if (j == nullptr) return;//TODO: crash
+	if (j == nullptr) return; //TODO: crash
 
 	j["x"].get_to(this->ofRectangle::x);
 	j["y"].get_to(this->ofRectangle::y);
@@ -170,8 +152,7 @@ void ofxInteractiveRect::loadFromJson(const ofJson& j)
 }
 
 //--------------------------------------------------------------
-ofXml ofxInteractiveRect::saveToXml()
-{
+ofXml ofxInteractiveRect::saveToXml() {
 	ofXml xml;
 	auto r = xml.appendChild("interactiveRect");
 
@@ -187,11 +168,9 @@ ofXml ofxInteractiveRect::saveToXml()
 }
 
 //--------------------------------------------------------------
-bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
-{
+bool ofxInteractiveRect::loadFromXml(const ofXml & xml) {
 	auto r = xml.getChild("interactiveRect");
-	if (r)
-	{
+	if (r) {
 		this->path = r.getChild("path").getValue();
 		this->ofRectangle::x = r.getChild("x").getFloatValue();
 		this->ofRectangle::y = r.getChild("y").getFloatValue();
@@ -209,54 +188,48 @@ bool ofxInteractiveRect::loadFromXml(const ofXml& xml)
 }
 
 //--------------------------------------------------------------
-bool ofxInteractiveRect::loadSettings(string name, string path, bool bUseJson)
-{
-	if (name != "")
-	{
+bool ofxInteractiveRect::loadSettings(string name, string path, bool bUseJson) {
+	if (name != "") {
 		this->name = name;
 	}
-	if (path != "")
-	{
+	if (path != "") {
 		this->path = path;
 	}
 
 	//string filename = this->path + prefixName + this->name;
 	string filename = this->path + this->name + "_" + prefixName;
 
-	if (bUseJson)
-	{
+	if (bUseJson) {
 		filename += ".json";
 
 		//avoid crash
-		ofFile file;
-		file.open(filename);
-		if (!file.exists()) return false;
+		ofFile file(filename);
+		if (!file.exists()) {
+			return false;
+		}
 
 		loadFromJson(ofLoadJson(filename));
 		return true;
 
-	}
-	else
-	{
+	} else {
 		filename += ".xml";
 
 		//avoid crash
-		ofFile file;
-		file.open(filename);
-		if (!file.exists()) return false;
+		ofFile file(filename);
+		if (!file.exists()) {
+			return false;
+		}
 
 		ofXml xml;
-		if (xml.load(filename))
-		{
-			if (loadFromXml(xml))
-			{
+		if (xml.load(filename)) {
+			if (loadFromXml(xml)) {
 				return true;
 			}
 		}
 	}
 
 	ofLogVerbose("ofxInteractiveRect") << " " << (__FUNCTION__) << "unable to load : " << filename;
-	rectParam.set(this->getRect());//?
+	rectParam.set(this->getRect()); //?
 
 	doConstraints();
 
@@ -265,8 +238,7 @@ bool ofxInteractiveRect::loadSettings(string name, string path, bool bUseJson)
 
 //TODO:
 //--------------------------------------------------------------
-void ofxInteractiveRect::drawBorder()
-{
+void ofxInteractiveRect::drawBorder() {
 	if (bTransparent) return;
 
 	//--
@@ -274,51 +246,51 @@ void ofxInteractiveRect::drawBorder()
 	ofPushStyle();
 	ofNoFill();
 	ofSetLineWidth(2.0);
-	if (bEditMode) ofSetColor(ofColor(colorEditingMoving.r, colorEditingMoving.g, colorEditingMoving.b, colorEditingMoving.a * Bounce()));
-	else ofSetColor(colorEditingMoving);
+	if (bEditMode)
+		ofSetColor(ofColor(colorEditingMoving.r, colorEditingMoving.g, colorEditingMoving.b, colorEditingMoving.a * Bounce()));
+	else
+		ofSetColor(colorEditingMoving);
 
-	if (bRounded) ofDrawRectRounded(*this, rounded);
-	else ofDrawRectangle(*this);
+	if (bRounded)
+		ofDrawRectRounded(*this, rounded);
+	else
+		ofDrawRectangle(*this);
 
 	ofPopStyle();
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::draw()
-{
+void ofxInteractiveRect::draw() {
 	if (bTransparent) return;
 
 	//--
 
-	if (bIsEditing)
-	{
+	if (bIsEditing) {
 		ofPushStyle();
 
 		// Hover
 
-		if (bIsOver)
-		{
+		if (bIsOver) {
 			// Border
 
 			ofNoFill();
-			if (!bPressed)
-			{
+			if (!bPressed) {
 				//ofSetColor(ofColor(ofColor::orange, 128));
 				ofSetColor(colorEditingHover);
-			}
-			else
-			{
+			} else {
 				//ofSetColor(ofColor(ofColor::red, 128));
 				ofSetColor(colorEditingPressedBorder);
 			}
 
-			if (bRounded) ofDrawRectRounded(*this, rounded);
-			else ofDrawRectangle(*this);
+			if (bRounded)
+				ofDrawRectRounded(*this, rounded);
+			else
+				ofDrawRectangle(*this);
 		}
 
 		// Border
 
-		//else 
+		//else
 		{
 			drawBorder(); // will blink
 		}
@@ -335,10 +307,11 @@ void ofxInteractiveRect::draw()
 		{
 			ofSetColor(colorEditingMoving);
 
-			if (bRounded) ofDrawRectRounded(*this, rounded);
-			else ofDrawRectangle(*this);
-		}
-		else // when static
+			if (bRounded)
+				ofDrawRectRounded(*this, rounded);
+			else
+				ofDrawRectangle(*this);
+		} else // when static
 		{
 			// Draggable borders
 
@@ -347,72 +320,70 @@ void ofxInteractiveRect::draw()
 			float xx, yy, ww, hh;
 
 			// height
-			if (bUp)
-			{
+			if (bUp) {
 				// x, y, width, here are "inherited" from ofRectangle
 				ww = width;
 				hh = height;
 				xx = x;
 				yy = y;
 
-				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
-				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
-			}
-			else if (bDown)
-			{
+				if (bRounded)
+					ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
+				else
+					ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
+			} else if (bDown) {
 				ww = width;
 				hh = height;
 				xx = x;
 				yy = y + hh - BORDER_DRAG_SIZE;
 
-				if (bRounded) ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
-				else ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
+				if (bRounded)
+					ofDrawRectRounded(xx, yy, ww, BORDER_DRAG_SIZE, rounded);
+				else
+					ofDrawRectangle(xx, yy, ww, BORDER_DRAG_SIZE);
 			}
 
 			// width
-			if (bLeft)
-			{
+			if (bLeft) {
 				ww = width;
 				hh = height;
 				xx = x;
 				yy = y;
 
-				if (bDual)
-				{
+				if (bDual) {
 					if (bUp) {
 						yy = y + BORDER_DRAG_SIZE;
 						hh = height - BORDER_DRAG_SIZE;
-					}
-					else if (bDown) {
+					} else if (bDown) {
 						yy = y;
 						hh = height - BORDER_DRAG_SIZE;
 					}
 				}
 
-				if (bRounded) ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
-				else ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
-			}
-			else if (bRight)
-			{
+				if (bRounded)
+					ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
+				else
+					ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
+			} else if (bRight) {
 				ww = width;
 				hh = height;
 				xx = x + width - BORDER_DRAG_SIZE;
 				yy = y;
 
-				if (bDual)
-				{
+				if (bDual) {
 					if (bUp) {
 						yy = y + BORDER_DRAG_SIZE;
 						hh = height - BORDER_DRAG_SIZE;
-					}
-					else if (bDown) {
+					} else if (bDown) {
 						yy = y;
 						hh = height - BORDER_DRAG_SIZE;
 					}
 				}
 
-				if (bRounded) ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
-				else ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
+				if (bRounded)
+					ofDrawRectRounded(xx, yy, BORDER_DRAG_SIZE, hh, rounded);
+				else
+					ofDrawRectangle(xx, yy, BORDER_DRAG_SIZE, hh);
 			}
 		}
 
@@ -421,12 +392,10 @@ void ofxInteractiveRect::draw()
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseMoved(ofMouseEventArgs& mouse)
-{
+void ofxInteractiveRect::mouseMoved(ofMouseEventArgs & mouse) {
 	if (bLock) return;
 
-	if (!bPressed)
-	{
+	if (!bPressed) {
 		bIsOver = inside(mouse.x, mouse.y);
 
 		bLeft = false;
@@ -434,45 +403,34 @@ void ofxInteractiveRect::mouseMoved(ofMouseEventArgs& mouse)
 		bUp = false;
 		bDown = false;
 
-		if (bIsOver)
-		{
+		if (bIsOver) {
 			bMove = true;
 
-			if (!bLockResize)
-			{
-				if (mouse.x < x + BORDER_DRAG_SIZE && mouse.x > x && !bLockW)
-				{
+			if (!bLockResize) {
+				if (mouse.x < x + BORDER_DRAG_SIZE && mouse.x > x && !bLockW) {
 					bLeft = true;
 					bMove = false;
-				}
-				else if (mouse.x < x + width && mouse.x > x + width - BORDER_DRAG_SIZE && !bLockW)
-				{
+				} else if (mouse.x < x + width && mouse.x > x + width - BORDER_DRAG_SIZE && !bLockW) {
 					bRight = true;
 					bMove = false;
 				}
 
-				if (mouse.y > y && mouse.y < y + BORDER_DRAG_SIZE && !bLockH)
-				{
+				if (mouse.y > y && mouse.y < y + BORDER_DRAG_SIZE && !bLockH) {
 					bUp = true;
 					bMove = false;
-				}
-				else if (mouse.y > y + height - BORDER_DRAG_SIZE && mouse.y < y + height && !bLockH)
-				{
+				} else if (mouse.y > y + height - BORDER_DRAG_SIZE && mouse.y < y + height && !bLockH) {
 					bDown = true;
 					bMove = false;
 				}
 			}
-		}
-		else
-		{
+		} else {
 			bMove = false;
 		}
 	}
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mousePressed(ofMouseEventArgs& mouse)
-{
+void ofxInteractiveRect::mousePressed(ofMouseEventArgs & mouse) {
 	if (bLock) return;
 	if (!bEditMode) return;
 	if (!this->isMouseOver()) return;
@@ -480,51 +438,42 @@ void ofxInteractiveRect::mousePressed(ofMouseEventArgs& mouse)
 	mousePrev = mouse;
 	bPressed = true;
 
-	if (!bAllScreenMouse) bIsOver = inside(mouse.x, mouse.y);
-	else bIsOver = true;
+	if (!bAllScreenMouse)
+		bIsOver = inside(mouse.x, mouse.y);
+	else
+		bIsOver = true;
 
 	bLeft = false;
 	bRight = false;
 	bUp = false;
 	bDown = false;
 
-	if (bIsOver)
-	{
+	if (bIsOver) {
 		bMove = true;
 
-		if (!bLockResize)
-		{
-			if (mouse.x < x + BORDER_DRAG_SIZE && mouse.x > x && !bLockW)
-			{
+		if (!bLockResize) {
+			if (mouse.x < x + BORDER_DRAG_SIZE && mouse.x > x && !bLockW) {
 				bLeft = true;
 				bMove = false;
-			}
-			else if (mouse.x < x + width && mouse.x > x + width - BORDER_DRAG_SIZE && !bLockW)
-			{
+			} else if (mouse.x < x + width && mouse.x > x + width - BORDER_DRAG_SIZE && !bLockW) {
 				bRight = true;
 				bMove = false;
 			}
-			if (mouse.y > y && mouse.y < y + BORDER_DRAG_SIZE && !bLockH)
-			{
+			if (mouse.y > y && mouse.y < y + BORDER_DRAG_SIZE && !bLockH) {
 				bUp = true;
 				bMove = false;
-			}
-			else if (mouse.y > y + height - BORDER_DRAG_SIZE && mouse.y < y + height && !bLockH)
-			{
+			} else if (mouse.y > y + height - BORDER_DRAG_SIZE && mouse.y < y + height && !bLockH) {
 				bDown = true;
 				bMove = false;
 			}
 		}
-	}
-	else
-	{
+	} else {
 		bMove = false;
 	}
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
-{
+void ofxInteractiveRect::mouseDragged(ofMouseEventArgs & mouse) {
 	if (bLock) return;
 	if (!bEditMode) return;
 
@@ -561,8 +510,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 	if (!bLockResize) //
 	{
-		if (bUp && !bLockY)
-		{
+		if (bUp && !bLockY) {
 			y += diffy;
 
 			y = ofClamp(y, ypad, ofGetHeight() - ypad);
@@ -570,9 +518,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 			height -= diffy;
 
 			if (bLockAspectRatio) width = aspectRatio * height;
-		}
-		else if (bDown && !bLockH)
-		{
+		} else if (bDown && !bLockH) {
 			height += diffy;
 			height = MIN(height, ofGetHeight() - y - 2 * ypad);
 
@@ -581,8 +527,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 		//--
 
-		if (bLeft && !bLockX)
-		{
+		if (bLeft && !bLockX) {
 			x += diffx;
 
 			x = ofClamp(x, xpad, ofGetWidth() - xpad);
@@ -590,12 +535,8 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 			width += -diffx;
 
 			if (bLockAspectRatio) height = width / aspectRatio;
-		}
-		else if (bRight && !bLockW)
-		{
-			if (diffx + width > (x + width + diffx))
-			{
-
+		} else if (bRight && !bLockW) {
+			if (diffx + width > (x + width + diffx)) {
 			}
 
 			width += diffx;
@@ -607,8 +548,7 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 
 	//--
 
-	if (bMove)
-	{
+	if (bMove) {
 		x += diffx;
 		y += diffy;
 
@@ -625,14 +565,12 @@ void ofxInteractiveRect::mouseDragged(ofMouseEventArgs& mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
-{
+void ofxInteractiveRect::mouseReleased(ofMouseEventArgs & mouse) {
 	if (bLock) return;
 	if (!bEditMode) return;
 	//if (!this->isMouseOver()) return;
 
-	if (!bLockResize)
-	{
+	if (!bLockResize) {
 		bLeft = false;
 		bRight = false;
 		bUp = false;
@@ -648,8 +586,7 @@ void ofxInteractiveRect::mouseReleased(ofMouseEventArgs& mouse)
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse)
-{
+void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs & mouse) {
 	if (!this->isMouseOver()) return;
 	if (!bEnableMouseWheel) return;
 	if (!bEditMode) return;
@@ -683,10 +620,13 @@ void ofxInteractiveRect::mouseScrolled(ofMouseEventArgs& mouse)
 	bool bKeyModCtrl = ofGetKeyPressed(OF_KEY_CONTROL);
 	bool bKeyModAlt = ofGetKeyPressed(OF_KEY_ALT);
 
-	if (bKeyModCtrl && !bLockW && !bLockH) this->scaleFromCenter(s);
-	else if (bKeyModShift && !bLockW) this->scale(s, 1);
-	else if (bKeyModAlt && !bLockH) this->scale(1, s);
-	else//no mod
+	if (bKeyModCtrl && !bLockW && !bLockH)
+		this->scaleFromCenter(s);
+	else if (bKeyModShift && !bLockW)
+		this->scale(s, 1);
+	else if (bKeyModAlt && !bLockH)
+		this->scale(1, s);
+	else //no mod
 	{
 		if (!bLockW) this->scale(s, 1);
 		if (!bLockH) this->scale(1, s);
@@ -703,13 +643,11 @@ void ofxInteractiveRect::doConstraints() {
 	//return;
 
 	// Apply constraints if defined
-	if (bConstrainedMin)
-	{
+	if (bConstrainedMin) {
 		this->width = MAX(width, shapeConstraintMin.x);
 		this->height = MAX(height, shapeConstraintMin.y);
 	}
-	if (bConstrainedMax)
-	{
+	if (bConstrainedMax) {
 		this->width = MIN(width, shapeConstraintMax.x);
 		this->height = MIN(height, shapeConstraintMax.y);
 	}
@@ -717,8 +655,7 @@ void ofxInteractiveRect::doConstraints() {
 	// Clamp size
 	if (this->getWidth() > ofGetWidth() - 2 * xpad) {
 		this->setWidth(ofGetWidth() - 2 * xpad);
-	}
-	else if (this->getHeight() > ofGetHeight() - 2 * ypad) {
+	} else if (this->getHeight() > ofGetHeight() - 2 * ypad) {
 		this->setHeight(ofGetHeight() - 2 * ypad);
 	}
 
@@ -730,20 +667,18 @@ void ofxInteractiveRect::doConstraints() {
 	this->y = ofClamp(y, ypad, ofGetHeight());
 }
 
-void ofxInteractiveRect::mouseEntered(ofMouseEventArgs& mouse) {}
-void ofxInteractiveRect::mouseExited(ofMouseEventArgs& mouse) {}
+void ofxInteractiveRect::mouseEntered(ofMouseEventArgs & mouse) { }
+void ofxInteractiveRect::mouseExited(ofMouseEventArgs & mouse) { }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::Changed_EditMode(bool& b)
-{
+void ofxInteractiveRect::Changed_EditMode(bool & b) {
 	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__) << b;
 
 	enableEdit(b);
 }
 
 //--------------------------------------------------------------
-void ofxInteractiveRect::Changed_Rect(ofRectangle& r)
-{
+void ofxInteractiveRect::Changed_Rect(ofRectangle & r) {
 	ofLogNotice("ofxInteractiveRect") << " " << (__FUNCTION__) << r;
 
 	this->set(r);

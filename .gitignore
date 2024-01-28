@@ -569,3 +569,10 @@ Examples/PresetsLite/bin/data/ofApp/Presets/8.json
 *.xml
 Examples/ParamsAutoSave/enc_temp_folder/3164fd37797e6b8451cdf36f8f82baa1/ofxAutosaveGroupTimer.cpp
 Examples/ParamsAutoSave/bin/data/params3
+Examples/TextBoxed/bin/data/assets/fonts/telegrama_render.otf
+Examples/TextBoxed/bin/data/assets/fonts/overpass-mono-bold.otf
+Examples/TextBoxed/bin/data/assets/fonts/JetBrainsMonoNL-SemiBold.ttf
+Examples/TextBoxed/bin/data/assets/fonts/JetBrainsMonoNL-ExtraBold.ttf
+Examples/TextBoxed/bin/data/assets/fonts/JetBrainsMono-ExtraBold.ttf
+Examples/TextBoxed/bin/data/assets/fonts/Inconsolata-Bold.ttf
+Examples/TextBoxed/bin/data/assets/fonts/AnonymousPro-Bold.ttf
