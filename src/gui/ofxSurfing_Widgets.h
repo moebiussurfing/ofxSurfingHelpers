@@ -166,13 +166,16 @@ inline void drawCircleProg(float val) {
 //--------------------------------------------------------------
 //#define BOX_PADDING 50
 inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0, int y = 0, ofColor fColor = 255, ofColor colorBackground = ofColor(0, 247), bool useShadow = false, ofColor colorShadow = 128, int _pad = 50, float _round = 5, int heighForced = -1, bool noPadding = false) {
-	int BOX_PADDING = _pad;
-	if (!noPadding) {
-		//TODO: hardcoded..
-		x += 25;
-		y += 40;
-		//y += 33;
-	}
+	//int BOX_PADDING = _pad;
+
+	if (font.isLoaded()) y += font.getSize();
+
+	//if (!noPadding) {
+	//	//TODO: hardcoded..
+	//	x += 25;
+	//	//y += 40;
+	//	y += 33;
+	//}
 
 	//int xpad = _pad/2;
 	//int ypad = _pad/2;
@@ -194,10 +197,8 @@ inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0,
 			ofDrawBitmapStringHighlight(text, x, y);
 		}
 		
-		else //if (font.isLoaded())
+		else
 		{
-			//--
-
 			// 1. Bg Box
 
 			// bbox
@@ -207,8 +208,8 @@ inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0,
 			ofRectangle _r = (font.getStringBoundingBox(text, x, y));
 
 			_r.setWidth(_r.getWidth() + _pad);
-			_r.setX(_r.getPosition().x - _pad / 2.);
-			_r.setY(_r.getPosition().y - _pad / 2.);
+			_r.setX(_r.getPosition().x - _pad / 2.f);
+			_r.setY(_r.getPosition().y - _pad / 2.f);
 #if 1
 			if (heighForced == -1) _r.setHeight(_r.getHeight() + _pad);
 			////TODO:
@@ -234,13 +235,13 @@ inline void drawTextBoxed(ofTrueTypeFont & font, const string & text, int x = 0,
 
 			// 2. Text
 
-			// Text shadow
+			// 2.2 Text shadow
 			if (useShadow) {
 				ofSetColor(colorShadow);
 				font.drawString(text, x + 1, y + 1);
 			}
 
-			// Text
+			// 2.1 Text
 			ofSetColor(fColor);
 			font.drawString(text, x, y);
 		}
@@ -261,6 +262,8 @@ inline float getHeightBBtextBoxed(ofTrueTypeFont & font, string text, int _pad =
 }
 
 inline glm::vec2 getShapeBBtextBoxed(ofTrueTypeFont & font, string text, int _pad = 50) {
+	//TODO
+	//y should be offsetted as OF API anchor ref: y-=font.getSize();
 	glm::vec2 sh(getWidthBBtextBoxed(font, text, _pad), getHeightBBtextBoxed(font, text, _pad));
 	return sh;
 }
