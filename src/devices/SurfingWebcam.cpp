@@ -1,10 +1,8 @@
-#include "SurfingWebcam.h"
-
+#include "SurfingWebCam.h"
 
 //--------------------------------------------------------------
-void SurfingWebcam::setupWebcamDevice()
-{
-	path = "Webcam_Settings.xml";
+void SurfingWebCam::setupWebCamDevice() {
+	path = "WebCam_Settings.xml";
 
 	string str = "JetBrainsMono-ExtraBold.ttf";
 	//string str = "overpass-mono-bold.otf";
@@ -13,24 +11,21 @@ void SurfingWebcam::setupWebcamDevice()
 	bool b = font.load(pathFont, 10);
 	if (!b) font.load(OF_TTF_MONO, 10);
 
-	// load settings
+	// Load settings
 	ofXml _xml;
 	bool _isLoaded;
 	_isLoaded = _xml.load(path);
 	ofDeserialize(_xml, webcamDeviceName);
 	ofLogNotice(__FUNCTION__) << _xml.toString();
 
-	// start
+	// Start
 	auto _devices = webcamGrab.listDevices();
 	_deviceIndex = -1;
 	webcamDevicesNames = "";
 
-	if (_isLoaded)
-	{
-		for (int i = 0; i < _devices.size(); i++)
-		{
-			if (_devices[i].deviceName == webcamDeviceName.get())
-			{
+	if (_isLoaded) {
+		for (int i = 0; i < _devices.size(); i++) {
+			if (_devices[i].deviceName == webcamDeviceName.get()) {
 				_deviceIndex = i;
 				ofLogNotice(__FUNCTION__) << "device name: \t" << webcamDeviceName.get();
 				ofLogNotice(__FUNCTION__) << "device index: \t" << _deviceIndex;
@@ -39,9 +34,8 @@ void SurfingWebcam::setupWebcamDevice()
 			webcamDevicesNames += ofToString(i) + " " + _devices[i].deviceName + "\n";
 		}
 	}
-	// error. try to load first device...
-	if (_deviceIndex == -1)
-	{
+	// Error. try to load first device...
+	if (_deviceIndex == -1) {
 		_deviceIndex = 0; // select cam device
 		webcamDeviceName = _devices[_deviceIndex].deviceName;
 	}
@@ -53,9 +47,8 @@ void SurfingWebcam::setupWebcamDevice()
 }
 
 //--------------------------------------------------------------
-void SurfingWebcam::drawInfo()
-{
-	if (!bDrawWebcamInfo) return;
+void SurfingWebCam::drawInfo() {
+	if (!bDrawWebCamInfo) return;
 
 	// Display device name
 	string str;
@@ -66,8 +59,7 @@ void SurfingWebcam::drawInfo()
 	str += "\n\n";
 	str += webcamDevicesNames;
 	str += "\n";
-	if (bKeys)
-	{
+	if (bKeys) {
 		str += "KEY COMMANDS \n";
 		str += "R RESTART \n";
 		str += "D NEXT \n";
@@ -81,9 +73,9 @@ void SurfingWebcam::drawInfo()
 	int xx = ofGetWidth() / 2 - ww / 2;
 	int yy = ofGetHeight() - hh - pd;
 
-	if (!font.isLoaded()) ofDrawBitmapStringHighlight(str, xx, yy);
-	else
-	{
+	if (!font.isLoaded())
+		ofDrawBitmapStringHighlight(str, xx, yy);
+	else {
 		ofPushStyle();
 
 		// bbox
@@ -108,7 +100,7 @@ void SurfingWebcam::drawInfo()
 }
 
 //--------------------------------------------------------------
-void SurfingWebcam::drawWebcam() {
+void SurfingWebCam::drawWebCam() {
 	update();
 
 	ofRectangle r(0, 0, webcamGrab.getWidth(), webcamGrab.getHeight());
@@ -119,14 +111,14 @@ void SurfingWebcam::drawWebcam() {
 }
 
 //--------------------------------------------------------------
-void SurfingWebcam::exitWebcam() {
+void SurfingWebCam::exitWebCam() {
 	ofXml _xml;
 	ofSerialize(_xml, webcamDeviceName);
 	_xml.save(path);
 }
 
 //--------------------------------------------------------------
-void SurfingWebcam::doRestartWebcam() {
+void SurfingWebCam::doRestartWebCam() {
 
 	webcamGrab.close();
 	webcamGrab.setDeviceID(_deviceIndex);
@@ -134,7 +126,7 @@ void SurfingWebcam::doRestartWebcam() {
 }
 
 //--------------------------------------------------------------
-void SurfingWebcam::doNextWebcam() {
+void SurfingWebCam::doNextWebCam() {
 	auto _devs = webcamGrab.listDevices();
 	_deviceIndex++;
 	if (_deviceIndex > _devs.size() - 1) _deviceIndex = 0;

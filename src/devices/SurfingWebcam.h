@@ -2,21 +2,18 @@
 
 #include "ofMain.h"
 
-class SurfingWebcam
-{
+class SurfingWebCam {
 public:
-
-	SurfingWebcam() { setup(); }
-	~SurfingWebcam() { exitWebcam(); }
+	SurfingWebCam() { setup(); }
+	~SurfingWebCam() { exitWebCam(); }
 
 private:
-	
-	void setup() { setupWebcamDevice(); }
-	void setupWebcamDevice();
-	void exitWebcam();
-	
+	void setup() { setupWebCamDevice(); }
+	void setupWebCamDevice();
+	void exitWebCam();
+
 	ofVideoGrabber webcamGrab;
-	ofParameter <std::string> webcamDeviceName{ "WEBCAM_DEVICE_NAME", "" };
+	ofParameter<std::string> webcamDeviceName { "WEBCAM_DEVICE_NAME", "" };
 	int _deviceIndex;
 	ofTrueTypeFont font;
 	string webcamDevicesNames;
@@ -25,15 +22,13 @@ private:
 	void update() { webcamGrab.update(); };
 
 public:
-	
-	void drawWebcam();
-	
-	void doNextWebcam();
-	void doRestartWebcam();
-	
+	void drawWebCam();
+
+	void doNextWebCam();
+	void doRestartWebCam();
+
 	void drawInfo();
 
-	bool bDrawWebcamInfo = false;
-	ofParameter <bool>bKeys{ "Keys", false };
+	bool bDrawWebCamInfo = false;
+	ofParameter<bool> bKeys { "Keys", false };
 };
-
