@@ -9,8 +9,8 @@ namespace ofxSurfingHelpers {
 	inline bool ofxKuFileExists(string fileName)
 	{
 		fileName = ofToDataPath(fileName);
-		ifstream inp;
-		inp.open(fileName.c_str(), ifstream::in);
+		std::ifstream inp;
+		inp.open(fileName.c_str(), std::ifstream::in);
 		inp.close();
 		return !inp.fail();
 	}
@@ -24,13 +24,15 @@ namespace ofxSurfingHelpers {
 		//ofFile f(path, ofFile::ReadWrite);
 		//if (!f.exists()) f.create();
 
-		filebuf fb;
-		if (Append) fb.open(Path, ios::app);
-		else fb.open(Path, ios::out);
+		std::filebuf fb;
+		if (Append)
+			fb.open(Path, std::ios::app);
+		else
+			fb.open(Path, std::ios::out);
 
 		if (!fb.is_open()) return false;
 
-		ostream os(&fb);
+		std::ostream os(&fb);
 		stringstream ss(Args.str());
 
 		if (ss.fail()) return false;
