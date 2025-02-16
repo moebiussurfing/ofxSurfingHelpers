@@ -3,16 +3,21 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 	size_TTF = 12;
+	name_TTF = "overpass-mono-bold.otf";
 	string p = FONT_FILES_PATH + name_TTF;
 	bool bLoaded = myFont.load(p, size_TTF, true, true);
 	if (bLoaded) ofLogNotice(__FUNCTION__) << "Loaded " << p;
 	if (!bLoaded) {
-		p = FONT_FILES_PATH + ofToString(FONT_FILE_BIG);
+		p = FONT_FILES_PATH + ofToString(FONT_FILE_BIG);//default font file 
 		bLoaded = myFont.load(p, size_TTF, true, true);
 		if (bLoaded)
 			ofLogNotice(__FUNCTION__) << "Loaded " << p;
-		else
+		else {
 			ofLogError(__FUNCTION__) << "Error loading " << p;
+			bLoaded = myFont.load(OF_TTF_SANS, size_TTF, true, true);//OF_TTF_SANS is broken in OF Windows...
+			if (!bLoaded)
+				ofLogError(__FUNCTION__) << "Error loading " << OF_TTF_SANS;
+		}
 	}
 }
 
