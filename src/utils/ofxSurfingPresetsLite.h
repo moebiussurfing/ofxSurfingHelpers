@@ -412,7 +412,7 @@ public:
                                 ofLogNotice("ofxSurfingPresetsLite") << "InputText:" << s.c_str();
                                 setFilename(s);
                             }
-                            if (ImGui::IsItemDeactivated() && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
+                            if (ImGui::IsItemDeactivated() && ImGui::IsKeyPressed(ImGuiKey_Escape))
                                 bOverInputText = false;
                         }
                         ImGui::PopItemWidth();
