@@ -1,4 +1,4 @@
-#include "SurfingWebCam.h"
+#include "SurfingWebcam.h"
 
 //--------------------------------------------------------------
 void SurfingWebCam::setupWebCamDevice() {
