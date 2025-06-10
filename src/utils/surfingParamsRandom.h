@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ofMain.h"
 
 #define DEFAULT_MIN_PCT 0.1f

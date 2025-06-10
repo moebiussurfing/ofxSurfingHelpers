@@ -11,15 +11,15 @@
 
 // COMMONTLY USED FONTS
 
+#define FONT_SIZE_BIG 16
+#define FONT_SIZE_SMALL 10
+
 #define FONT_FILES_PATH "assets/fonts/"
 
 #define FONT_FILE_BIG "JetBrainsMonoNL-ExtraBold.ttf"
 #define FONT_FILE_SMALL "JetBrainsMono-Bold.ttf"
 #define FONT_FILE_ALT1 "telegrama_render.otf"
 #define FONT_FILE_ALT2  "JetBrainsMono-Bold.ttf"
-
-#define FONT_SIZE_BIG 16
-#define FONT_SIZE_SMALL 10
 
 //--
 
