@@ -21,10 +21,12 @@ Look to the available classes in **OF_ADDON/src/** for details.
   <summary>FILES LIST</summary>
   <p>
 
-\ofxSurfingConstants.h  
 \ofxSurfingHelpers.h  
+\ofxSurfingConstants.h  
+
 \devices\SurfingWebcam.cpp  
 \devices\SurfingWebcam.h  
+
 \gui\ofxSurfing_ofxGui.h  
 \gui\ofxSurfing_Widgets.h  
 \gui\notifiers\surfingNotify.cpp  
@@ -35,11 +37,13 @@ Look to the available classes in **OF_ADDON/src/** for details.
 \gui\widgets\CircleCycle.h  
 \gui\widgets\RectBeat.h  
 \gui\widgets\TextBoxWidget.h  
+
 \utils\ofxAutosaveGroupTimer.cpp  
 \utils\ofxAutosaveGroupTimer.h  
 \utils\ofxMouseRuler.cpp  
 \utils\ofxMouseRuler.h  
-\utils\ofxSurfingPresetsLite.h  
+\utils\surfingDrawPlanes.h  
+\utils\surfingEasyCam.h  
 \utils\surfingFiles.h  
 \utils\surfingGlmSplit.h  
 \utils\surfingMaths.h  
@@ -48,7 +52,12 @@ Look to the available classes in **OF_ADDON/src/** for details.
 \utils\surfingParamNorm.h  
 \utils\surfingParamsRandom.h  
 \utils\surfingSceneTesters.h  
+\utils\surfingSounds.h  
 \utils\surfingTimers.h  
+
+\ImGui\ofxSurfingPresetsLite.h  
+\ImGui\surfingEasyCamImGui.h
+\ImGui\surfingScene3dRules.h
 
   </p>
 </details>
