@@ -55,6 +55,7 @@ Look to the available classes in **OF_ADDON/src/** for details.
 \utils\surfingSounds.h  
 \utils\surfingTimers.h  
 
+* ImGui folder must be removed from your project when using ofxGui instead of ImGui  
 \ImGui\ofxSurfingPresetsLite.h  
 \ImGui\surfingEasyCamImGui.h  
 \ImGui\surfingScene3dRules.h  
