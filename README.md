@@ -56,8 +56,8 @@ Look to the available classes in **OF_ADDON/src/** for details.
 \utils\surfingTimers.h  
 
 \ImGui\ofxSurfingPresetsLite.h  
-\ImGui\surfingEasyCamImGui.h
-\ImGui\surfingScene3dRules.h
+\ImGui\surfingEasyCamImGui.h  
+\ImGui\surfingScene3dRules.h  
 
   </p>
 </details>
