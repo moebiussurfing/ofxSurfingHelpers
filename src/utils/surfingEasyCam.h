@@ -16,6 +16,12 @@
 	- Help info and key commands.
 	- ImGui required but it could be removed easily.
 
+	TODO
+	- fix orto mouse behavior
+	- add near/far clip params
+	- add fov etc
+	- add presets or two cams mode, animated tweening
+
 */
 
 //--------------------------------------------------------------

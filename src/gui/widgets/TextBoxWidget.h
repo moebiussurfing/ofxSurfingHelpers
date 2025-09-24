@@ -552,14 +552,15 @@ private:
 
 		//--
 
-		// 3. left pressed + right click : close box!
-		//if (ofGetMousePressed(0) && isMouseRightClick())
-		if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick())
-			//if (doubleClicker.isMouseRightPressedThenPressedLeft()) 
-		{
-			ofLogWarning("TextBoxWidget") << (__FUNCTION__);
-			bGui = false;
-		}
+		//TODO:
+		//// 3. left pressed + right click : close box!
+		////if (ofGetMousePressed(0) && isMouseRightClick())
+		//if (ofGetMousePressed(0) && doubleClicker.isMouseRightClick())
+		//	//if (doubleClicker.isMouseRightPressedThenPressedLeft()) 
+		//{
+		//	ofLogWarning("TextBoxWidget") << (__FUNCTION__);
+		//	bGui = false;
+		//}
 
 		//--
 

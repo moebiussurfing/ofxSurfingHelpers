@@ -85,6 +85,8 @@
 #include "ofxSurfing_Widgets.h"
 //#include "ofxAutosaveGroupTimer.h"
 
+#include "utils/surfingSmooth.h"
+
 //--
 
 //TODO: WIP
