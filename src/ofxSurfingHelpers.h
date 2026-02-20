@@ -100,13 +100,21 @@
 namespace ofxSurfingHelpers
 {
 	// Monitors helpers
-	inline void moveWindowToMyLeftMonitor() { // my left monitor is 2K
+	// New 2026
+	inline void moveWindowToMyLeftMonitor() { // my left monitor is 2K landscape
 		int x = 2560;
 		int p = 35;
 		ofSetWindowPosition(-x, p);
 		ofSetWindowShape(x, ofGetHeight() - p);
 	}
+	inline void moveWindowToMyRightMonitor() { // my right center monitor is 4K landscape an right monitor 4k portrait
+		int x = 3840;
+		int p = 35;
+		ofSetWindowPosition(x, p);
+		ofSetWindowShape(2160, 3840 - p);
+	}
 
+	// Legacy
 	// WARNING! For my personal setup!
 	// I have three FHD monitors: 
 	// Left monitor is portrait. 
