@@ -17,7 +17,8 @@
 	- ImGui required but it could be removed easily.
 
 	TODO
-	- fix orto mouse behavior
+	- fix orto mouse behavior. 
+	- fix refresh interaction zone when window resized.
 	- add near/far clip params
 	- add fov etc
 	- add presets or two cams mode, animated tweening
@@ -296,6 +297,7 @@ public:
 		ss << "Move over x,y axis / truck and boom:" << endl;
 		ss << "    Left Mouse Button Drag + m" << endl;
 		ss << "    Middle Mouse Button Press" << endl;
+		ss << "    (macOS: Option + Left Mouse Button)" << endl;
 		ss << endl;
 		ss << "Move over z axis / dolly / zoom in or out:" << endl;
 		ss << "    Right Mouse Button Drag" << endl;

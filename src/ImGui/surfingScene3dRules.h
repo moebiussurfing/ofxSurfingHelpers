@@ -400,22 +400,22 @@ namespace ofxSurfingHelpers
 
 					ofxSurfingHelpers::ofxDrawGrid(stepSize, numberOfSteps, bLabels, false, true, false, f, camera,
 						bUnits,
-						bDefaultColors ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
-						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
+						(bDefaultColors) ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
+						(bDefaultColors) ? SURFING_RULES_COLOR_TEXT : cText);
 				}
 				else
 				{
 					// bitmap font
 					ofxSurfingHelpers::ofxDrawGridBitmapFont(stepSize, numberOfSteps, 0, false, true, false, bUnits,
-						bDefaultColors ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
-						bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
+						(bDefaultColors) ? SURFING_RULES_COLOR_LINES_UNITS : cUnits,
+						(bDefaultColors) ? SURFING_RULES_COLOR_TEXT : cText);
 				}
 			}
 
 			// separated labels here
 			if (bForceBitmap && bLabels)
 				ofxSurfingHelpers::ofxDrawGridLabelsBitmapFonts(stepSize, numberOfSteps, false, true, false,
-					bDefaultColors ? SURFING_RULES_COLOR_TEXT : cText);
+					(bDefaultColors) ? SURFING_RULES_COLOR_TEXT : cText);
 		}
 
 		//--
