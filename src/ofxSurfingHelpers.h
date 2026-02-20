@@ -100,6 +100,12 @@
 namespace ofxSurfingHelpers
 {
 	// Monitors helpers
+	inline void moveWindowToMyLeftMonitor() { // my left monitor is 2K
+		int x = 2560;
+		int p = 35;
+		ofSetWindowPosition(-x, p);
+		ofSetWindowShape(x, ofGetHeight() - p);
+	}
 
 	// WARNING! For my personal setup!
 	// I have three FHD monitors: 

@@ -22,6 +22,13 @@
 	- add fov etc
 	- add presets or two cams mode, animated tweening
 
+	// fix setControlArea
+	void ofApp::windowResized(int w, int h){
+//	ofLogNotice("ofApp :: windowResized : ") << w << " x " << h;
+	mViewRect = ofRectangle( 0, 0, std::min(ofGetWidth()-320, 900), ofGetHeight());
+	mTextRect = ofRectangle( mViewRect.getRight(), 0, ofGetWidth() - mViewRect.getWidth(), ofGetHeight() );
+	
+	cam.setControlArea(mViewRect);
 */
 
 //--------------------------------------------------------------
