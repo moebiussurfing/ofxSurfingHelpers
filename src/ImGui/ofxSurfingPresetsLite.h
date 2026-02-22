@@ -1162,6 +1162,7 @@ private:
         setFilename(_namePreset);
     }
 
+public:
     void doPopulatePresets(int amount = 9)
     {
         ofLogNotice("ofxSurfingPresetsLite") << "doPopulatePresets";
