@@ -374,8 +374,18 @@ namespace ofxSurfingHelpers
 			ofLogNotice("ofxSurfingHelpers") << "ofParameters: \n\n" << g.toString();
 		}
 
-		ofJson settings;
-		settings = ofLoadJson(path);
+		ofFile f;
+		bool b = f.doesFileExist(path);
+		if (!b) {
+			ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` from `" << path << "` Not found!";
+			return false;
+		}
+
+		ofJson settings = ofLoadJson(path);
+		if (settings.is_null()) {
+			ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` from `" << path << "` Invalid json!";
+			return false;
+		}
 
 #ifndef USE_FAST_SERIALIZER
 		ofDeserialize(settings, g);
@@ -384,9 +394,6 @@ namespace ofxSurfingHelpers
 		ofDeserializeSilent(settings, g);
 #endif
 
-		// Returns false if no file preset yet.
-		ofFile f;
-		bool b = f.doesFileExist(path);
 		if (b) ofLogNotice("ofxSurfingHelpers") << "loadGroup: `" << g.getName() << "` from `" << path << "`";
 		else ofLogError("ofxSurfingHelpers") << "Error loading: `" << g.getName() << "` from `" << path << "` Not found!";
 
